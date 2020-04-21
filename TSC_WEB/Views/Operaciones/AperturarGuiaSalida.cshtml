@@ -1,0 +1,224 @@
+﻿@{
+    ViewBag.Title = "Aperturar guia salida";
+    ViewBag.Modulo = "Operaciones";
+    Layout = "~/Views/Plantillas/_Layout.cshtml";
+}
+
+
+<!-- FILTROS - APERTURA -->
+<div class="card">
+
+    <div class="card-header">
+        <h3 class="card-title">Filtros</h3>
+        <div class="card-tools">
+            <button type="button" class="btn btn-tool" data-widget="collapse"><i class="fas fa-minus"></i></button>
+        </div>
+    </div>
+
+    <div class="card-body">
+        <div class="row">
+
+            <div class="col-xl-2 col-lg-2  col-md-2 col-sm-6 form-group">
+                <h6>E. Salida:</h6>
+                <input type="text" class="form-control" id="txtEmpresa"/>
+            </div>
+
+            <div class="col-xl-4 col-lg-4 col-md-4 col-sm-6 form-group">
+                <h6>Número:</h6>
+                <input type="text" class="form-control" id="txtNumero" />
+            </div>
+
+            <div class="col-xl-4 col-lg-4 col-md-4 col-sm-6 form-group">
+                <h6>Serie:</h6>
+                <input type="text" class="form-control mayus" id="txtSerie" />
+            </div>
+
+            <div class="col-xl-2 col-lg-2 col-md-2 col-sm-6 form-group">
+                <h6>Especie:</h6>
+                <input type="text" class="form-control" value="GRE" disabled />
+            </div>
+
+            <div class="col-xl-2 col-lg-2 col-md-2 col-sm-6 form-group">
+                <h6>&nbsp;</h6>
+                <button class="btn btn-danger btn-block" id="btnApertura">Aperturar</button>
+            </div>
+            <div class="col-xl-2 col-lg-2 col-md-2 col-sm-6 form-group">
+                <h6>&nbsp;</h6>
+                <button class="btn btn-danger btn-block" id="btnBuscar">Buscar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- REGISTROS -->
+<div class="card">
+
+    <div class="card-body">
+
+        
+        <table class="table table-bordered dt-responsive nowrap" style="width:100%" id="tablaRegistros">
+            <thead>
+                <tr>
+                    <th>Documento</th>
+                    <th>Serie</th>
+                    <th>Cod. Servicio</th>
+                    <th>Nombre Servicio</th>
+                    <th>Cod. Operación</th>
+                    <th>Nombre Operación</th>
+                    <th>F. Emisión</th>
+                    <th>Especie</th>
+                    <th>Situación</th>
+                </tr>
+            </thead>
+            <tbody id="tablaCuerpoRegistros"></tbody>
+        </table>
+        
+
+    </div>
+</div>
+
+
+@section scripts{
+    <script>
+        $(document).ready(function () {
+
+        });
+        //VARIABLES
+        let cantreg = 0;
+        //BUSCAR
+        $("#btnBuscar").click(function (e) {
+            VerDatosGuiaSalida();
+        });
+
+        //LLENA GRILLA
+        function VerDatosGuiaSalida() {
+            var vrEmpresa = $("#txtEmpresa").val();
+            if (vrEmpresa == '') {
+                vrEmpresa = null;
+            }
+            var vrNumero = $("#txtNumero").val();
+            if (vrNumero == '') {
+                vrNumero = null;
+            }
+            var vrSerie = $("#txtSerie").val();
+            if (vrSerie == '') {
+                vrSerie = null;
+            }
+            var objFile = {
+                Empresa: vrEmpresa,
+                NumeroDocumento: vrNumero,
+                Serie: vrSerie,
+            };
+            $.ajax({
+                url: '/Operaciones/GetVerDatosAperturaSalida',
+                type: 'GET',
+                data: objFile,
+                dataType: 'json',
+                success: function (response) {
+                    let tabla = $("#tablaRegistros").DataTable();
+                    tabla.destroy();
+                    var rows = '';
+                    if (response.length != 0) {
+                        response.forEach(function (item) {
+                            rows += `
+                                 <tr>
+                                    <td> ${item.NumeroDocumento}  </td>
+                                    <td> ${item.Serie}  </td>
+                                    <td> ${item.CodigoDestinatario}  </td>
+                                    <td> ${item.NombreDestinatario}  </td>
+                                    <td> ${item.TipoOperacion}  </td>
+                                    <td> ${item.NombreTipoOperacion }  </td>
+                                    <td> ${item.FechaRecepcion }  </td>
+                                    <td> ${item.Especie}  </td>
+                                    <td> ${item.NombreSitDF} </td>
+                                 </tr>   
+                                 `;
+                        });
+                        cantreg = 1;
+                    } else {
+                        alert('No se ha encontrado la guia de salida');
+                    }
+
+                    $('#tablaCuerpoRegistros').html(rows);
+                    $("#tablaRegistros").DataTable(
+                        {'language' : {'url' : '/libs/datatables/spanish.json'},
+                            lengthMenu: [[5, 10, 20, -1], [5, 10, 20, 'Todos']]}
+                    );
+
+                },
+                error: function (err) {
+                    alert('Error:' + err.responseText);
+                }
+            });
+        }
+
+        //FUNCION PRINCIPAL
+        $("#btnApertura").click(function (e) {
+            if ($("#txtEmpresa").val() == '') {
+                Advertir('No ha ingresado el codigo de la Empresa');
+                return;
+            }
+            if ($("#txtSerie").val() == '') {
+                Advertir('No ha ingresado el numero de serie');
+                return;
+            }
+            if ($("#txtNumero").val() == '') {
+                Advertir('No se ha ingresado el numero de documento');
+                return;
+            }
+            if (cantreg == 0)
+            {
+                Advertir('Primero se debe de realizar la busqueda de la guia');
+                return;
+            }
+            var vrEmpresa = $("#txtEmpresa").val();
+            if (vrEmpresa == '') {
+                vrEmpresa = null;
+            }
+            var vrNumero = $("#txtNumero").val();
+            if (vrNumero == '') {
+                vrNumero = null;
+            }
+            var vrSerie = $("#txtSerie").val().toUpperCase();
+            if (vrSerie == '') {
+                vrSerie = null;
+            }
+            var objFile = {
+                Empresa: vrEmpresa,
+                NumeroDocumento: vrNumero,
+                Serie: vrSerie,
+            };
+
+            $.ajax({
+                url: '/operaciones/SetAperturaGuiaSalida',
+                type: 'POST',
+                data: objFile,
+                dataType: 'json',
+                success: function (response) {
+                    if (response == 0) {
+                        Advertir('Documento Fiscal de salida no se encuentra dentro del periodo actual');
+                    }
+                    else if (response == 2) {
+                        Advertir('Documento Fiscal de salida se encuentra aperturado');
+                    }
+                    else if (response == 3) {
+                        Advertir('Guia no existe');
+                    }
+                    else {
+                        Informar('Se ha realizado la apertura de la Guia correctamente');
+                        $("#txtEmpresa").val("");
+                        $("#txtNumero").val("");
+                        $("#txtSerie").val("");
+
+                        VerDatosGuiaSalida();
+                    }
+
+                },
+                error: function (err) {
+                    Advertir('Error:' + err.responseText);
+                }
+            });
+        });
+
+    </script>
+}

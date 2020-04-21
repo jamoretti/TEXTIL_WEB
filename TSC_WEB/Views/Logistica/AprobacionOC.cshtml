@@ -1,0 +1,288 @@
+﻿@model List<TSC_WEB.Models.Entidades.Logistica.AprobacionOC.OrdenCompraEntidad>
+
+@{
+    ViewBag.Title = "Liberación de OC";
+    ViewBag.Modulo = "Logística";
+    Layout = "~/Views/Plantillas/_Layout.cshtml";
+
+}
+
+
+<div class="card">
+    <div class="card-header">
+        <!--<h3 class="card-title">Ordenes de Compra pendientes</h3>-->
+
+        <!--<div class="card-tools">
+            <button class="btn btn-sm btn-block btn-success" id="btnLiberar">Liberar</button>  
+        </div>
+        <div class="card-tools">
+            <button class="btn btn-sm btn-block btn-danger" id="btnRechazar">Rechazar</button>
+        </div>-->
+
+        <div class="row">
+            <div class="col-xl-10 col-lg-8 col-md-8 col-sm-12 col-12">
+                <h3 class="card-title">Ordenes de Compra pendientes</h3>
+            </div>
+            <div class="col-xl-1  mt-2 col-lg-2 col-md-2 col-sm-6 col-6">
+                <button class="btn btn-sm btn-block btn-success" id="btnLiberar">Liberar</button>
+            </div>
+            <div class="col-xl-1 mt-2 col-lg-2 col-md-2 col-sm-6 col-6">
+                <button class="btn btn-sm btn-block btn-danger" id="btnRechazar">Rechazar</button>
+            </div>
+        </div>
+        
+
+    </div>        
+
+    <div class="card-body">
+            
+        <table class="table table-bordered table-hover dt-responsive nowrap" id="tablaPrincipal" style="width:100%">
+            <thead>
+                <tr>
+                    <th class="all">Pedido</th>
+                    <th>Moneda</th>
+                    <th>C. Costo</th>
+                    <th>Fecha</th>
+                    <th>Proveedor</th>
+                    <th>Comprador</th>
+                    <th>Descripción de pago</th>
+                    <th class="all">Total</th>
+                    <!--<th >Observación</th>-->
+                    <th class="all">Operación</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var obj in Model)
+                {
+                    <tr>
+                        <td>@obj.pedido </td>
+                        <td>@obj.moneda</td>
+                        <td>@obj.centrocosto</td>
+                        <td>@obj.fecha</td>
+                        <td>@obj.proveedor</td>
+                        <td>@obj.comprador</td>
+                        <td>@obj.descripcionpago</td>
+                        <td>@obj.total_pedido</td>
+                        
+
+                   
+                            <td class="text-center">
+                                <span class="cursor-pointer mr-1 detalle" data-pedido="@obj.pedido"><i class="fas fa-eye" style="color:#007bff;"></i></span>
+                                <input type="checkbox" data-pedido="@obj.pedido" class="liberar ml-1">
+                            </td>
+                        
+                        </tr>
+                }
+            </tbody>
+        </table>
+            
+
+    </div>
+        
+</div>
+
+<!-- MODAL -->
+
+<div class="modal" tabindex="-1" role="dialog" id="modalInformacion">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Detalle Orden Compra</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="table-responsive" style="height:250px">
+                    <table class="table table-bordered table-hover" style="width:100%" id="tablaDetalle">
+                        <thead>
+                            <tr>
+                                <th>Secuencia</th>
+                                <th>Descripcion</th>
+                                <th nowrap>C. Costo</th>
+                                <th>Descripción C. Costo</th>
+                                <th>UM</th>
+                                <th>Reserva Plane.</th>
+                                <th>Qtde. Pedida</th>
+                                <th>Valor Unit.</th>
+                                <th>Valor Total</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tablaDetalleContenido"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section scripts {
+    <script>
+        //ARRAY GENERAL
+        var PEDIDOS = [];
+
+
+        $(document).ready(function () {
+
+            ArmarDataTable("tablaPrincipal");
+
+            //AGREGAMOS Y QUITAMOS ORDENES DE COMPRA
+            $("#tablaPrincipal").on('click', '.liberar', function () {
+                var PEDIDO = $(this).attr("data-pedido");
+
+                //AGREGANDO AL ARRAY
+                if ($(this).prop("checked")) {
+
+                    PEDIDOS.push(PEDIDO);
+
+                } else {//QUITA DEL ARRAY
+                    let pe = PEDIDOS.indexOf(PEDIDO);
+
+
+                    if (pe >= 0) {
+                        PEDIDOS.splice(pe, 1);
+                    }
+                }
+            });
+
+            //AGREGAMOS Y QUITAMOS ORDENES DE COMPRA
+            $("#tablaPrincipal").on('click', '.detalle', function () {
+                var pedido = $(this).attr("data-pedido");
+                
+                var datos = { 'ordencompra' : pedido }
+
+                ListarDetalleOC(datos);
+
+            });
+
+            //LIBERANDO PEDIDOS
+            $("#btnLiberar").click(function () {
+                if (PEDIDOS.length > 0) {
+
+                    //MOSTRANDO PANEL DE CARGA
+                    MostrarCarga("Liberando...");
+
+                    //console.log(PEDIDOS);
+
+                    var datos = {
+                        'ordenes' : PEDIDOS
+                    }
+                    
+                    $.ajax({
+                        url: '/logistica/LiberarOcMasivo/',
+                        type: 'post',
+                        data: datos,
+                        success: function (e) {
+                            if(e.success){
+                                Swal.fire({
+                                    icon : 'success',
+                                    title: e.mensaje,
+                                    text: "Textile Sourcing Company",
+                                    timer: 2000,
+                                    allowEscapeKey: false,
+                                    allowOutsideClick: false,
+                                    onClose: () => {
+                                        location.reload();
+                                    }
+                                });
+
+                            } else {
+                                Advertir(e.mensaje);
+                            }
+                        }
+                    });
+
+                } else {
+                    Advertir("Por favor seleccione al menos un pedido para liberar");
+                }
+            });
+
+                //RECHAZAR PEDIDOS
+                $("#btnRechazar").click(function () {
+                    if (PEDIDOS.length > 0) {
+
+                        //MOSTRANDO PANEL DE CARGA
+                        MostrarCarga("Rechazando...");
+
+                        //console.log(PEDIDOS);
+
+                        var datos = {
+                            'ordenes' : PEDIDOS
+                        }
+                        console.log(PEDIDOS);
+                        $.ajax({
+                            url: '/logistica/RechazarOcMasivo/',
+                            type: 'post',
+                            data: datos,
+                            success: function (e) {
+                                if(e.success){
+                                    Swal.fire({
+                                        icon : 'success',
+                                        title: e.mensaje,
+                                        text: "Textile Sourcing Company",
+                                        timer: 2000,
+                                        allowEscapeKey: false,
+                                        allowOutsideClick: false,
+                                        onClose: () => {
+                                            location.reload();
+                                        }
+                                    });
+
+                                } else {
+                                    Advertir(e.mensaje);
+                                }
+                            }
+                        });
+
+                } else {
+                    Advertir("Por favor seleccione al menos un pedido para Rechazar");
+                }
+                });
+
+
+
+
+        });
+
+                //LISTA DETALLE 
+                function ListarDetalleOC(datos){
+
+                        
+
+                        $.ajax({
+                            url: '/logistica/ListarDetalleOC/',
+                            type: 'get',
+                            data: datos,
+                            success: function (e) {
+                                //ARMAMOS TABLA
+                                var tr = "";
+                                console.log(e);
+
+                                e.forEach((obj)=>{
+                                    tr += `
+                                        <tr>
+                                            <td>${obj.seq_item_pedido}</td>
+                                            <td>${obj.descricao_item}</td>
+                                            <td>${obj.centro_custo}</td>
+                                            <td>${obj.DESCRICAO}</td>
+                                            <td>${obj.unidade_conv}</td>
+                                            <td>${obj.reservaplane}</td>
+                                            <td>${obj.QTDE_PEDIDA_ITEM}</td>
+                                            <td>${obj.VALOR_CONV}</td>
+                                            <td>${obj.total}</td>
+
+
+                                        </tr>
+                            `;
+                    });
+                   
+                                            $("#tablaDetalleContenido").html(tr);
+                                            $("#modalInformacion").modal("show");
+                    }   
+                    });
+                }
+
+    </script>
+}

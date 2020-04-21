@@ -1,0 +1,114 @@
+﻿
+@{
+    ViewBag.Title = "Dashboard";
+    ViewBag.Modulo = "Dashboard";
+    Layout = "~/Views/Plantillas/_Layout.cshtml";
+}
+
+
+
+<div class="card">
+
+    <div class="card-header text-center">
+        <h3 class="font-weight-bold">PEDIDOS URGENTES</h3>
+    </div>
+
+    <div class="card-body" style="display: block;">
+
+        <div class="table-responsive">
+            <!--<table class="table table-bordered table-hover dt-responsive nowrap no-footer dtr-inline text-center " style="width: 100%;" id="tablaRegistros" role="grid" aria-describedby="tablaRegistros_info">-->
+            <table class="table table-bordered table-hover text-center " style="width: 100%;" id="tablaRegistros" role="grid" aria-describedby="tablaRegistros_info">
+                <thead>
+                    <tr id="tablaCabeceraRegistros">
+                        <th>
+                            PEDIDO
+                        </th>
+                    </tr>
+                </thead>
+                <tbody id="tablaCuerpoRegistros"></tbody>
+            </table>
+        </div>
+
+
+
+    </div>
+</div>
+
+
+@section scripts{
+
+
+
+    <script>
+
+
+        $(document).ready(function(){
+            Buscar();
+        });
+
+
+
+
+        function Buscar(){
+
+            let flag = "SI";
+
+            datos = {
+                'flag'   : flag
+            }
+
+
+            $.ajax({
+                url: '/planeamiento/BuscarPedidosAmbulancia/',
+                type: 'GET',
+                data: datos,
+                dataType: 'json',
+                success: function (e) {
+                    //e = [{ pedido: 123 }, { pedido: 124 }];
+                    console.log(e);
+                    //VARIABLES
+                    let total = e.length;
+                    console.log(total);
+                    let th = "";
+                    let separado = Math.ceil(total / 2);
+                    let mitad = 2;
+
+
+
+                    //mitad = mitad > 2 ? 2 : mitad;
+                    //ARMAMOS CABECERA
+                    for (let x = 1; x <= mitad; x++) {
+                        th += "<th>PEDIDO</th>";
+                    }
+                    $("#tablaCabeceraRegistros").html(th);
+
+
+
+                    let tr = "";
+                    let contador = 0;
+                    
+
+                    for (let i = 0; i < separado; i++) {
+                        tr += "<tr>";
+
+                            for (let j = 0; j < mitad ; j++) {
+                                let indice = i + (separado * j);
+                                try{
+                                    tr += "<td> " + e[indice].pedido + "</td>";
+                                } catch (error) {
+                                    tr += "<td></td>";
+                                }
+                            }
+                        tr += "</tr>";
+                    }
+
+                    $("#tablaCuerpoRegistros").html(tr);
+
+                }
+
+            });
+        }
+
+
+    </script>
+}

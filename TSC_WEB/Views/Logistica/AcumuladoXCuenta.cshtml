@@ -1,0 +1,734 @@
+﻿@{
+    ViewBag.Title = "Acumulado por Producto / Servicio";
+    ViewBag.Modulo = "Logística";
+    Layout = "~/Views/Plantillas/_Layout.cshtml";
+
+}
+
+<div class="cont-acumulado-cuenta">
+
+    <div class="card">
+
+        <div class="card-header">
+            <div class="seccion-1">
+                <div class="cont-selec-periodo">
+                    <select class="form-control selectPeriodo" multiple="multiple" id="IdPeriodosLista" placeholder="Periodo">
+                    </select>
+                </div>
+
+                <div class="cont-select-seccion">
+                    <select class="form-control selectSeccion" multiple="multiple" id="IdSeccionLista" placeholder="Sección">
+                    </select>
+                </div>
+
+                <div class="cont-select-familia">
+                    <select class="form-control selectFamilia" multiple="multiple" id="IdFamiliaLista" placeholder="Familia">
+                    </select>
+                </div>
+
+                <div class="cont-select-cuenta">
+                    <select class="form-control selectCuenta" multiple="multiple" id="IdCuentaLista" placeholder="Plan Contable">
+                    </select>
+                </div>
+
+                <div class="cont-btn-botones">
+                    <div class="cont-btn-buscar" style="font-weight: bold;">
+                        <button type="button" class="btn btn-primary ml-4" id="btnBuscar">Buscar</button>
+                    </div>
+
+                    <div class="cont-btn-excel">
+                        <button id="btnExportarExcel" class="btn btn-success ml-2">Exportar Excel</button>
+                    </div>
+                </div>
+
+
+            </div>
+
+            <div class="seccion-2">
+                <div class="cont-header-item-1">
+                    <div class="indicador ind-presupuesto">
+                        <div id="btnPresupuesto" class="valor">0</div>
+                        <div class="descripcion">Presupuestado</div>
+                    </div>
+                </div>
+                <div class="cont-header-item-2">
+                    <div class="indicador ind-comprado">
+                        <div id="btnConsumido" class="valor">0</div>
+                        <div class="descripcion">Comprado</div>
+                    </div>
+
+                </div>
+                <div class="cont-header-item-3">
+                    <div class="indicador ind-saldo">
+                        <div id="btnDisponible" class="valor">0</div>
+                        <div class="descripcion">Saldo</div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+        <div class="card-body">
+
+            <table class="table table-bordered table-hover dt-responsive nowrap" id="tablaPrincipal" style="width:100%;">
+                <thead>
+                    <tr>
+                        <th>Módulo</th>
+                        <th>Cod. Autorización</th>
+                        <th>Código</th>
+                        <th>Proveedor</th>
+                        <th>Fecha</th>
+                        <th>CeCo</th>
+                        <th>Tipo Pago</th>
+                        <th>Valor S/.</th>
+                        <th class="all">Valor U$</th>
+                        <th class="all">Valor U$ - Comprado</th>
+                    </tr>
+                </thead>
+                <tbody id="tablaCabeceraContenido"></tbody>
+            </table>
+        </div>
+
+    </div>
+
+
+</div>
+
+<style>
+
+    /* Estilos Especiales */
+
+    .cont-acumulado-cuenta label span {
+        font-weight: 300 !important;
+    }
+
+    .cont-acumulado-cuenta #btnBuscar {
+        width: 200px;
+        z-index: 500;
+    }
+
+
+
+    .indicador {
+        text-align: center;
+        padding: 5px;
+        width: 90%;
+        border-radius: 7px;
+    }
+
+        .indicador .valor {
+            font-size: 22px;
+            color: white;
+        }
+
+        .indicador .descripcion {
+            font-size: 14px;
+            color: white;
+            line-height: 1;
+        }
+
+    .seccion-2 .ind-presupuesto {
+        background-color: #3498DB;
+    }
+
+    .seccion-2 .ind-comprado {
+        background-color: #EC7063;
+    }
+
+    .seccion-2 .ind-saldo {
+        background-color: #2ECC71;
+    }
+
+    .seccion-2 {
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        border-top: 1px solid #D5D8DC;
+    }
+
+        .seccion-2 .cont-header-item-1 {
+            padding: 5px;
+            border-radius: 5px;
+            margin-top: 10px;
+            flex-grow: 1;
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .seccion-2 .cont-header-item-2 {
+            padding: 5px;
+            margin-top: 10px;
+            flex-grow: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .seccion-2 .cont-header-item-3 {
+            padding: 5px;
+            border-radius: 5px;
+            margin-top: 10px;
+            flex-grow: 1;
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
+            align-items: center;
+        }
+
+
+    .seccion-1 {
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+    }
+
+        .seccion-1 .cont-selec-periodo {
+            padding: 5px;
+            margin-top: 10px;
+            flex-grow: 1;
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
+            align-items: center;
+            min-width: 200px;
+        }
+
+        .seccion-1 .cont-select-seccion {
+            padding: 5px;
+            margin-top: 10px;
+            flex-grow: 1;
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
+            align-items: center;
+            min-width: 200px;
+        }
+
+        .seccion-1 .cont-select-familia {
+            padding: 5px;
+            margin-top: 10px;
+            flex-grow: 1;
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
+            align-items: center;
+            min-width: 200px;
+        }
+
+        .seccion-1 .cont-select-cuenta {
+            padding: 5px;
+            margin-top: 10px;
+            flex-grow: 1;
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
+            align-items: center;
+            min-width: 200px;
+        }
+
+        .seccion-1 .cont-btn-botones {
+            padding: 5px;
+            margin-top: 10px;
+            flex-grow: 1;
+            display: flex;
+            justify-content: center;
+            flex-direction: row;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+            .seccion-1 .cont-btn-botones .cont-btn-buscar {
+                min-width: 200px;
+            }
+
+            .seccion-1 .cont-btn-botones .cont-btn-excel {
+                min-width: 200px;
+            }
+
+
+
+
+
+    /* Custom, iPhone Retina */
+    @@media only screen and (min-width : 320px) {
+
+        .seccion-1 .cont-btn-botones .cont-btn-buscar {
+            min-width: 200px;
+            text-align: center;
+        }
+
+            .seccion-1 .cont-btn-botones .cont-btn-buscar button {
+                margin-left: 0px !important;
+            }
+
+
+        .seccion-1 .cont-btn-botones .cont-btn-excel {
+            min-width: 200px;
+            margin-top: 5px;
+            text-align: center;
+        }
+    }
+
+    /* Extra Small Devices, Phones */
+    @@media only screen and (min-width : 480px) {
+        .seccion-1 .cont-btn-botones .cont-btn-excel {
+            margin-top: 0px !important;
+        }
+    }
+
+    /* Small Devices, Tablets */
+    @@media only screen and (min-width : 768px) {
+    }
+
+    /* Medium Devices, Desktops */
+    @@media only screen and (min-width : 992px) {
+    }
+
+    /* Large Devices, Wide Screens */
+    @@media only screen and (min-width : 1100px) {
+
+
+        .cont-acumulado-cuenta .card-header {
+            background-color: #fff;
+        }
+
+            .cont-acumulado-cuenta .card-header .seccion-1 {
+                width: 100%;
+                /*background-color: blue;*/
+                display: flex;
+                flex-direction: row !important;
+                justify-content: flex-start;
+                flex-wrap: wrap;
+                padding-bottom: 10px;
+                margin-bottom: 0px;
+            }
+
+        .cont-acumulado-cuenta .seccion-1 .cont-btn-buscar {
+            margin: 0px !important;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .cont-acumulado-cuenta .card-header .seccion-2 {
+            width: 100%;
+            /*background-color: to  mato;*/
+            display: flex;
+            flex-direction: row !important;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            padding-top: 10px;
+            border-top: 1px solid #EDECEB;
+            margin-bottom: 0px;
+        }
+    }
+</style>
+
+@section scripts {
+
+    <script>
+
+        // Variables Globales
+        var PEDIDOS = [];
+        var codPeriodo = "Seleccione";
+        var codFamilia = "Seleccione";
+        var codCuenta = "Seleccione";
+
+        var cod_periodos = [];
+        var cod_secciones = [];
+        var cod_familias = [];
+        var cod_cuentas = [];
+
+        var glistaSecciones = [];
+        var glistaFamilias = [];
+        var glistaCuentas = [];
+
+        var opcion_familia = 0;
+        var opcion_seccion = 0;
+
+        var cod_secciones_ver = [];
+        var cod_familias_ver = [];
+
+
+        $(document).ready(function () {
+
+            LlenarCBO_Periodos();
+            ActualizarOS();
+            InicializarCbo();
+
+            function InicializarCbo() {
+                $("#IdPeriodosLista").multipleSelect();
+                $("#IdSeccionLista").multipleSelect();
+                $("#IdFamiliaLista").multipleSelect();
+                $("#IdCuentaLista").multipleSelect();
+            }
+
+            function LlenarCBO_Periodos() {
+                $.ajax({
+                    type: "GET",
+                    url: '/logistica/ListarPeriodos',
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (data) {
+                        $.each(data, function () {
+                            $("#IdPeriodosLista").append($("<option/>").val(this.COD_PERIODO).text(this.DESC_PERIODO));
+                        });
+                        $('#IdPeriodosLista').multipleSelect("refresh");
+                    },
+                    failure: function () {
+                        console.error('error al cargar los periodos');
+                    }
+                });
+            }
+
+            function ActualizarOS() {
+                $.ajax({
+                    type: "GET",
+                    url: '/logistica/ActualizarOS',
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (data) { }
+                });
+            }
+
+            function LlenarCBO_Secciones() {
+                var datos = {
+                    'periodos': cod_periodos,
+                    'secciones': glistaSecciones
+                }
+                $.ajax({
+                    type: "post",
+                    url: '/logistica/ListarSecciones',
+                    data: datos,
+                    success: function (data) {
+
+                        $.each(data, function () {
+
+                            glistaSecciones.push(this.CODSECCION);
+
+                            $("#IdSeccionLista").append($("<option/>").val(this.CODSECCION).text(this.SECCION));
+                        });
+                        $('#IdSeccionLista').multipleSelect('refresh');
+
+                    },
+                    failure: function () {
+                        console.error('error al cargar los periodos');
+                    }
+                });
+
+            }
+
+            function LlenarCBO_Familias(opcion) {
+
+                var datos = {
+                    'periodos': cod_periodos,
+                    'secciones': cod_secciones,
+                    'familias': glistaFamilias,
+                    'opcion': opcion
+                }
+
+                $.ajax({
+                    type: "post",
+                    url: '/logistica/ListarFamilias',
+                    data: datos,
+                    success: function (data) {
+                        $.each(data, function () {
+                            glistaFamilias.push(this.CODFAMILIA);
+                            $("#IdFamiliaLista").append($("<option/>").val(this.CODFAMILIA).text(this.FAMILIA));
+                        });
+                        $('#IdFamiliaLista').multipleSelect('refresh');
+                    },
+                    failure: function () {
+                        console.error('error al cargar los periodos');
+                    }
+                });
+            }
+
+            function LlenarCBO_Cuentas(opcion) {
+                var datos = {
+                    'periodos': cod_periodos,
+                    'secciones': cod_secciones,
+                    'familias': cod_familias,
+                    'cuentas': glistaCuentas,
+                    'opcion': opcion
+                }
+
+                $.ajax({
+                    type: "POST",
+                    url: '/logistica/ListarCuenta',
+                    data: datos,
+                    success: function (data) {
+                        $.each(data, function () {
+                            glistaCuentas.push(this.CODPLACONT);
+                            $("#IdCuentaLista").append($("<option/>").val(this.CODPLACONT).text(this.PLANCONT));
+                        });
+                        $('#IdCuentaLista').multipleSelect('refresh');
+                    },
+                    failure: function () {
+                        console.error('error al cargar los periodos');
+                    }
+                });
+            }
+
+
+
+
+            function Listar() {
+                var datos = {
+                    'periodos': cod_periodos,
+                    'secciones': cod_secciones,
+                    'familias': cod_familias,
+                    'cuentas': cod_cuentas
+                }
+
+                $.ajax({
+                    type: "post",
+                    url: '/logistica/ListarAcumuladoMultiple',
+                    data: datos,
+                    dataType: "json",
+                    success: function (data) {
+                        let tabla = $("#tablaPrincipal").DataTable();
+                        tabla.destroy();
+                        var tr = "";
+
+                        data.forEach((obj) => {
+                            tr += "<tr> "
+
+                                + " <td> " + obj.MODULO + "</td>"
+                                + " <td> " + obj.CODAUTORIZA + "</td>"
+                                + " <td> " + obj.CODIGO + "</td> "
+                                + " <td> " + obj.PROVEEDOR + "</td> "
+                                + " <td> " + obj.FECHA + "</td> "
+                                + " <td> " + obj.CC + "</td> "
+                                + " <td> " + obj.TIPO_PAGO + "</td> "
+                                + " <td> " + obj.SIMBOLO_S + " " + obj.VALOR_SOLES + "</td>"
+                                + " <td> " + obj.SIMBOLO_D + " " + obj.VALOR_DOLAR + "</td> "
+                                + " <td> " + obj.SIMBOLO_D + " " + obj.VALOR_CONSUMIDO + "</td> "
+                                + "</tr>";
+                        });
+
+                        $("#tablaCabeceraContenido").html(tr);
+
+                        $("#tablaPrincipal").DataTable(
+                            {
+                                'language': { 'url': '/libs/datatables/spanish.json' },
+                                lengthMenu: [[5, 10, 20, -1], [5, 10, 20, 'Todos']]
+                            }
+                        );
+                    },
+                    failure: function () {
+                        console.error('error al cargar los periodos');
+                    }
+                });
+
+            }
+
+            function ListarIndicadores() {
+
+                var datos = {
+                    'periodos': cod_periodos,
+                    'secciones': cod_secciones,
+                    'familias': cod_familias,
+                    'cuentas': cod_cuentas
+                }
+
+                $.ajax({
+                    type: "POST",
+                    url: '/logistica/ListarIndicadores',
+                    data: datos,
+                    success: function (data) {
+                        var responseJSON = JSON.stringify(data);
+                        var responseArray = JSON.parse(responseJSON);
+
+                        $('#btnPresupuesto').text(responseArray.SIMBOLO + " " + responseArray.PRESUPUESTO);
+                        $('#btnConsumido').text(responseArray.SIMBOLO + " " + responseArray.CONSUMIDO);
+                        $('#btnDisponible').text(responseArray.SIMBOLO + " " + responseArray.DISPONIBLE);
+
+                    },
+                    failure: function () {
+                        console.error('error al cargar los periodos');
+                    }
+                });
+            }
+
+            // Acciones
+            $("#btnBuscar").click(function () {
+
+                if (cod_periodos.length == 0) {
+                    Swal.fire('Seleccione el Periodo por favor')
+                }
+                else if (cod_secciones.length == 0) {
+                    Swal.fire('Seleccione la Seccion por favor')
+                }
+                else if (cod_familias.length == 0) {
+                    Swal.fire('Seleccione la Familia por favor')
+                }
+
+                else if (cod_cuentas.length == 0) {
+                    Swal.fire('Seleccione la Cuenta por favor')
+                }
+                else {
+                    Listar();
+                    ListarIndicadores();
+                }
+
+            });
+
+            $("select.selectPeriodo").change(function () {
+                cod_periodos = $("#IdPeriodosLista").val();
+                LlenarCBO_Secciones();
+            });
+
+            $("select.selectSeccion").change(function () {
+                cod_secciones = $("#IdSeccionLista").val();
+
+                if (cod_secciones.length < cod_secciones_ver.length) {
+                    if (cod_secciones.length == 0) {
+                        var selectFamilias = $('#IdFamiliaLista');
+                        selectFamilias.selectpicker('deselectAll');
+                        selectFamilias.find('option').remove();
+                        selectFamilias.find('li').remove();
+                        glistaFamilias = [];
+
+                    }
+                    else {
+                        var selectFamilias = $('#IdFamiliaLista');
+                        selectFamilias.selectpicker('deselectAll');
+                        selectFamilias.find('option').remove();
+                        selectFamilias.find('li').remove();
+                        glistaFamilias = [];
+                        LlenarCBO_Familias(2);
+                    }
+
+                }
+                else {
+                    LlenarCBO_Familias(1);
+                }
+
+                cod_secciones_ver = cod_secciones
+            });
+
+            $("select.selectFamilia").change(function () {
+                cod_familias = $("#IdFamiliaLista").val();
+
+                if (cod_familias.length < cod_familias_ver.length) {
+
+
+                    if (cod_familias.length == 0) {
+                        var selectCuentas = $('#IdCuentaLista');
+                        selectCuentas.selectpicker('deselectAll');
+                        selectCuentas.find('option').remove();
+                        selectCuentas.find('li').remove();
+                        glistaCuentas = [];
+                    }
+                    else {
+                        var selectCuentas = $('#IdCuentaLista');
+                        selectCuentas.selectpicker('deselectAll');
+                        selectCuentas.find('option').remove();
+                        selectCuentas.find('li').remove();
+                        glistaCuentas = [];
+                        LlenarCBO_Cuentas(2);
+                    }
+                }
+                else {
+                    LlenarCBO_Cuentas(1);
+                }
+
+                cod_familias_ver = cod_familias;
+            });
+
+            $("select.selectCuenta").change(function () {
+                cod_cuentas = $("#IdCuentaLista").val();
+            });
+
+            $("#btnExportarExcel").click(function () {
+                if (cod_periodos.length == 0) {
+                    Swal.fire('Seleccione el Periodo por favor')
+                }
+                else if (cod_secciones.length == 0) {
+                    Swal.fire('Seleccione la Seccion por favor')
+                }
+                else if (cod_familias.length == 0) {
+                    Swal.fire('Seleccione la Familia por favor')
+                }
+                else if (cod_cuentas.length == 0) {
+                    Swal.fire('Seleccione la Cuenta por favor')
+                }
+                else {
+
+                    var vPeriodos = "";
+                    var vSecciones = "";
+                    var vFamilias = "";
+                    var vCuentas = "";
+
+                    // Periodos.
+                    for (var i = 0; i < cod_periodos.length; i++) {
+                        vPeriodos = vPeriodos + cod_periodos[i] + ","
+                    }
+                    vPeriodos = vPeriodos.slice(0, vPeriodos.length - 1);
+
+                    // Secciones.
+                    for (var i = 0; i < cod_secciones.length; i++) {
+                        vSecciones = vSecciones + cod_secciones[i] + ","
+                    }
+                    vSecciones = vSecciones.slice(0, vSecciones.length - 1);
+
+                    // Familias
+                    for (var i = 0; i < cod_familias.length; i++) {
+                        vFamilias = vFamilias + cod_familias[i] + ","
+                    }
+                    vFamilias = vFamilias.slice(0, vFamilias.length - 1);
+
+                    // Cuentas
+                    for (var i = 0; i < cod_cuentas.length; i++) {
+                        if (cod_cuentas[i] == "-1") {
+                            vCuentas = "-1";
+                            break;
+                        }
+                        else {
+                        vCuentas = vCuentas + cod_cuentas[i] + ","
+                        }
+                    }
+                    if (vCuentas != "-1") {
+                        vCuentas = vCuentas.slice(0, vCuentas.length - 1);
+                    }
+
+                    var datos = {
+                        'periodos': vPeriodos,
+                        'secciones': vSecciones,
+                        'familias': vFamilias,
+                        'cuentas': vCuentas
+                    }
+
+                    $.ajax({
+                        url: '@Url.Action("ExportarExcelAcumuladoMult", "Logistica")',
+                        contentType: 'application/json; charset=utf-8',
+                        datatype: 'json',
+                        type: "GET",
+                        data: datos,
+                        success: function () {
+
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Reporte Generado',
+                                text: "Textile Sourcing Company",
+                                allowEscapeKey: false,
+                                allowOutsideClick: false,
+                                onClose: () => {
+                                    window.location = "/Logistica/ExportarExcelAcumuladoMult?periodos=" + cod_periodos + "&secciones="+ cod_secciones + "&familias=" + cod_familias + "&cuentas=" + cod_cuentas;
+                                }
+                            });
+                        }
+                    });
+                }
+            });
+
+
+
+        });
+
+
+    </script>
+}

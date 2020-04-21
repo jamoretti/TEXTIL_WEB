@@ -1,0 +1,233 @@
+﻿
+@{
+    ViewBag.Title = "Cambio taller";
+    ViewBag.Modulo = "Operaciones proceso";
+    Layout = "~/Views/Plantillas/_Layout.cshtml";
+}
+
+<!-- REGISTRAR -->
+<div class="card">
+
+    <div class="card-body">
+        <div class="row">
+            <div class="col-xl-6 col-lg-6 col-md-6  col-sm-12 col-12 form-group">
+                <h6>Taller destino:</h6>
+                <select class="select2" style="width:100%" id="cboTallerDestino" ></select>
+            </div>
+            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12 form-group">
+                <h6>Motivo:</h6>
+                <select class="select2" style="width:100%" id="cboMotivo"></select>
+            </div>
+
+            <div class="col-xl-3 col-lg-3 col-md-3 col-sm-6 col-12 form-group">
+                <h6>Ficha:</h6>
+                <input type="text" class="form-control" id="txtFicha" />
+            </div>
+            <div class="col-xl-3 col-lg-3 col-md-3 col-sm-6 col-12 form-group">
+                <h6>&nbsp;</h6>
+                <button class="btn btn-block btn-danger" id="btnSolicitar">Solicitar</button>
+            </div>
+                
+        </div>
+    </div>
+</div>
+
+<!-- REGISTROS -->
+<div class="card">
+    <div class="card-body">
+        
+        <table class="table table-bordered dt-responsive nowrap" style="width:100%" id="tablaRegistros">
+            <thead>
+                <tr>
+                    <th>Taller origen</th>
+                    <th>Fichas</th>
+                    <th>Cantidad</th>
+                    <th>Taller destino</th>
+                    <th>Motivo</th>
+                    <th>Estado</th>
+                    <th>F. Solicitud</th>
+                    <th>F. Aprobación</th>
+                    <th>Observación</th>
+                    <th>Operación</th>
+                </tr>
+            </thead>
+            <tbody id="tablaCuerpoRegistros"></tbody>
+        </table>
+
+    </div>
+</div>
+
+@section scripts {
+    <script>
+        $(document).ready(function () {
+            //CARGANDO DATOS
+            CargarGrilla();
+            CargarTallerDestino();
+            CargarMotivo();
+            //SOLICITAR CAMBIO
+            $("#btnSolicitar").click(function(){
+                SolicitarCambioTaller();
+            });
+        });
+
+
+        //FUNCION PARA SOLICITAR
+        function SolicitarCambioTaller(){
+            if ($("#txtFicha").val() == '')
+            {
+                Advertir('No ha ingresado la ficha');
+                return;
+            }
+            if ($("#cboTallerDestino").val() == 'null')
+            {
+                Advertir('Se debe seleccionar el Taller de Destino');
+                return;
+            }
+            if ($("#cboMotivo").val() == 'null')
+            {
+                Advertir('Se debe seleccionar el Motivo de Cambio de taller');
+                return;
+            }
+            //NOMBRE TALLER DESTINO
+            let combo = document.getElementById("cboTallerDestino");
+            var nombretallerd = combo.options[combo.selectedIndex].innerText;
+
+            var vrTaller = combo.value;
+            var vrMotivo = $("#cboMotivo").val();
+
+
+            var objFile = {
+                Codigo_Taller_Original: 1,
+                Codigo_Ficha: $("#txtFicha").val(),
+                Codigo_Taller_Destino: vrTaller,
+                Codigo_Motivo: vrMotivo,
+                Estado_Aprobacion: 1,
+                Nombre_Taller_Destino : nombretallerd,
+                Fecha_Creacion: new Date(),
+            };
+
+            $.ajax({
+                url: '/Operaciones/SetCambioTaller',
+                type: 'POST',
+                data: objFile,
+                dataType: 'json',
+                success: function (response) {
+                    if (response == 2) {
+                        Advertir('La ficha no existe, revisar la ficha correcta');
+                    }
+                    else {
+                        if (response == false) {
+                            Advertir('La ficha ya cuenta con solicitud de aprobación para el mismo taller');
+                        }
+                        else {
+                            Informar('Se ha realizado el registro de Aprobación');
+                        }
+                    }
+                    //CARGANDO REGISTROS
+                    CargarGrilla();
+                },
+                error: function (err) {
+                    Advertir('Error:' + err.responseText);
+                }
+            });
+        }
+
+
+
+        //LLENA COMBO TALLER DESTINO
+        function CargarTallerDestino(){
+            $.ajax({
+                url: '/operaciones/ListarTallerDestino/',
+                type: 'get',
+                contenType: 'json',
+                success: function (e) {
+                    let op = '';
+                    //console.log(e);
+                    e.forEach(function(obj){
+                        op += `<option value='${obj.CodigoTaller}'>${obj.NombreTaller}</option>`;
+                    });
+                    $("#cboTallerDestino").html(op);
+                }
+            });
+        }
+
+        //LLENA COMBO MOTIVO
+        function CargarMotivo(){
+            $.ajax({
+                url: '/operaciones/ListarMotivo/',
+                type: 'get',
+                contenType: 'json',
+                success: function (e) {
+                    let op = '';
+                    e.forEach(function(obj){
+                        op += `<option value='${obj.CodigoMotivo}'>${obj.NombreMotivo}</option>`;
+                    });
+                    $("#cboMotivo").html(op);
+                }
+            });
+        }
+
+        //ELIMINA SOLICITUD PENDIENTE
+        $("#tablaCuerpoRegistros").on("click",'.eliminar',function(){
+            let id = $(this).attr("data-id");
+            //console.log(id);
+            $.ajax({
+                url:'/operaciones/EliminaSolicitudCT/',
+                type:'GET',
+                data: {'id':id},
+                success:function(e){
+                    if(e.result){
+                        Informar("Solicitud eliminada correctamente");
+                        CargarGrilla();
+                    }else{
+                        Advertir("Ocurrio un error vuelva a intentarlo");
+                    }
+                }
+            });
+        });
+
+        //CARGA DATOS GRILLA
+        function CargarGrilla() {
+            $.ajax({
+                url: '/operaciones/ListarRegistrosCTaller/',
+                type: 'get',
+                contenType: 'json',
+                success: function (e) {
+                    let tabla = $("#tablaRegistros").DataTable();
+                    tabla.destroy();
+                    let tr = "";
+                    //ARMANDO GRILLA
+                    e.forEach(function (obj) {
+                        tr += `<tr>
+                            <td>${obj.Codigo_Taller_Original}</td>
+                            <td>${obj.Codigo_Ficha}</td>
+                            <td>${obj.Cantidad_Ficha}</td>
+                            <td>${obj.Codigo_Taller_Destino}</td>
+                            <td>${obj.Codigo_Motivo}</td>
+                            <td>${obj.Estado_Aprobacion}</td>
+                            <td>${obj.Fecha_Creacion}</td>
+                            <td>${obj.Fecha_Modificacion}</td>
+                            <td>${obj.Nombre_Motivo_Rechazo}</td>`;
+                            
+                            if(obj.Estado_Aprobacion == "PENDIENTE"){
+                                                    tr += `<td>
+                                                    <a href='#' class="eliminar" data-id="${obj.Codigo_Cambio_Taller}">
+                                                        <i class="fas fa-trash" style="color:red"></i>
+                                                    </a></td>`;
+                                
+                                }else{
+                                            tr +="<td></td>";
+                            }
+
+                        tr+="</tr>";
+                    });
+                    //ARMANDO GRILLA
+                    $("#tablaCuerpoRegistros").html(tr);
+
+                    ArmarDataTable("tablaRegistros");
+                }
+            });
+        }
+
+    </script>
+}

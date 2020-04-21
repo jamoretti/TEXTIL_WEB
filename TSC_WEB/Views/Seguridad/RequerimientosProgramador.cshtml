@@ -1,0 +1,71 @@
+﻿
+@{
+    ViewBag.Title = "Requerimientos Programador";
+    ViewBag.Modulo = "Seguridad";
+    Layout = "~/Views/Plantillas/_Layout.cshtml";
+}
+
+
+<div class="card">
+        
+    <div class="card-header">
+           <h3 class="card-title">Filtros</h3> 
+    </div>
+
+    <div class="card-body">
+           
+        <div class="row">
+            <div class="col-xl-3 form-group">
+                <label>N° Requerimiento</label>   
+                <input type="text" class="form-control" />
+            </div>
+            <div class="col-xl-3 form-group">
+                <label>Encargados</label>
+                <select class="custom-select select2" style="width:100%" multiple="multiple" id="cboResponsables"></select>
+            </div>
+            <div class="col-xl-3 form-group">
+                <label>Estado</label>
+                <select class="custom-select select2" style="width:100%" multiple="multiple"></select>
+            </div>
+            <div class="col-xl-3 form-group">
+                <label>&nbsp;</label>
+                <button class="btn btn-danger btn-block">Buscar</button>
+            </div>
+        </div>
+
+    </div>
+
+</div> 
+
+@section scripts {
+
+
+    <script>
+
+        $(document).ready(function () {
+            ListarResponsables();
+        });
+
+        function ListarResponsables() {
+            $.ajax({
+                url: '/seguridad/ListarResponsbles/',
+                type: 'get',
+                success: function (e) {
+                    //console.log(e);
+                    let option = "";
+                    e.forEach((obj) => {
+                        option += `
+                            <option value='${obj.idresponsable}' >${obj.responsable} </option>
+                        `;
+                    });
+
+                    $("#cboResponsables").html(option);
+                }
+                    
+            });
+        }
+
+
+    </script>
+        
+}

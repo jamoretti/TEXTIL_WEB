@@ -1,0 +1,387 @@
+﻿@{
+    ViewBag.Title = "Registro de Consumo para Plan Contable";
+    ViewBag.Modulo = "Logística";
+    Layout = "~/Views/Plantillas/_Layout.cshtml";
+
+}
+
+<div class="cont-reg-con">
+
+    <div class="card">
+
+        <div class="card-header" style="width: 100%">
+            <div class="seccion-1">
+                <div class="cont-selec-periodo">
+                    <div style="font-weight: bold;">Periodo Presupuesto</div>
+                    <select class="browser-default custom-select selectPeriodo" id="periodosLista">
+                        <option selected>Seleccione</option>
+                    </select>
+                </div>
+                <div class="cont-select-gerencia">
+                    <div style="font-weight: bold;">Gerencia</div>
+                    <select class="browser-default custom-select selectGerencia" id="gerenciasLista">
+                        <option selected>Seleccione</option>
+                    </select>
+                </div>
+
+                <div class="cont-btn-buscar" style="font-weight: bold;">
+                    <div>&nbsp;</div>
+                    <button type="button" class="btn btn-primary" id="btnBuscar">Buscar</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-body">
+
+            <table class="table table-bordered table-hover dt-responsive nowrap" id="tablaPrincipal" style="width:100%;">
+                <thead>
+                    <tr>
+                        <th>Cod. CC</th>
+                        <th>Centro Costo</th>
+                        <th>Cod. Plan Cont.</th>
+                        <th>Plan Contable</th>
+                        <th>Presupuesto</th>
+                        <th>Consumo</th>
+                        <th class="all">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="tablaCabeceraContenido"></tbody>
+            </table>
+
+
+        </div>
+
+    </div>
+
+    <!-- MODAL -->
+
+
+    <div class="modal fade" id="modaleditar" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">Registro del Saldo Consumido</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="exampleInputEmail1">Ingresar monto: </label>
+                        <input type="number" class="form-control" id="monto" aria-describedby="emailHelp">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-success" id="btnGuardar">Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<style>
+    /* Custom, iPhone Retina */
+    @@media only screen and (min-width : 320px) {
+    }
+
+    /* Extra Small Devices, Phones */
+    @@media only screen and (min-width : 480px) {
+    }
+
+    /* Small Devices, Tablets */
+    @@media only screen and (min-width : 768px) {
+    }
+
+    /* Medium Devices, Desktops */
+    @@media only screen and (min-width : 992px) {
+    }
+
+    /* Large Devices, Wide Screens */
+    @@media only screen and (min-width : 1200px) {
+        .cont-reg-con .seccion-1 {
+            width: 60%;
+            display: flex;
+            justify-content: space-between;
+        }
+
+            .cont-reg-con .seccion-1 .cont-selec-periodo {
+            }
+
+            .cont-reg-con .seccion-1 .cont-select-gerencia {
+            }
+
+            .cont-reg-con .seccion-1 .cont-btn-buscar {
+            }
+    }
+</style>
+
+@section scripts {
+
+    <script>
+
+        // Variables Globales
+        var PEDIDOS = [];
+        var codGerencia = "Seleccione";
+        var codPeriodo = "Seleccione";
+
+        var vCodPeriodo = 0;
+        var vCodCodCC = 0;
+        var vCodCodPlanCont = 0;
+
+
+        $(document).ready(function () {
+
+            LlenarCBO_Periodos();
+            LlenarCBO_Gerencias();
+
+            $("#btnBuscar").click(function () {
+                if (codPeriodo == "Seleccione") {
+                    Swal.fire('Seleccione el Periodo por favor')
+                }
+                else if (codGerencia == "Seleccione") {
+                    Swal.fire('Seleccione la Gerencia por favor')
+                }
+                else {
+
+                    var datos = {
+                        'codperiodo': codPeriodo,
+                        'codgerencia': codGerencia
+                    }
+
+                    Listar(datos);
+                }
+            });
+
+
+            // Funciones.
+            function Listar(datos) {
+                $.ajax({
+                    type: "GET",
+                    url: '/logistica/ListarPlanContable',
+                    contentType: "application/json; charset=utf-8",
+                    data: datos,
+                    dataType: "json",
+                    success: function (data) {
+                        let tabla = $("#tablaPrincipal").DataTable();
+                        tabla.destroy();
+                        var tr = "";
+
+                        data.forEach((obj) => {
+
+                            tr += "<tr> "
+
+                                + " <td> " + obj.CODCC + "</td>"
+                                + " <td> " + obj.CC + "</td>"
+                                + " <td> " + obj.CODPLAN + "</td> "
+                                + " <td> " + obj.PLANCONT + "</td> "
+                                + " <td> " + obj.SIMBOLO + " " + obj.PRESUPUESTO + "</td>"
+                                + " <td> " + obj.SIMBOLO + " " + obj.CONSUMIDO + "</td> "
+                                + " <td class='text-center'>"
+                                + "<button type='button' data-periodo='" + obj.CODPERIODO + "' data-codcc='" + obj.CODCC + "'  data-codplan='" + obj.CODPLAN + "'  class='ml-1 btn btn-success editar'><i class='fas fa-edit' style='color:#ffffff;'></i></button>"
+                                + "</td>"
+                                + "</tr>";
+                        });
+
+                        $("#tablaCabeceraContenido").html(tr);
+
+                        $("#tablaPrincipal").DataTable(
+                            {
+                                'language': { 'url': '/libs/datatables/spanish.json' },
+                                lengthMenu: [[5, 10, 20, -1], [5, 10, 20, 'Todos']]
+                            }
+                        );
+
+
+                    },
+                    failure: function () {
+                        console.error('error al cargar los periodos');
+                    }
+                });
+
+            }
+
+            function LlenarCBO_Periodos() {
+                LimpiarCBO_Periodos();
+                $.ajax({
+                    type: "GET",
+                    url: '/logistica/ListarPeriodos',
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (data) {
+                        $.each(data, function () {
+                            $("#periodosLista").append($("<option/>").val(this.COD_PERIODO).text(this.DESC_PERIODO));
+                        });
+                    },
+                    failure: function () {
+                        console.error('error al cargar los periodos');
+                    }
+                });
+            }
+
+            function LlenarCBO_Gerencias() {
+                LimpiarCBO_Gerencias();
+                $.ajax({
+                    type: "GET",
+                    url: '/logistica/ListarGerencias',
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (data) {
+                        $.each(data, function () {
+                            $("#gerenciasLista").append($("<option/>").val(this.CodGerencia).text(this.DescGerencia));
+                        });
+                    },
+                    failure: function () {
+                        console.error('error al cargar las gerencias');
+                    }
+                });
+            }
+
+            function LimpiarCBO_Periodos() {
+                $('#periodosLista').empty().append('<option selected="selected">Seleccione</option>');
+            }
+
+            function LimpiarCBO_Gerencias() {
+                $('#gerenciasLista').empty().append('<option selected="selected">Seleccione</option>');
+            }
+
+
+            $("select.selectPeriodo").change(function () {
+                codPeriodo = $(this).children("option:selected").val();
+            });
+
+            $("select.selectGerencia").change(function () {
+                codGerencia = $(this).children("option:selected").val();
+            });
+
+            $("#tablaPrincipal").on('click', '.editar', function () {
+                vCodPeriodo = $(this).attr("data-periodo");
+                vCodCodCC = $(this).attr("data-codcc");
+                vCodCodPlanCont = $(this).attr("data-codplan");
+
+                $("#modaleditar").modal("show");
+            });
+
+            $("#btnGuardar").on('click', function () {
+
+                if (codPeriodo == "Seleccione") {
+                    Swal.fire('Seleccione el Periodo por favor')
+                }
+                else if (codGerencia == "Seleccione") {
+                    Swal.fire('Seleccione la Gerencia por favor')
+                }
+                else {
+                    var datos_lista = {
+                        'codperiodo': codPeriodo,
+                        'codgerencia': codGerencia
+                    }
+
+                    var monto = $("#monto").val();
+
+                    MostrarCarga("Liberando...");
+
+                    var datos = {
+                        'codperiodo': vCodPeriodo,
+                        'codcc': vCodCodCC,
+                        'codplan': vCodCodPlanCont,
+                        'consumo': monto
+                    }
+
+                    $.ajax({
+                        url: '/logistica/RegistrarConsumoPlan/',
+                        type: 'post',
+                        data: datos,
+                        success: function (e) {
+                            if (e.success) {
+
+                                $("#modaleditar").modal("hide");
+
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: e.mensaje,
+                                    text: "Textile Sourcing Company",
+                                    showConfirmButton: false,
+                                    timer: 1300
+                                });
+
+                            } else {
+                                Advertir(e.mensaje);
+                            }
+                            Listar(datos_lista);
+                        }
+                    });
+
+                }
+
+            });
+
+            $("#monto").on('keyup', function (e) {
+                if (e.keyCode === 13) {
+                    if (codPeriodo == "Seleccione") {
+                        Swal.fire('Seleccione el Periodo por favor')
+                    }
+                    else if (codGerencia == "Seleccione") {
+                        Swal.fire('Seleccione la Gerencia por favor')
+                    }
+                    else {
+                        var datos_lista = {
+                            'codperiodo': codPeriodo,
+                            'codgerencia': codGerencia
+                        }
+
+                        var monto = $("#monto").val();
+
+                        MostrarCarga("Liberando...");
+
+                        var datos = {
+                            'codperiodo': vCodPeriodo,
+                            'codcc': vCodCodCC,
+                            'codplan': vCodCodPlanCont,
+                            'consumo': monto
+                        }
+
+                        $.ajax({
+                            url: '/logistica/RegistrarConsumoPlan/',
+                            type: 'post',
+                            data: datos,
+                            success: function (e) {
+                                if (e.success) {
+
+                                    $("#modaleditar").modal("hide");
+
+                                    Swal.fire({
+                                        icon: 'success',
+                                        title: e.mensaje,
+                                        text: "Textile Sourcing Company",
+                                        showConfirmButton: false,
+                                        timer: 1300
+                                    });
+
+                                } else {
+                                    Advertir(e.mensaje);
+                                }
+                                Listar(datos_lista);
+                            }
+                        });
+
+                    }
+
+                }
+            });
+
+            $('#modaleditar').on('hidden.bs.modal', function (e) {
+                $(this)
+                    .find("input,textarea,select")
+                    .val('')
+                    .end()
+                    .find("input[type=checkbox], input[type=radio]")
+                    .prop("checked", "")
+                    .end();
+            });
+
+        });
+
+
+    </script>
+}

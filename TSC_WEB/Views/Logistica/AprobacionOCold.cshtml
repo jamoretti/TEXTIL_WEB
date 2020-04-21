@@ -1,0 +1,403 @@
+﻿@{
+    ViewBag.Title = "Aprobación de OC";
+    ViewBag.Modulo = "Logística";
+    Layout = "~/Views/Plantillas/_Layout.cshtml";
+
+}
+
+
+<div class="card">
+    <div class="card-body">
+        <form class="row" id="frmBusqueda">
+            <div class="col-xl-3 form-group">
+                <label>Número Orden Compra:</label>   
+                <input type="text" name="name" class="form-control numeros" autofocus id="txtnumero"  />
+            </div>
+            <div class="col-xl-1 form-group">
+                <label>Empresa:</label>
+                <input type="text" name="name" value="1" class="form-control numeros2" id="txtempresa"  />
+            </div>
+            <div class="col-xl-3 form-group">
+                <label>Usuario:</label>
+                <input type="text" value="@Session["usuario"] " class="form-control mayus" id="txtusuario"  />
+            </div>
+            <div class="col-xl-3 form-group">
+                <label>Clave:</label>
+                <input type="password" class="form-control" id="txtclave"  />
+            </div>
+            <div class="col-xl-2 form-group">
+                <label>&nbsp;</label>
+                <button class="btn btn-primary btn-block" id="btnRealizar" type="button" >Verificar</button>  
+            </div>
+
+            <div class="col-xl-2 form-group d-none" id="groupbtnLiberar">
+                <label>&nbsp;</label>
+                <button class="btn btn-danger btn-block" id="btnLiberar" type="button" >Liberar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- DETALLES -->
+
+<!-- CABECERA -->
+<div class="row d-none" id="contenedorDetallesOc">
+       
+    <!-- CABECERA -->
+    <div class="col-xl-8 col-lg-8 col-md-12 col-sm-12 col-12">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Cabecera Orden Compra</h3>
+            </div>
+            <div class="card-body ">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover" style="width:100%" id="tablaCabecera">
+                        <thead>
+                            <tr>
+                                <th>Emp</th>
+                                <th>Pedido</th>
+                                <th>DT.Emis</th>
+                                <th>DT.Entr</th>
+                                <th colspan="3" class="text-center">Código Cliente</th>
+                                <th>Código Condición</th>
+                                <th>Descripción Condición</th>
+                                <th>Código Moneda</th>
+                                <th>Moneda</th>
+                                <th>Simbolo</th>
+                                <th>Valor</th>
+                                <th>Estado</th>
+
+                            </tr>
+                        </thead>
+                        <tbody id="tablaCabeceraContenido"></tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+    <!-- END CABECERA-->
+
+    <!-- DETALLE INFO -->
+    <div class="col-xl-4 col-lg-4 col-md-12 col-sm-12 col-12 ">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Detalles</h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-6 mt-1"><label>Periodo:</label>    </div>
+                    <div class="col-6 mt-1"><input type="text" class="form-control form-control-sm" id="txtPeriodo" disabled /></div>
+                    <div class="col-6 mt-1"><label>Centro Costo:</label>    </div>
+                    <div class="col-6 mt-1"><input type="text" class="form-control form-control-sm" id="txtCentroCosto" disabled /></div>
+                </div>  
+                <h6 class="mt-2 mb-2">ADMINISTRACIÓN</h6>
+                <div class="row">
+                    <div class="col-6 mt-1"><label>V. Presup:</label>    </div>
+                    <div class="col-6 mt-1"><input type="text" class="form-control form-control-sm" id="txtValorPresupuestado" disabled /></div>
+                    <div class="col-6 mt-1"><label>V. Usado:</label>    </div>
+                    <div class="col-6 mt-1"><input type="text" class="form-control form-control-sm" id="txtValorUsado" disabled /></div>
+                    <div class="col-6 mt-1"><label>V. Disponible:</label>    </div>
+                    <div class="col-6 mt-1"><input type="text" class="form-control form-control-sm" id="txtValorDisponible" disabled /></div>
+                    <div class="col-6 mt-1"><label>Por aprobar:</label>    </div>
+                    <div class="col-6 mt-1"><input type="text" class="form-control form-control-sm" id="txtPorAprobar" disabled /></div>
+                </div> 
+            </div>
+        </div>
+    </div>
+    <!-- END DETALLE INFO -->
+
+    <!-- INFO CABECERA-->
+        
+    <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-xl-2">
+                        <label>Proveedor:</label>
+                    </div>
+                    <div class="col-xl-3">
+                        <input type="text" class="form-control form-control-sm" id="txtProveedor" disabled />
+                    </div>
+                    <div class="col-xl-2">
+                        <label>Comprador:</label>
+                    </div>
+                    <div class="col-xl-2">
+                        <input type="text" class="form-control form-control-sm" id="txtCodigoComprador" disabled />
+                    </div>
+                    <div class="col-xl-3">
+                        <input type="text" class="form-control form-control-sm" id="txtDescripcionComprador" disabled />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>    
+
+    <!-- END INFO CABECERA-->
+        
+
+
+    <!-- DETALLE ORDEN COMPRA -->
+    <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Detalle Orden Compra</h3>
+            </div>
+            <div class="card-body">
+                    
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover" style="width:100%" id="tablaDetalle">
+                        <thead>
+                            <tr>
+                                <th>Secuencia</th>
+                                <th colspan="4" class="text-center">Código</th>
+                                <th>Descripcion</th>
+                                <th>C. Costo</th>
+                                <th>Descripción C. Costo</th>
+                                <th>UM</th>
+                                <th>Reserva Plane.</th>
+                                <th>Qtde. Pedida</th>
+                                <th>Valor Unit.</th>
+                                <th>Valor Total</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tablaDetalleContenido"></tbody>
+                    </table>
+                </div>
+
+                
+            </div>
+        </div>   
+    </div>
+        
+
+</div>
+
+
+
+@section scripts{
+    <script>
+
+        // ###############
+        // ### EVENTOS ###
+        // ###############
+
+        //VERIFICAR LIBERACION
+        $("#btnRealizar").click(function () {
+            var datos = {
+                'ordencompra': $("#txtnumero").val().trim(),
+                'empresa': $("#txtempresa").val().trim(),
+                'usuario': $("#txtusuario").val().trim().toUpperCase(),
+                'clave': $("#txtclave").val().trim().toUpperCase()
+            };
+
+
+            if (datos.ordencompra != "" && datos.empresa != "" && datos.usuario != "" && datos.clave != "") {
+                ValidarUsuario(datos);
+            } else {
+
+                Advertir("Complete los campos");
+            }
+
+        });
+
+        // LIBERAR OC
+        $("#btnLiberar").click(function(){
+            var datos = {
+                'ordencompra': $("#txtnumero").val().trim(),
+                'empresa': $("#txtempresa").val().trim(),
+                'usuario': $("#txtusuario").val().trim().toUpperCase(),
+                'clave': $("#txtclave").val().trim().toUpperCase()
+            };
+
+            $.ajax({
+                url: '/logistica/LiberarOC/',
+                type: 'get',
+                data: datos,
+                success: function (e) {
+                    if(e.respuestabool){
+                        
+
+                        $("#frmBusqueda")[0].reset();
+                        $("#contenedorDetallesOc").addClass("d-none");
+                        $("#groupbtnLiberar").addClass("d-none");
+
+                        Informar(e.mensajesistema);
+
+                    }else{
+                        Advertir(e.mensajesistema);
+                    }
+
+                }
+            });
+
+
+        });
+
+
+        // #################
+        // ### FUNCIONES ###
+        // #################
+
+  
+
+        //REGISTRA LOG HDOC_110
+        function RegistrarLog(datos) {
+            var datos = {
+                'ordencompra'   : datos.ordencompra,
+                'empresa': datos.empresa,
+                'usuario': datos.usuario
+            }
+            $.ajax({
+                url: '/logistica/ValidarLiberacion/',
+                type: 'get',
+                data: datos,
+                success: function (e) {
+
+                    //console.log(e);
+
+                    if(e.respuestabool){
+                        Informar(e.mensajesistema);
+                        ListarCabeceraOC(datos);
+                        ListarDetalleOC(datos);
+                        CabeceraDetalles(datos);
+
+                        $("#contenedorDetallesOc").removeClass("d-none");
+                        //MUESTRA BOTON PARA  LIBERAR
+                        $("#groupbtnLiberar").removeClass("d-none");
+                    } else {
+                        $("#contenedorDetallesOc").addClass("d-none");
+                        $("#groupbtnLiberar").addClass("d-none");
+
+                        Advertir(e.mensajesistema);
+                    }
+                }
+            });
+        }
+
+        //OBTIENE PERIODO ACTUAL
+        function CabeceraDetalles(datos){
+            $.ajax({
+                url: '/logistica/DetalleCabecera/',
+                type: 'get',
+                data: datos,
+                success: function (e) {
+                    console.log(e);
+                    $("#txtPeriodo").val(e.periodo);
+                    $("#txtCentroCosto").val(e.centrocosto);
+                    $("#txtValorPresupuestado").val(e.presupuesto);
+                    $("#txtValorUsado").val(e.valorusado);
+                    $("#txtValorDisponible").val(e.disponible);
+                    $("#txtPorAprobar").val(e.aprobado);
+
+                }
+            });
+        }
+
+
+        //VALIDA QUE USUARIO ESTE BIEN
+        function ValidarUsuario(datos) {
+            $.ajax({
+                url: '/logistica/ValidarUsuario/',
+                type: 'get',
+                data: datos,
+                success: function (e) {
+                    if(e.result){
+                         RegistrarLog(datos);
+                         
+                    } else {
+                        Advertir(e.mensaje);
+                        $("#contenedorDetallesOc").addClass("d-none");
+                        $("#groupbtnLiberar").addClass("d-none");
+                    }
+                }
+            });
+        }
+
+        //LISTA CABECERA OC
+        function ListarCabeceraOC(datos) {
+            $.ajax({
+                url: '/logistica/ListarCabeceraOC/',
+                type: 'get',
+                data: datos,
+                success: function (e) {
+                    //ARMAMOS TABLA
+                    var tr = "";
+                    //console.log(e);
+
+                   
+                    tr += `
+                        <tr>
+                            <td>${e.codigo_empresa}</td>
+                            <td>${e.pedido_compra}</td>
+                            <td>${e.data_prev_entr}</td>
+                            <td>${e.datetime_pedido}</td>
+                            <td>${e.FORN_PED_FORNE9}</td>
+                            <td>${e.FORN_PED_FORNE4}</td>
+                            <td>${e.FORN_PED_FORNE2}</td>
+                            <td>${e.COND_PGTO_COMPRA}</td>
+                            <td>${e.DESCR_COND_PGTO}</td>
+                            <td>${e.COD_MOEDA}</td>
+                            <td>${e.DESCRICAO}</td>
+                            <td>${e.SIMBOLO_MOEDA}</td>
+                            <td>${e.TOTAL_PEDIDO}</td>
+                            <td>${e.SITUACAO_PEDIDO}</td>
+
+
+                        </tr>
+                    `;
+                   
+                    $("#txtProveedor").val(e.NOME_FORNECEDOR);
+                    $("#txtCodigoComprador").val(e.CODIGO_COMPRADOR);
+                    $("#txtDescripcionComprador").val(e.NOME_COMPRADOR);
+
+                    
+                    $("#tablaCabeceraContenido").html(tr);
+                }   
+            });
+        }
+
+        //LISTA DETALLE 
+        function ListarDetalleOC(datos){
+            $.ajax({
+                url: '/logistica/ListarDetalleOC/',
+                type: 'get',
+                data: datos,
+                success: function (e) {
+                    //ARMAMOS TABLA
+                    var tr = "";
+                    console.log(e);
+
+                    e.forEach((obj)=>{
+                        tr += `
+                            <tr>
+                                <td>${obj.seq_item_pedido}</td>
+                                <td>${obj.ITEM_100_NIVEL99}</td>
+                                <td>${obj.item_100_grupo}</td>
+                                <td>${obj.item_100_subgrupo}</td>
+                                <td>${obj.item_100_item}</td>
+                                <td>${obj.descricao_item}</td>
+                                <td>${obj.centro_custo}</td>
+                                <td>${obj.DESCRICAO}</td>
+                                <td>${obj.unidade_conv}</td>
+                                <td>${obj.reservaplane}</td>
+                                <td>${obj.QTDE_PEDIDA_ITEM}</td>
+                                <td>${obj.VALOR_CONV}</td>
+                                <td>${obj.total}</td>
+
+
+                            </tr>
+                        `;
+                    });
+                   
+                 
+
+                    
+                    $("#tablaDetalleContenido").html(tr);
+                }   
+            });
+        }
+
+    </script>
+}

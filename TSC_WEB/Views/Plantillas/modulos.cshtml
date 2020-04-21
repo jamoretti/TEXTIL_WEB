@@ -1,0 +1,72 @@
+﻿<li class="nav-item">
+    <a href="/dashboard/index" id="Modulo_dashboard" class="nav-link active Modulos">
+        <i class="nav-icon fas fa-th"></i>
+        <p>    Dashboard    </p>
+    </a>
+</li>
+<li class="nav-header">MODULOS</li>
+@if (Session["usuario"] != null)
+{
+
+    int idtag = 0;
+
+    var Modulos = (List<TSC_WEB.Models.Entidades.Sistema.ModulosEntidad>)Session["modulos"];
+    var modu    = string.Empty;
+    var submodu = string.Empty;
+    var menu    = string.Empty;
+
+
+    foreach (var objModulos in Modulos)
+    {
+        if (idtag != objModulos.idtag)
+        {
+
+            if (objModulos.nombretag == "Operaciones Proceso")
+            {
+                modu = "Modulo_operaciones";
+                submodu = "SubModulo_operaciones";
+                menu = "Menu_operaciones";
+            }
+            else
+            {
+                string md = objModulos.nombretag.Replace(" ", "");
+                string smd = objModulos.nombretag.Replace(" ", "");
+                string men = objModulos.nombretag.Replace(" ","");
+                
+                modu = "Modulo_" + md;
+                submodu = "SubModulo_" + smd;
+                menu = "Menu_" + men;
+            }
+
+
+            @* MODULOS *@
+            <li class="nav-item has-treeview" id="@menu">
+
+
+                <a href="#" id="@modu" class="nav-link Modulos">
+                    <i class="nav-icon @objModulos.icono"></i>
+                    <p>@objModulos.nombretag
+                        <i class="fas fa-angle-left right"></i>
+                    </p>
+                </a>
+                <ul class="nav nav-treeview" style="display: none;" id="@submodu">
+                    @* SUBMODULOS *@
+                    @foreach (var objDetModulos in Modulos)
+                    {
+                        if (objDetModulos.idtag == objModulos.idtag)
+                        {
+
+                            <li class="nav-item">
+                                <a href="@objDetModulos.ruta" id="@objDetModulos.idsubmodulo" class=" nav-link submodulos">
+                                    <h6 style="font-size:0.8rem"><i class="far fa-circle fa-xs nav-icon" style="font-size:0.8rem"></i>@objDetModulos.detnombretag</h6>
+                                </a>
+                            </li>
+                        }
+                    }
+                </ul>
+            </li>
+        }
+
+        idtag = objModulos.idtag;
+    }
+}

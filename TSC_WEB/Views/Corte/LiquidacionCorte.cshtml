@@ -1,0 +1,947 @@
+﻿@{
+    ViewBag.Title = "Liquidacion de Tela";
+    ViewBag.Modulo = "Corte";
+    Layout = "~/Views/Plantillas/_Layout.cshtml";
+    string ficha = string.Empty;
+    try
+    {
+        ficha = PageContext.Page.Request.Params["ficha"].ToString();
+    }
+    catch
+    {
+        ficha = "";
+    }
+    
+    
+    
+}
+<!-- FILTROS - APERTURA -->
+<div class="row">
+    <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
+
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Registrar Tendido</h3>
+                <div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-widget="collapse"><i class="fas fa-minus"></i></button>
+                </div>
+            </div>
+
+            <div class="card-body">
+                <div class="row">
+
+                    <div class="col-xl-6  col-lg-6 col-md-6 col-sm-6 form-group">
+                        <h6>Ficha:</h6>
+                        <input type="text" class="form-control" id="txtficha" />
+                    </div>
+                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 form-group">
+                        <h6>&nbsp;</h6>
+                        <button class="btn btn-primary btn-block" id="btnBuscar">Buscar</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Comparación KG</h3>
+            </div>
+            <div class="card-body">
+                    
+                <table class="table table-hover table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Kilos Asignados</th>
+                            <th>Kilos Liquidados</th>
+                            <th>% Liquidación</th>
+                        </tr>  
+                    </thead>   
+                    <tbody id="cuerpocomparacion">
+                          
+                    </tbody>  
+                </table>
+
+            </div>
+        </div>
+
+
+    </div>
+
+    <div class="col-xl-8 col-lg-8 col-md-8 col-sm-8 col-12">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Versiones</h3>
+                <div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-widget="collapse"><i class="fas fa-minus"></i></button>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered dt-responsive nowrap" style="width:100%;text-align:center" id="tablaver">
+                        <thead>
+                            <tr>
+                                <th>Ver</th>
+                                <th>Version</th>
+                                <th>Registro</th>
+                                <th>Usuario</th>
+                                <th>Tipo Tela</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tablaversiones"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    @*<div class="col-xl-3">
+     
+            <div class="table-responsive">
+                <table class="table table-bordered dt-responsive nowrap" style="width:100%;text-align:center" id="tablaver">
+                
+                        <tr>
+                            <td>TELA</td>
+                            <td>Version</td>                            
+                        </tr>
+                        <tr>
+                            <td id="txttela"></td>
+                            <td id="txtversion"></td>
+                        </tr>
+           
+                </table>
+            </div>
+
+ 
+    </div>*@
+</div>
+
+
+
+
+<!-- REGISTROS -->
+<div class="card">
+
+    <div class="card-header">
+        <h3 class="card-title">Ingresar Información</h3>
+        <div class="card-tools">
+            <button type="button" class="btn btn-tool" data-widget="collapse"><i class="fas fa-minus"></i></button>
+        </div>
+    </div>
+    <div class="card-body">
+
+        <div class="card-body">
+
+            <div class="row">
+                <div class="col-xl-1 col-lg-1 col-md-4 col-sm-6 form-group">
+                    <h6>Etapas:</h6>
+                    <input type="text" class="form-control" id="txtnum1" />
+                </div>
+
+                <div class="col-xl-2 col-lg-2 col-md-4 col-sm-6 form-group">
+                    <h6>N° de Paños:</h6>
+                    <input type="text" class="form-control numeros calcular" id="txtnum2" value="0" />
+                </div>
+
+                <div class="col-xl-2 col-lg-2 col-md-4 col-sm-6 form-group">
+                    <h6>Largo de Paño:</h6>
+                    <input type="text" class="form-control" id="txtnum3" value="0" />
+                </div>
+                <div class="col-xl-2 col-lg-2 col-md-4 col-sm-6 form-group">
+                    <h6>Peso Paño:</h6>
+                    <input type="text" class="form-control calcular" id="txtnum4" value="0" />
+                </div>
+                <div class="col-xl-2 col-lg-2 col-md-4 col-sm-6 form-group">
+                    <h6>Ancho Tela Real:</h6>
+                    <input type="text" class="form-control" id="txtnum5" value="0" />
+                </div>
+                <div class="col-xl-2 col-lg-2 col-md-4 col-sm-6 form-group">
+                    <h6>Kilos x Etapa:</h6>
+                    <input type="text" class="form-control" id="txtnum6" value="0" readonly />
+                </div>
+                <div class="col-xl-1 col-lg-1 col-md-4 col-sm-6 form-group">
+                    <h6>&nbsp;</h6>
+                    <button class="btn btn-primary btn-block" id="BtnAgregar">Agregar</button>
+                </div>
+
+                
+
+                <div class="col-12">
+
+                    <hr />
+
+                    <div class="table-responsive">
+                        <table class="table table-bordered dt-responsive nowrap" style="width:100%" id="tablaGrabar">
+                            <thead>
+                                <tr>
+                                    <th>Etapas</th>
+                                    <th>N° de Paños</th>
+                                    <th>Largo de Paños</th>
+                                    <th>Peso Paños</th>
+                                    <th>Ancho Tela Real</th>
+                                    <th>Kilos x Etapa</th>
+                                    <th>Usuario</th>
+                                    <th>Operación</th>
+
+                                </tr>
+                            </thead>
+                            <tbody id="tablaCuerpoGrabar"></tbody>
+                        </table>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+        </div>
+
+    </div>
+ </div>
+
+
+<div class="row">
+    <div class="col-xl-5 col-lg-6 col-md-12 col-sm-12 col-12">
+
+        <!-- LISTA DE FICHAS -->
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Fichas Asociadas</h3>
+            </div>
+            <div class="card-body">
+                <table class="table table-bordered dt-responsive nowrap" style="width:100%" id="tablafichas">
+                    <thead>
+                        <tr>
+                            <th>Ficha</th>
+                            <th>Cantidad</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tablaCuerpofichas"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- KILOS DE TELA ADICIONAL -->
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Kilos Adicionales</h3>
+            </div>  
+            <div class="card-body">
+                 
+                <div class="row">
+
+                    <div class="col-xl-4 form-group">
+                        <label for="txtKilosAdicionales">Cantidad:</label>
+                        <input type="text" id="txtKilosAdicionales" class="form-control" value="0"/>
+                    </div>
+
+                    <div class="col-xl-8 form-group">
+                        <label for="txtKilosAdicionales">Motivo:</label>
+                        <select class="custom-select" id="cboMotivoAdicional"></select>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+
+    <!--Mermas Tendido-->
+    <div class="col-xl-7">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Mermas de Tendido</h3>
+                <div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-widget="collapse"><i class="fas fa-minus"></i></button>
+                </div>
+            </div>
+            
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 form-group">
+                        <h6>Puntas:</h6>
+                        <input type="text" class="form-control" id="txtpuntas" value="0" />
+                    </div>
+
+                    <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 form-group">
+                        <h6>Retazos + 30</h6>
+                        <input type="text" class="form-control" id="txtretazosmas" value="0" />
+                    </div>
+
+                    <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 form-group">
+                        <h6>Retazos - 30</h6>
+                        <input type="text" class="form-control" id="txtretazosmenos" value="0" />
+                    </div>
+                    <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 form-group">
+                        <h6>Empalme:</h6>
+                        <input type="text" class="form-control" id="txtempalme" value="0" />
+                    </div>                      
+                </div>
+            </div>
+        </div>
+            <!--Devolucion de Tela-->
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Devolucion de Tela</h3>
+                    <div class="card-tools">
+                        <button type="button" class="btn btn-tool" data-widget="collapse"><i class="fas fa-minus"></i></button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 form-group">
+                            <h6>Primera:</h6>
+                            <input type="text" class="form-control" id="txtprimera" value="0" />
+                        </div>
+
+                        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 form-group">
+                            <h6>Segunda:</h6>
+                            <input type="text" class="form-control" id="txtsegunda" value="0" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--Mermas Adicional-->
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Mermas Adicional</h3>
+                    <div class="card-tools">
+                        <button type="button" class="btn btn-tool" data-widget="collapse"><i class="fas fa-minus"></i></button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-xl-4 col-lg-4 col-md-6 col-sm-6 form-group">
+                            <h6>Conos:</h6>
+                            <input type="text" class="form-control" id="txtconos" value="0" />
+                        </div>
+
+                        <div class="col-xl-4 col-lg-4 col-md-6 col-sm-6 form-group">
+                            <h6>Plastico:</h6>
+                            <input type="text" class="form-control" id="txtplastico" value="0" />
+                        </div>
+                        <div class="col-xl-4 col-lg-4 col-md-12 col-sm-12 form-group">
+                            <h6>&nbsp;</h6>
+                            <button class="btn btn-primary btn-block" id="BtnGrabar">Grabar Tendido</button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+         </div>
+    </div>
+
+
+
+<!--MODAL PARA EDITAR-->
+<div class="modal" tabindex="-1" role="dialog" id="ModalModificar">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Modificar Registro  Etapas</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form class="row" id="frmModificar">
+                    <div class="col-xl-6 form-group">
+                        <label>N° Paños</label>   
+                        <input type="text" id="txtnumeropanosmodificar" class="form-control" />
+                    </div>
+                    <div class="col-xl-6 form-group">
+                        <label>Largo Paños</label>
+                        <input type="text" id="txtlargopanosmodificar" class="form-control" />
+                    </div>
+                    <div class="col-xl-6 form-group">
+                        <label>Peso Paños</label>
+                        <input type="text" id="txtpesopanosmodificar" class="form-control" />
+                    </div>
+                    <div class="col-xl-6 form-group">
+                        <label>Ancho tela real</label>
+                        <input type="text" id="txtanchotelarealmodificar" class="form-control" />
+                    </div>
+                    <div class="col-xl-6 form-group">
+                        <label>Kilos por etapa</label>
+                        <input type="text" id="txtkxetapamodificar" class="form-control" />
+                    </div>
+                        
+
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="btnModificar" >Modificar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+    @section scripts{
+        <script>
+            var version ="";
+            var tela = "";
+            var FICHA = '@ficha';
+            var ID = "";
+            var OCULTAR = false;
+
+            $(document).ready(function(){
+                $("#txtficha").val(FICHA);
+                if(FICHA != ""){
+                    BuscarFicha(FICHA);
+                }
+
+                ListarMotivosKilosAdicionales();
+            });
+
+            // LISTA MOTIVOS DE KILOS ADICIONALES
+            function ListarMotivosKilosAdicionales(){
+                $.ajax({
+                    url: '/sistema/ListarTareas/',
+                    type: 'GET',
+                    data: {'idtarea': 1},
+                    //dataType: 'json',
+                    success: function (response) {
+                        let op = "<option value='0'>[SELECCIONE]</option>";
+                        response.forEach((obj)=>{
+                            op += `<option value='${obj.iddescripciontarea}' >${obj.descripcion}  </option>`;
+                        });
+                        
+                    $("#cboMotivoAdicional").html(op);;        
+
+                    }
+                });
+            }
+
+
+
+            $("#btnBuscar").click(function (e) {
+                var vrDocumento =  $("#txtficha").val().trim();
+                BuscarFicha(vrDocumento);
+            });
+
+            function BuscarFicha(vrDocumento){
+                let datosx = {
+                    'ficha'        : vrDocumento
+                }
+
+                $.ajax({
+                    url: '/Corte/BuscarExiste',
+                    type: 'GET',
+                    data: datosx,
+                    dataType: 'json',
+                    success: function (response) {
+
+                        var exis  = response.EXISTE;
+
+
+                        if (exis > 0)
+                        {
+                            VerVersionRegitradas();
+                        }
+                        else
+                        {
+                            Advertir('La Partida No Tiene Liquidacion');
+
+
+                        }
+
+                    },
+                    error: function (err) {
+                        alert('Error:' + err.responseText);
+                    }
+                });
+            }
+
+
+             //LISTA DE VERSIONES
+            function VerVersionRegitradas() {
+                var vrDocumento =  $("#txtficha").val();
+                let datosx = {
+                    'ficha'        : vrDocumento
+                }
+
+                $.ajax({
+                    url: '/Corte/ListarVersiones',
+                    type: 'GET',
+                    data: datosx,
+                    dataType: 'json',
+                    success: function (response) {
+                        //DATATABLE
+                        let tabla = $("#tablaver").DataTable();
+                        tabla.destroy();
+                        var rows = '';
+                        if(response.length > 0){
+                            response.forEach(function (obj) {
+                                rows += `
+                                 <tr>
+                                    <td class='text-center'><a href='#' data-idversiones='${obj.VERSIONES}' data-idtela='${obj.TIPO_TELA}' class ="BtfTela" ><i style='color:#138d75 ' class='fas fa-check-double'></i></a></td>
+                                    <td>${obj.VERSIONES}</td>
+                                    <td>${obj.F_REGISTRO}</td>
+                                    <td>${obj.U_REGISTRO}</td>
+                                   <td>${obj.TIPO_TELA}</td>
+                                 </tr>
+                                    `;
+                            });
+                        }
+                        $('#tablaversiones').html(rows);
+                    },
+                    error: function (err) {
+                        alert('Error:' + err.responseText);
+                    }
+                });
+            }
+
+
+            //FICHAS ASOCIADAS A LA VERSION REGISTRADA
+            function VerFichas(version,tela)
+            {
+                var vrficha = $("#txtficha").val();
+                let vrVersion =version;
+                let vrTela =tela;
+
+                let datos = {
+                    'ficha'        : vrficha,
+                    'version'      : vrVersion,
+                    'tela'         : vrTela,
+                }
+
+                $.ajax({
+                    url: '/Corte/BuscarFicha',
+                    type: 'GET',
+                    data: datos,
+                    dataType: 'json',
+                    success: function (response) {
+                        //DATATABLE
+                        let tabla = $("#tablafichas").DataTable();
+                        tabla.destroy();
+                        var rows = '';
+                        if(response.length > 0){
+                            response.forEach(function (obj) {
+                                rows += `
+                                 <tr>
+                                    <td>${obj.FICHA}</td>
+                                    <td>${obj.CANTIDAD}</td>
+                                 </tr>
+                                `;
+                            });
+                        }else{
+                            Advertir('No se ha encontrado la ficha');
+                        }
+
+                        $('#tablaCuerpofichas').html(rows);
+                    },
+                    error: function (err) {
+                        alert('Error:' + err.responseText);
+                    }
+                });
+            }
+
+            //LLENA GRILLA DE ETAPAS
+            function VerDatos(version,tela) {
+                var vrDocumento =  $("#txtficha").val();
+                let vrVersion =version;
+                let vrTela =tela;
+                console.log(vrDocumento);
+
+                let datosx = {
+                    'ficha'        : vrDocumento,
+                    'version'      : vrVersion,
+                    'tela'         : vrTela,
+                }
+
+                $.ajax({
+                    url: '/Corte/ListarCorte007',
+                    type: 'GET',
+                    data: datosx,
+                    dataType: 'json',
+                    success: function (response) {
+                        //DATATABLE
+                        let tabla = $("#tablaGrabar").DataTable();
+                        tabla.destroy();
+                        var rows = '';
+                        //console.log();
+                        if(response.length > 0){
+                            response.forEach(function (obj) {
+                                rows += `
+                                 <tr>
+                                    <td>${obj.ETAPAS}</td>
+                                    <td>${obj.NUM_PANOS}</td>
+                                    <td>${obj.LARGO_PANOS}</td>
+                                    <td>${obj.PESO_PANOS}</td>
+                                    <td>${obj.ANCHO_TELA_REAL}</td>
+                                    <td>${obj.KXETAPAS}</td>
+                                    <td>${obj.u_registro}</td>`;
+
+                                    if(obj.u_registro == '@Session["usuario"]'){
+                                        rows += `tr<td class='text-center'>
+                                            <a href='#' class='editar' data-id='${obj.id}' data-etapas='${obj.ETAPAS}'  data-numpanos='${obj.NUM_PANOS}'  data-largopanos='${obj.LARGO_PANOS}'  data-pesopanos='${obj.PESO_PANOS}'  data-anchotelareal='${obj.ANCHO_TELA_REAL}'  data-kxetapas='${obj.KXETAPAS}' >
+                                                <i class='fas fa-edit'></i> 
+                                            </a>
+                                        </td>`;
+                                    }else{
+                                        rows += `<td class='text-center'>
+
+                                        </td>`;
+                                    }
+                                    
+
+                                rows+=`</tr>`;
+                            });
+                        }
+                        $('#tablaCuerpoGrabar').html(rows);
+                        $("#tablaGrabar").DataTable(
+                            {'language' : {'url' : '/libs/datatables/spanish.json'},
+                                lengthMenu: [[5, 10, 20, -1], [5, 10, 20, 'Todos']]}
+                        );
+
+
+                        if(OCULTAR){
+                            $(".editar").addClass("d-none");
+                        }
+
+                    },
+                    error: function (err) {
+                        alert('Error:' + err.responseText);
+                    }
+                });
+            }
+
+            //LLENAR DATOS CABECERA
+            function VerDatosCabecera(version,tela) {
+                var vrDocumento =  $("#txtficha").val();
+                let vrVersion =version;
+                let vrTela =tela;
+
+                let datosx = {
+                    'ficha'        : vrDocumento,
+                    'version'      : vrVersion,
+                    'tela'         : vrTela,
+                }
+
+                $.ajax({
+                    url: '/Corte/BuscarCabecera',
+                    type: 'GET',
+                    data: datosx,
+                    dataType: 'json',
+                    success: function (response) {
+                        //DATATABLE
+
+                        if (response.MER_RETAZOSMAS >0 && response.MER_RETAZOSMEN >0 && response.MER_PUNTAS >0)
+                        {
+                            $("#txtpuntas").val(response.MER_PUNTAS);
+                            $("#txtretazosmas").val(response.MER_RETAZOSMAS);
+                            $("#txtretazosmenos").val(response.MER_RETAZOSMEN);
+                            $("#txtempalme").val(response.EMPALMES);
+                            $("#txtprimera").val(response.DEVO_PRIMERA);
+                            $("#txtsegunda").val(response.DEVO_SEGUNDA);
+                            $("#txtconos").val(response.CONOS);
+                            $("#txtplastico").val(response.PLASTICO);
+                            $("#txtKilosAdicionales").val(response.KG_ADICIONALES);
+                            $("#cboMotivoAdicional").val(response.MOT_KGADICIONAL);
+
+
+                            $("#BtnGrabar").addClass("d-none");
+                            $("#BtnAgregar").addClass("d-none");
+                            OCULTAR = true;
+                        }
+                        else
+                        {
+                            $("#BtnGrabar").removeClass("d-none");
+                            $("#BtnAgregar").removeClass("d-none");
+                            OCULTAR = false;
+                            $("#txtpuntas").val("0");
+                            $("#txtretazosmas").val("0");
+                            $("#txtretazosmenos").val("0");
+                            $("#txtempalme").val("0");
+                            $("#txtprimera").val("0");
+                            $("#txtsegunda").val("0");
+                            $("#txtconos").val("0");
+                            $("#txtplastico").val("0");
+                            $("#txtKilosAdicionales").val("0");
+                            $("#cboMotivoAdicional").val("0");
+                        }
+                    },
+                    error: function (err) {
+                        alert('Error:' + err.responseText);
+                    }
+                });
+            }
+
+            $("#tablaversiones").on('click','.BtfTela',function(){
+                 version = $(this).data("idversiones");
+                 tela = $(this).data("idtela");
+
+                 $("#txttela").text(version);
+                 $("#txtversion").text(tela);
+
+                VerFichas(version,tela);
+                VerDatos(version,tela);
+                VerDatosCabecera(version,tela);
+                verComparacion(version,tela);
+
+            });
+
+            function verComparacion(version,tela){
+
+                let datos = {
+                    'ficha'           : $("#txtficha").val(),
+                    'version'           : version,
+                    'tela'              : tela,
+                }
+
+                $.ajax({
+                    url:'/corte/getComparacionKilos/',
+                    type:'get',
+                    data:datos,
+                    success:function(e){
+                        var tr ="";
+                        e.forEach((obj)=>{
+                            tr+=`
+                               <tr>
+                                     <td>${obj.columna4}</td>
+                                     <td>${obj.columna5}</td>
+                                     <td>${obj.columna1} %</td>
+
+                               <tr>
+                             `;
+                        });
+
+                        $("#cuerpocomparacion").html(tr);
+                    }
+                });
+            }
+
+
+
+            $("#BtnAgregar").click(function (e) {
+
+                var partida = $("#txtficha").val();
+                var vrnum1 = $("#txtnum1").val().trim();
+                var vrnum2 = $("#txtnum2").val();
+                var vrnum3 = $("#txtnum3").val();
+                var vrnum4 = $("#txtnum4").val();
+                var vrnum5 = $("#txtnum5").val();
+                var vrnum6 = $("#txtnum6").val();
+                let vrVersion =version;
+                let vrTela =tela;
+
+                let datos = {
+                    'PARTIDA'           : partida,
+                    'ETAPAS'            : vrnum1,
+                    'NUM_PANOS'         : vrnum2,
+                    'LARGO_PANOS'       : vrnum3,
+                    'PESO_PANOS'        : vrnum4,
+                    'ANCHO_TELA_REAL'   : vrnum5,
+                    'KXETAPAS'          : vrnum6,
+                    'VERSION'           : vrVersion,
+                    'TELA'              : vrTela,
+                }
+                $.ajax({
+                    url: '/Corte/RegistrarEtapas',
+                    type: 'POST',
+                    data: datos,
+                    dataType: 'json',
+                    success: function (response) {
+
+                            if (response == 0) {
+                                Advertir('-');
+                            }
+                            else if (response == 2) {
+                                Advertir('-');
+                            }
+                            else if (response == 3) {
+                                Advertir('-');
+                            }
+                            else {
+                                Informar('Se Agrego correctamente');
+                                //VerDatos($(this).data("idversiones"),$(this).data("idtela"));
+                                VerDatos(version,tela);
+                                $("#txtnum1").val("");
+                                $("#txtnum2").val("");
+                                $("#txtnum3").val("");
+                                $("#txtnum4").val("");
+                                $("#txtnum5").val("");
+                                $("#txtnum6").val("0");
+                            }
+                    },
+                    error: function (err) {
+                        alert('Error:' + err.responseText);
+                    }
+                });
+            });
+
+            $("#BtnGrabar").click(async function  (e) {
+
+                var rpt = await Preguntar("Confirme para realizar grabado de tendido");
+                if(rpt.value){
+                    
+                    MostrarCarga("Grabando tendido...");
+                    var partida     = $("#txtficha").val();
+                    var puntas      = $("#txtpuntas").val();
+                    var retazosmas  = $("#txtretazosmas").val();
+                    var retazosmen  = $("#txtretazosmenos").val();
+                    var empalmes    = $("#txtempalme").val();
+                    var primera     = $("#txtprimera").val();
+                    var segunda     = $("#txtsegunda").val();
+                    var conos       = $("#txtconos").val();
+                    var plastico    = $("#txtplastico").val();
+                    //AGEGADO
+                    var kilosadicional      = $("#txtKilosAdicionales").val();
+                    var motivoadicional     = $("#cboMotivoAdicional").val();
+
+
+                    let vrVersion =version;
+                    let vrTela =tela;
+
+                    if(kilosadicional != "0" && motivoadicional == 0){
+                        Advertir("Favor de seleccionar un motivo para registrar Kilos adicionales");
+                    }else{
+
+                        let datos = {
+                            'PARTIDA'           : partida,
+                            'MER_PUNTAS'        : puntas,
+                            'MER_RETAZOSMAS'    : retazosmas,
+                            'MER_RETAZOSMEN'    : retazosmen,
+                            'EMPALMES'          : empalmes,
+                            'DEVO_PRIMERA'      : primera,
+                            'DEVO_SEGUNDA'      : segunda,
+                            'CONOS'             : conos,
+                            'PLASTICO'          : plastico,
+                            'VERSION'           : vrVersion,
+                            'TELA'              : vrTela,
+                            'kgadicionales'     : kilosadicional,
+                            'motivoadicional'   : motivoadicional
+                        }
+                        $.ajax({
+                            url: '/Corte/RegistrarCabecera',
+                            type: 'POST',
+                            data: datos,
+                            dataType: 'json',
+                            success: function (response) {
+
+                                if (response == 0) {
+                                    Advertir('-');
+                                }
+                                else if (response == 2) {
+                                    Advertir('-');
+                                }
+                                else if (response == 3) {
+                                    Advertir('-');
+                                }
+                                else {
+                                    Informar('Se Registro correctamente');
+                                    $("#txtficha").val("");
+                                    $("#txtpuntas").val("0");
+                                    $("#txtretazosmas").val("0");
+                                    $("#txtretazosmenos").val("0");
+                                    $("#txtempalme").val("0");
+                                    $("#txtprimera").val("0");
+                                    $("#txtsegunda").val("0");
+                                    $("#txtconos").val("0");
+                                    $("#txtplastico").val("0");
+                                   
+                                    var tabla = $("#tablaGrabar").DataTable();
+                                    tabla.destroy();
+                                    $("#tablaCuerpoGrabar").html("");
+                                    $("#tablaCuerpofichas").html("");
+                                    $("#txtKilosAdicionales").val("0");
+                                    $("#cboMotivoAdicional").val(0);
+                                }
+                            },
+                            error: function (err) {
+                                alert('Error:' + err.responseText);
+                            }
+                        });
+
+                    }
+
+
+                }
+            });
+
+            $("#tablaCuerpoGrabar").on('click','.editar',function(){
+                ID = $(this).data("id");
+                var numeropanos = $(this).data("numpanos");
+                var largopanos = $(this).data("largopanos");
+                var pesopanos = $(this).data("pesopanos");
+                var anchotelareal = $(this).data("anchotelareal");
+                var kxetapas = $(this).data("kxetapas");
+
+                //ASIGNANDO VALORES
+                $("#txtnumeropanosmodificar").val(numeropanos);
+                $("#txtlargopanosmodificar").val(largopanos);
+                $("#txtpesopanosmodificar").val(pesopanos);
+                $("#txtanchotelarealmodificar").val(anchotelareal);
+                $("#txtkxetapamodificar").val(kxetapas);
+
+
+                $("#ModalModificar").modal("show");
+            });
+
+            
+            //MODIFICARid,num_panos,largo_panos,peso_panos,ancho_tela_real,kxetapas
+            $("#btnModificar").click(function(){
+                var datos = {
+                    'id'        : ID,
+                    'num_panos' : $("#txtnumeropanosmodificar").val(),
+                    'largo_panos' : $("#txtlargopanosmodificar").val(),
+                    'peso_panos' : $("#txtpesopanosmodificar").val(),
+                    'ancho_tela_real' : $("#txtanchotelarealmodificar").val(),
+                    'kxetapas' : $("#txtkxetapamodificar").val(),
+
+                }
+
+
+                if(datos.num_panos != "" && datos.peso_panos != "" && datos.peso_panos != "" && datos.ancho_tela_real != "" && datos.kxetapas != ""){
+
+
+                    $.ajax({
+                        url:'/corte/Modificar_cort007/',
+                        type:'POST',
+                        data:datos,
+                        success:function(e){
+                            console.log(e);
+                            if(e){
+                                Informar("Modificado correctamente");
+                                VerDatos(version,tela);
+                                $("#ModalModificar").modal("hide");
+                                $("#frmModificar")[0].reset();
+                            }else{
+                                Advertir("Ocurrio un error");
+                            }
+                        }
+                    });
+
+                }else{
+                    Advertir("Todos los datos son necesarios");
+                }
+
+            });
+
+            //FUNCION QUE CALCULA LOS KILOS POR ETAPA
+            function kilosporetapa(){
+                //console.log("holis")
+                var npanio = $("#txtnum2").val() == "" ? 1 : $("#txtnum2").val();
+                var pesopanio = $("#txtnum4").val() == "" ? 1 : $("#txtnum4").val();
+                var resultado = 0;
+                try{
+                    resultado = npanio * pesopanio;
+                }catch(ex){
+                    console.log(ex);
+                }
+                //console.log(resultado);
+                $("#txtnum6").val(resultado);
+
+            }
+
+            $(".calcular").keyup(function(){
+                kilosporetapa();
+            });
+
+        </script>
+    }

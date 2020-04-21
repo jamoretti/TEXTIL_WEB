@@ -1,0 +1,146 @@
+﻿@model TSC_WEB.Models.Entidades.DesarrolloProducto.FichaTecnica.FichaTecnicaEntidad
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <script>
+function subst() {
+    var vars = {};
+    var x = window.location.search.substring(1).split('&');
+    for (var i in x) {
+        var z = x[i].split('=', 2);
+        vars[z[0]] = unescape(z[1]);
+    }
+    document.getElementById('page').innerHTML = vars.page;
+    document.getElementById('topage').innerHTML = vars.topage;
+}
+    </script>
+
+    <style>
+        td{
+            font-size:13px;
+        }
+
+        .table{
+            border-collapse: collapse;
+        }
+
+        .table td{
+            border: 1px solid black;
+
+        }
+
+        .w-80{
+            width:80px;
+        }
+
+
+
+    </style>
+
+</head>
+<body style="border: 0; margin-top:50px;" onload="subst()">
+
+    <table style="width: 100%;">
+        <tr>
+            <td rowspan="3">
+                <img src="../../Public/ImprimirFichaTecnica/tsclogo.png" class="float-left mt-10" style="width:40px;" />
+            </td>
+            <td colspan="4" align="center" style="font-weight:bold">FICHA DE ESPECIFICACIONES TECNICAS</td>
+        </tr>
+        <tr>
+            <td colspan="4" align="center" style="border-bottom:1px solid black;border-top:1px solid black">&nbsp;</td>
+        </tr>
+        <tr>
+            <td align="left" style="border-bottom:1px solid black;font-weight:bold">FECHA DE GENERACIÓN: @Model.fecha_generacion </td>
+            <td align="left" style="border-bottom:1px solid black;font-weight:bold">ALTERNATIVA: @Model.alternativa </td>
+            <td align="left" style="border-bottom:1px solid black;font-weight:bold">RUTA: @Model.n_ruta </td>
+            <td align="right" style="border-bottom:1px solid black;font-weight:bold" > Página <span id='page'></span> de <span id='topage'></span> </td>
+            <!--<td colspan="2" align="right">Page <span class="page"></span>of <span class="topage"></span></td>-->
+        </tr>
+    </table>
+
+    <table style="width: 100%;">
+        <tr>
+            <td align="left">
+                <table>
+                    <tr>
+                        <td style="font-weight:bold;"  >CLIENTE:</td>
+                        <td>@Model.cliente </td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight:bold" >ESTILO CLIENTE:</td>
+                        <td>@Model.estilo_cliente </td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight:bold" >ESTILO PROPIO:</td>
+                        <td>@Model.estilo_propio</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight:bold" >TIPO MUESTRA:</td>
+                        <td>@Model.tipo_muestra</td>
+                    </tr>
+
+                </table>
+
+
+            </td>
+            <td align="left">
+                <table>
+                    <tr>
+                        <td style="font-weight:bold" >PEDIDO:</td>
+                        <td>@Model.pedido</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight:bold" >TEMPORADA:</td>
+                        <td>@Model.temporada</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight:bold" >TALLAS:</td>
+                        <td>@Model.tallas</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight:bold">PO:</td>
+                        <td>@Model.po</td>
+                    </tr>
+
+                </table>
+
+            </td>
+            <td align="left">
+                <table class="table">
+                    <tr>
+                        <td>SOLI.DESARROLLO</td>
+                        <td class="w-80">@Model.n_solicitud</td>
+                    </tr>
+                    <tr>
+                        <td>ESTAMPADO</td>
+                        <td class="w-80">@Model.estampado</td>
+                    </tr>
+                    <tr>
+                        <td>BORDADO</td>
+                        <td class="w-80">@Model.bordado</td>
+                    </tr>
+                    <tr>
+                        <td>LAVADO</td>
+                        <td class="w-80">@Model.lavado</td>
+                    </tr>
+                    <tr>
+                        <td>NUEVO</td>
+                        <td class="w-80"></td>
+                    </tr>
+
+                </table>
+            </td>
+        </tr>
+    </table>
+
+    <hr class="w-100" style=" border-top: 1px solid black;width:100%" />
+
+
+
+</body>
+</html>

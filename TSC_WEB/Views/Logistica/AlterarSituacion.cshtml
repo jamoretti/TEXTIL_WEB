@@ -1,0 +1,916 @@
+﻿@{
+    ViewBag.Title = "Cambiar Status OC";
+    ViewBag.Modulo = "Logística";
+    Layout = "~/Views/Plantillas/_Layout.cshtml";
+
+}
+
+<div class="cont-alt-sit">
+
+    <div class="card">
+
+        <div class="card-header" style="width: 100%">
+            <div class="d-flex justify-content-between flex-wrap">
+                <div class="d-flex justify-content-around cont-section-1 flex-wrap">
+
+                    <div class="con-section-item-1">
+                        <div class="cont-selec-periodo">
+                            <div style="font-weight: bold;">Periodo Presupuesto</div>
+                            <select class="browser-default custom-select selectPeriodo" id="periodosLista">
+                                <option selected>Seleccione</option>
+                            </select>
+                        </div>
+                        <div class="ml-1 cont-select-gerencia">
+                            <div style="font-weight: bold;">Gerencia</div>
+                            <select class="browser-default custom-select selectGerencia" id="gerenciasLista">
+                                <option selected>Seleccione</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="con-section-item-2">
+                        <div class="ml-1 cont-btn-buscar" style="font-weight: bold;">
+                            <div>&nbsp;</div>
+                            <button type="button" class="btn btn-primary" id="btnBuscar">Buscar</button>
+                        </div>
+                        <div class="ml-1 cont-btn-alterar" style="font-weight: bold;">
+                            <div>&nbsp;</div>
+                            <button type="button" class="btn btn-success" id="btnAlterarSituacion">Alterar Situacion</button>
+                        </div>
+                    </div>
+
+
+                </div>
+
+                <div class="d-flex justify-content-between flex-wrap cont-btn-indicadores">
+                    <div style="font-weight: bold;">
+                        <div>Presupuesto</div>
+                        <button id="btnPresupuesto" type="button" class="btn btn-info" style="font-weight: bold; width: 160px;">0.00</button>
+                    </div>
+                    <div class="ml-1" style="font-weight: bold;">
+                        <div>Monto Comprado</div>
+                        <button id="btnConsumido" type="button" class="btn btn-secondary" style="font-weight: bold; width: 160px;">0.00</button>
+                    </div>
+                    <div class="ml-1" style="font-weight: bold;">
+                        <div>Disponible</div>
+                        <button id="btnDisponible" type="button" class="btn btn-success" style="font-weight: bold; width: 160px;">0.00</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="card-body">
+
+            <table class="table table-bordered table-hover dt-responsive nowrap" id="tablaPrincipal" style="width:100%;">
+                <thead>
+                    <tr>
+                        <th class="all">Disponible</th>
+                        <th>Pedido</th>
+                        <th>C. Costo</th>
+                        <th>Fecha</th>
+                        <th>Proveedor</th>
+                        <th>Comprador</th>
+                        <th>Descripción de pago</th>
+                        <th class="all">Total</th>
+                        <th class="all">Operación</th>
+
+                    </tr>
+                </thead>
+                <tbody id="tablaCabeceraContenido"></tbody>
+            </table>
+
+
+        </div>
+
+    </div>
+
+    <!-- MODAL -->
+
+    <div class="modal" tabindex="-1" role="dialog" id="modalInformacion">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Detalle Orden Compra</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="table-responsive" style="height:250px">
+                        <table class="table table-bordered table-hover" style="width:100%" id="tablaDetalle">
+                            <thead>
+                                <tr>
+                                    <th>Secuencia</th>
+                                    <th>Descripcion</th>
+                                    <th nowrap>C.x| Costo</th>
+                                    <th>Descripción C. Costo</th>
+                                    <th>UM</th>
+                                    <th>Reserva Plane.</th>
+                                    <th>Qtde. Pedida</th>
+                                    <th>Valor Unit.</th>
+                                    <th>Valor Total</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tablaDetalleContenido"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal fade" id="modal_plancont_det" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">Detalle de Disponible</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+
+                    <table class="table table-bordered table-hover" style="width:100%" id="tablaPlanCont">
+                        <thead>
+                            <tr>
+                                <th>Plan Contable</th>
+                                <th>Disponible</th>
+                                <th>Valor OC x Cuenta</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tablaPlanContDet"></tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Aceptar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <style>
+        .cont-alt-sit .cdisponible {
+            padding: 7px;
+            border-radius: 5px;
+            background-color: #2ECC71;
+            display: block;
+            width: 80%;
+            margin: auto;
+            text-align: center;
+        }
+
+        .cont-alt-sit .cigual {
+            padding: 7px;
+            border-radius: 5px;
+            background-color: #99A3A4;
+            display: block;
+            width: 80%;
+            margin: auto;
+            text-align: center;
+        }
+
+        .cont-alt-sit .cexcedido {
+            padding: 7px;
+            border-radius: 5px;
+            background-color: #E74C3C;
+            display: block;
+            width: 80%;
+            margin: auto;
+            text-align: center;
+        }
+
+        .cont-alt-sit .ccodautoriza {
+            padding: 7px;
+            border-radius: 5px;
+            background-color: #2ECC71;
+            display: block;
+            width: 80%;
+            margin: auto;
+            text-align: center;
+        }
+
+        .cont-alt-sit .card-header #btnPresupuesto {
+            background-color: #2874A6;
+        }
+
+        .cont-alt-sit .card-header #btnConsumido {
+            background-color: #95A5A6;
+        }
+
+        .cont-alt-sit .card-header #btnDisponible {
+            background-color: #28B463;
+        }
+
+        .cont-alt-sit #tablaPrincipal .tplancont {
+            cursor: pointer;
+        }
+
+        /*Responsive Web Design*/
+
+        /* Custom, iPhone Retina */
+        @@media only screen and (min-width : 320px) {
+
+
+            .cont-alt-sit .card-header .cont-section-1 {
+                width: 100%;
+            }
+
+                .cont-alt-sit .card-header .cont-section-1 .con-section-item-1 {
+                    width: 100%;
+                }
+
+                .cont-alt-sit .card-header .cont-section-1 .con-section-item-2 {
+                    width: 100%;
+                }
+
+
+            .cont-alt-sit .card-header .cont-selec-periodo {
+                width: 100%;
+            }
+
+                .cont-alt-sit .card-header .cont-selec-periodo select {
+                    width: 100%;
+                }
+
+            .cont-alt-sit .card-header .cont-select-gerencia {
+                width: 100%;
+                margin-left: 0px !important;
+            }
+
+                .cont-alt-sit .card-header .cont-select-gerencia select {
+                    width: 100%;
+                }
+
+
+            .cont-alt-sit .card-header .cont-btn-buscar {
+                width: 100%;
+                margin-left: 0px !important;
+            }
+
+                .cont-alt-sit .card-header .cont-btn-buscar button {
+                    display: block;
+                    width: 100%;
+                }
+
+            .cont-alt-sit .card-header .cont-btn-alterar {
+                width: 100%;
+                margin-left: 0px !important;
+            }
+
+                .cont-alt-sit .card-header .cont-btn-alterar button {
+                    display: block;
+                    width: 100%;
+                }
+
+
+            .cont-alt-sit .card-header .cont-btn-indicadores {
+                margin-top: 35px;
+                width: 100%;
+                border-top: 1px solid #CCD1D1;
+                padding-top: 10px;
+                padding-bottom: 20px;
+            }
+
+                .cont-alt-sit .card-header .cont-btn-indicadores div {
+                    display: block;
+                    width: 100%;
+                    margin-top: 4px;
+                    margin-left: 0px !important;
+                }
+
+                    .cont-alt-sit .card-header .cont-btn-indicadores div button {
+                        display: block;
+                        width: 100% !important;
+                    }
+
+
+            .cont-alt-sit .card-body .pagination {
+                font-size: 9px;
+            }
+        }
+
+        /* Extra Small Devices, Phones */
+        @@media only screen and (min-width : 480px) {
+
+            .cont-alt-sit .card-header .cont-section-1 {
+                width: 100%;
+            }
+
+                .cont-alt-sit .card-header .cont-section-1 .con-section-item-1 {
+                    width: 55%;
+                    display: flex;
+                    justify-content: flex-start;
+                }
+
+
+                    .cont-alt-sit .card-header .cont-section-1 .con-section-item-1 .cont-selec-periodo {
+                        width: 45%;
+                    }
+
+                        .cont-alt-sit .card-header .cont-section-1 .con-section-item-1 .cont-selec-periodo select {
+                            width: 100%;
+                        }
+
+                    .cont-alt-sit .card-header .cont-section-1 .con-section-item-1 .cont-select-gerencia {
+                        width: 45%;
+                        margin-left: 3px !important;
+                    }
+
+                        .cont-alt-sit .card-header .cont-section-1 .con-section-item-1 .cont-select-gerencia select {
+                            width: 100%;
+                        }
+
+
+
+                .cont-alt-sit .card-header .cont-section-1 .con-section-item-2 {
+                    width: 45%;
+                    display: flex;
+                    justify-content: flex-end;
+                }
+
+                    .cont-alt-sit .card-header .cont-section-1 .con-section-item-2 .cont-btn-buscar {
+                        width: 35%;
+                        margin-left: 0px !important;
+                    }
+
+                        .cont-alt-sit .card-header .cont-section-1 .con-section-item-2 .cont-btn-buscar button {
+                            display: block;
+                            width: 100%;
+                        }
+
+                    .cont-alt-sit .card-header .cont-section-1 .con-section-item-2 .cont-btn-alterar {
+                        width: 65%;
+                        margin-left: 3px !important;
+                    }
+
+                        .cont-alt-sit .card-header .cont-section-1 .con-section-item-2 .cont-btn-alterar button {
+                            display: block;
+                            width: 100%;
+                        }
+
+
+            .cont-alt-sit .card-header .cont-btn-indicadores {
+                margin-top: 35px;
+                width: 100%;
+                border-top: 1px solid #CCD1D1;
+                padding-bottom: 10px;
+            }
+
+                .cont-alt-sit .card-header .cont-btn-indicadores > div {
+                    display: block;
+                    width: 30%;
+                    margin-top: 4px;
+                    margin-left: 0px !important;
+                }
+
+                .cont-alt-sit .card-header .cont-btn-indicadores div button {
+                    display: block;
+                    width: 100% !important;
+                }
+
+
+            .cont-alt-sit .card-body .pagination {
+                font-size: 12px;
+            }
+        }
+
+        /* Small Devices, Tablets */
+        @@media only screen and (min-width : 768px) {
+        }
+
+        /* Medium Devices, Desktops */
+        @@media only screen and (min-width : 992px) {
+        }
+
+        /* Large Devices, Wide Screens */
+        @@media only screen and (min-width : 1200px) {
+
+            .cont-alt-sit .card-header .cont-section-1 {
+                width: 100%;
+            }
+
+                .cont-alt-sit .card-header .cont-section-1 .con-section-item-1 {
+                    width: 70%;
+                    display: flex;
+                }
+
+                    .cont-alt-sit .card-header .cont-section-1 .con-section-item-1 .cont-selec-periodo {
+                        width: 40%;
+                    }
+
+                        .cont-alt-sit .card-header .cont-section-1 .con-section-item-1 .cont-selec-periodo select {
+                            width: 100%;
+                        }
+
+                    .cont-alt-sit .card-header .cont-section-1 .con-section-item-1 .cont-select-gerencia {
+                        width: 40%;
+                        margin-left: 5px !important;
+                    }
+
+                        .cont-alt-sit .card-header .cont-section-1 .con-section-item-1 .cont-select-gerencia select {
+                            width: 100%;
+                        }
+
+
+                .cont-alt-sit .card-header .cont-section-1 .con-section-item-2 {
+                    width: 30%;
+                    display: flex;
+                    justify-content: flex-end;
+                }
+
+
+                    .cont-alt-sit .card-header .cont-section-1 .con-section-item-2 .cont-btn-buscar {
+                        width: 40%;
+                        margin-left: 0px !important;
+                    }
+
+                        .cont-alt-sit .card-header .cont-section-1 .con-section-item-2 .cont-btn-buscar button {
+                            display: block;
+                            width: 100%;
+                        }
+
+                    .cont-alt-sit .card-header .cont-section-1 .con-section-item-2 .cont-btn-alterar {
+                        width: 60%;
+                        margin-left: 0px !important;
+                    }
+
+                        .cont-alt-sit .card-header .cont-section-1 .con-section-item-2 .cont-btn-alterar button {
+                            display: block;
+                            width: 100%;
+                            margin-left: 5px;
+                        }
+
+
+
+
+            .cont-alt-sit .card-header .cont-btn-indicadores {
+                margin-top: 15px;
+                width: 100%;
+                border-top: 1px solid #CCD1D1;
+                padding-top: 10px;
+                padding-bottom: 10px;
+            }
+
+                .cont-alt-sit .card-header .cont-btn-indicadores > div {
+                    display: block;
+                    width: 30%;
+                    margin-top: 4px;
+                    margin-left: 0px !important;
+                }
+
+                .cont-alt-sit .card-header .cont-btn-indicadores div button {
+                    display: block;
+                    width: 100% !important;
+                }
+
+
+            .cont-alt-sit .card-body .pagination {
+                font-size: 12px;
+            }
+        }
+    </style>
+
+</div>
+
+@section scripts {
+
+    <script>
+
+        // Variables Globales
+        var PEDIDOS = [];
+        var codGerencia = "Seleccione";
+        var codPeriodo = "Seleccione";
+
+        $(document).ready(function () {
+
+            LlenarCBO_Periodos();
+            LlenarCBO_Gerencias();
+
+            $("#btnBuscar").click(function () {
+
+                PEDIDOS = [];
+
+                if (codPeriodo == "Seleccione") {
+                    Swal.fire('Seleccione el Periodo por favor')
+                }
+                else if (codGerencia == "Seleccione") {
+                    Swal.fire('Seleccione la Gerencia por favor')
+                }
+                else {
+
+                    var datos = {
+                        'codperiodo': codPeriodo,
+                        'codgerencia': codGerencia
+                    }
+
+                    ListarOCs(datos);
+                }
+            });
+
+            //AGREGAMOS Y QUITAMOS ORDENES DE COMPRA
+            $("#tablaPrincipal").on('click', '.liberar', function () {
+                var PEDIDO = $(this).attr("data-pedido");
+
+                //AGREGANDO AL ARRAY
+                if ($(this).prop("checked")) {
+
+                    PEDIDOS.push(PEDIDO);
+
+                } else {//QUITA DEL ARRAY
+                    let pe = PEDIDOS.indexOf(PEDIDO);
+
+
+                    if (pe >= 0) {
+                        PEDIDOS.splice(pe, 1);
+                    }
+                }
+            });
+
+            $("#tablaPrincipal").on('click', '.tplancont', function () {
+
+                var codpedcompra = $(this).attr("data-codoc");
+                var codcc = $(this).attr("data-codcc");
+
+                if (codPeriodo == "Seleccione") {
+                    Swal.fire('Seleccione el Periodo por favor')
+                }
+                else if (codGerencia == "Seleccione") {
+                    Swal.fire('Seleccione la Gerencia por favor')
+                }
+                else {
+                    var datos =
+                    {
+                        'codpedcompra': codpedcompra,
+                        'codperiodo': codPeriodo,
+                        'codcc': codcc
+                    }
+                    ListarPlanContDetalle(datos);
+                }
+            });
+
+            $("#btnAlterarSituacion").click(function () {
+                if (codPeriodo == "Seleccione") {
+                    Swal.fire('Seleccione el Periodo por favor')
+                }
+                else if (codGerencia == "Seleccione") {
+                    Swal.fire('Seleccione la Gerencia por favor')
+                }
+                else {
+
+                    var datoslista = {
+                        'codperiodo': codPeriodo,
+                        'codgerencia': codGerencia
+                    }
+
+
+                    if (PEDIDOS.length > 0) {
+
+                        //MOSTRANDO PANEL DE CARGA
+                        MostrarCarga("Liberando...");
+
+                        var datos = {
+                            'ordenes': PEDIDOS,
+                            'codperiodo': codPeriodo
+                        }
+
+                        $.ajax({
+                            url: '/logistica/AlterarSituacionOcMasivo/',
+                            type: 'post',
+                            data: datos,
+                            success: function (e) {
+
+                                // Solicitador aprobacion de GG
+                                if (e.id_estado == 7 || e.id_estado == 6) {
+
+                                    Swal.fire({
+                                        title: "Solicitar Aprobación de Gerencia",
+                                        text: "La Orden de compra no tiene presupuesto para la liberación, indique el motivo para la aprobación: ",
+                                        input: 'text',
+                                        inputAttributes: {
+                                            autocapitalize: 'off'
+                                        },
+                                        showCancelButton: true,
+                                        confirmButtonText: 'Enviar',
+                                        showLoaderOnConfirm: true,
+                                        preConfirm: (motivo) => {
+
+                                            var datos = {
+                                                'ordencompra': e.oc,
+                                                'motivo': motivo
+                                            }
+
+                                            $.ajax({
+                                                url: "/logistica/RegistrarSoliExc",
+                                                type: "post",
+                                                data: datos,
+                                                dataType: "json",
+                                                success: function (resultado) {
+
+                                                    if (resultado.success) {
+                                                        Swal.fire({
+                                                            icon: 'success',
+                                                            title: resultado.mensaje,
+                                                            text: "Textile Sourcing Company",
+                                                            showConfirmButton: false,
+                                                            timer: 1600
+                                                        });
+                                                    } else {
+                                                        Advertir(resultado.mensaje);
+                                                    }
+
+                                                    ListarOCs(datoslista);
+                                                },
+                                                error: function (xhr, ajaxOptions, thrownError) {
+
+                                                }
+                                            });
+
+                                        },
+                                        allowOutsideClick: () => !Swal.isLoading()
+                                    }).then((result) => {
+                                        Swal.fire({
+                                            text: "Cargando...",
+                                            showConfirmButton: false,
+                                            timer: 1000
+                                        });
+                                    })
+                                }
+                                else {
+                                    if (e.success) {
+                                        Swal.fire({
+                                            icon: 'success',
+                                            title: e.mensaje,
+                                            text: e.mensajedet,
+                                            allowEscapeKey: false,
+                                            allowOutsideClick: false
+                                        });
+
+                                    } else {
+                                        Swal.fire({
+                                            icon: 'error',
+                                            title: e.mensaje,
+                                            text: e.mensajedet,
+                                            allowEscapeKey: false,
+                                            allowOutsideClick: false
+                                        });
+
+                                    }
+                                }
+
+                                ListarOCs(datoslista);
+                            }
+                        });
+
+                    } else {
+                        Advertir("Por favor seleccione al menos una pedido para liberar");
+                    }
+                }
+            });
+
+
+            // Funciones.
+            function LlenarCBO_Periodos() {
+                LimpiarCBO_Periodos();
+                $.ajax({
+                    type: "GET",
+                    url: '/logistica/ListarPeriodos',
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (data) {
+                        $.each(data, function () {
+                            $("#periodosLista").append($("<option/>").val(this.COD_PERIODO).text(this.DESC_PERIODO));
+                        });
+                    },
+                    failure: function () {
+                        console.error('error al cargar los periodos');
+                    }
+                });
+            }
+
+            function LlenarCBO_Gerencias() {
+                LimpiarCBO_Gerencias();
+                $.ajax({
+                    type: "GET",
+                    url: '/logistica/ListarGerencias',
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (data) {
+
+                        $.each(data, function () {
+                            $("#gerenciasLista").append($("<option/>").val(this.CodGerencia).text(this.DescGerencia));
+                        });
+                    },
+                    failure: function () {
+                        console.error('error al cargar las gerencias');
+                    }
+                });
+            }
+
+            function LlenarResumenPpto(codgerencia, codperiodo) {
+
+                var datos = {
+                    'codgerencia': codgerencia,
+                    'codperiodo': codperiodo
+                }
+
+                $.ajax({
+                    type: "GET",
+                    url: '/logistica/ListarResumen',
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    data: datos,
+                    success: function (data) {
+                        var responseJSON = JSON.stringify(data);
+                        var responseArray = JSON.parse(responseJSON);
+
+                        if (responseArray.Presupuesto != null) {
+                            $('#btnPresupuesto').text(responseArray.Simbolo + " " + responseArray.Presupuesto);
+                            $('#btnConsumido').text(responseArray.Simbolo + " " + responseArray.Consumido);
+                            $('#btnDisponible').text(responseArray.Simbolo + " " + responseArray.Disponible);
+                        }
+                        else {
+                            $('#btnPresupuesto').text("0.00");
+                            $('#btnConsumido').text("0.00");
+                            $('#btnDisponible').text("0.00");
+                        }
+                    },
+                    failure: function () {
+                        console.error('error al cargar las gerencias');
+                    }
+                });
+            }
+
+
+            function LimpiarCBO_Periodos() {
+                $('#periodosLista').empty().append('<option selected="selected">Seleccione</option>');
+            }
+
+            function LimpiarCBO_Gerencias() {
+                $('#gerenciasLista').empty().append('<option selected="selected">Seleccione</option>');
+            }
+
+
+            $("select.selectPeriodo").change(function () {
+                codPeriodo = $(this).children("option:selected").val();
+
+
+                if (codPeriodo != "Seleccione" &&
+                    codGerencia != "Seleccione"
+                ) {
+                    LlenarResumenPpto(codGerencia, codPeriodo);
+                }
+                else {
+                    $('#btnPresupuesto').text("0.00");
+                    $('#btnConsumido').text("0.00");
+                    $('#btnDisponible').text("0.00");
+                }
+            });
+
+            $("select.selectGerencia").change(function () {
+                codGerencia = $(this).children("option:selected").val();
+
+                if (codPeriodo != "Seleccione" && codGerencia != "Seleccione") {
+                    LlenarResumenPpto(codGerencia, codPeriodo);
+                }
+                else {
+                    $('#btnPresupuesto').text("0.00");
+                    $('#btnConsumido').text("0.00");
+                    $('#btnDisponible').text("0.00");
+                }
+            });
+
+            //AGREGAMOS Y QUITAMOS ORDENES DE COMPRA
+            $("#tablaPrincipal").on('click', '.detalle', function () {
+                var pedido = $(this).attr("data-pedido");
+                var datos = { 'ordencompra': pedido }
+                ListarDetalleOC(datos);
+            });
+
+
+            function ListarOCs(datos) {
+                $.ajax({
+                    type: "GET",
+                    url: '/logistica/ListarOCAlterarSituacion',
+                    contentType: "application/json; charset=utf-8",
+                    data: datos,
+                    dataType: "json",
+                    success: function (data) {
+                        let tabla = $("#tablaPrincipal").DataTable();
+                        tabla.destroy();
+                        var tr = "";
+
+                        var clase = "";
+                        var vDisponible = 0;
+                        var vTotal = 0;
+
+                        data.forEach((obj) => {
+
+                            vDisponible = obj.vDisponible;
+                            vTotal = obj.vTotalPedido;
+
+                            if (vDisponible > vTotal) {
+                                clase = "cdisponible";
+                            }
+                            else if (vDisponible == vTotal) {
+                                clase = "cigual";
+                            }
+                            else if (vDisponible < vTotal) {
+                                clase = "cexcedido";
+                            }
+
+                            tr += "<tr> "
+                                + " <td><span data-codoc='" + obj.PEDIDO + "' data-codcc='" + obj.CENTROCOSTO + "' class='tplancont " + clase + "'> U$ " + obj.DISPONIBLE + "</span></td> "
+                                + " <td> " + obj.PEDIDO + "</td> "
+                                + " <td> " + obj.CENTROCOSTO + "</td>"
+                                + " <td> " + obj.FECHA + "</td>"
+                                + " <td> " + obj.PROVEEDOR + "</td> "
+                                + " <td> " + obj.COMPRADOR + "</td> "
+                                + " <td> " + obj.DESCRIPCIONPAGO + "</td>"
+                                + " <td> " + obj.SIMBOLO_MOEDA + " " + obj.TOTAL_PEDIDO + "</td> "
+                                + " <td class='text-center'>"
+                                + "<span class='cursor-pointer mr-1 detalle' data-pedido='" + obj.PEDIDO + "'><i class='fas fa-eye' style='color:#007bff;'></i></span>"
+                                + "<input type='checkbox' data-pedido='" + obj.PEDIDO + "' class='liberar ml-1'>"
+                                + "</td>"
+                                + "</tr>";
+                        });
+
+                        $("#tablaCabeceraContenido").html(tr);
+
+                        $("#tablaPrincipal").DataTable(
+                            {
+                                'language': { 'url': '/libs/datatables/spanish.json' },
+                                lengthMenu: [[5, 10, 20, -1], [5, 10, 20, 'Todos']]
+                            }
+                        );
+                    },
+                    failure: function () {
+                        console.error('error al cargar los periodos');
+                    }
+                });
+            }
+
+            //LISTA DETALLE PLAN CONTABLE
+            function ListarPlanContDetalle(datos) {
+
+                $.ajax({
+                    url: '/logistica/ListarPlanContDetalle/',
+                    type: 'get',
+                    data: datos,
+                    success: function (e) {
+                        //ARMAMOS TABLA
+                        var tr = "";
+                        e.forEach((obj) => {
+                            tr += `<tr>
+                                                <td>${obj.CUENTA}</td>
+                                                <td>${obj.SIM_PRE} ${obj.DISPONIBLE}</td>
+                                                <td>${obj.SIM_OC} ${obj.VALOR_OC}</td>
+                                                </tr>`;
+                        });
+
+                        $("#tablaPlanContDet").html(tr);
+                        $("#modal_plancont_det").modal("show");
+                    }
+                });
+            }
+
+            //LISTA DETALLE
+            function ListarDetalleOC(datos) {
+
+                $.ajax({
+                    url: '/logistica/ListarDetalleOCAlterSit/',
+                    type: 'get',
+                    data: datos,
+                    success: function (e) {
+                        //ARMAMOS TABLA
+                        var tr = "";
+                        e.forEach((obj) => {
+                            tr += `<tr>
+                                                                    <td>${obj.seq_item_pedido}</td>
+                                                                    <td>${obj.descricao_item}</td>
+                                                                    <td>${obj.centro_custo}</td>
+                                                                    <td>${obj.DESCRICAO}</td>
+                                                                    <td>${obj.unidade_conv}</td>
+                                                                    <td>${obj.reservaplane}</td>
+                                                                    <td>${obj.QTDE_PEDIDA_ITEM}</td>
+                                                                    <td>${obj.VALOR_CONV}</td>
+                                                                    <td>${obj.total}</td>
+                                                                </tr>`;
+                        });
+
+                        $("#tablaDetalleContenido").html(tr);
+                        $("#modalInformacion").modal("show");
+
+                    }
+                });
+            }
+
+
+        });
+
+
+    </script>
+}

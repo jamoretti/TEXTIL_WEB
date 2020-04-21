@@ -1,0 +1,1172 @@
+﻿@{
+    ViewBag.Title = "Ordenes de Compra - Excedente de Presupuesto";
+    ViewBag.Modulo = "Logística";
+    Layout = "~/Views/Plantillas/_Layout.cshtml";
+
+}
+
+<div class="cont-visualizar">
+
+    <div class="card">
+
+        <div class="card-body">
+
+
+            <ul class="nav nav-tabs nav-justified md-tabs indigo" id="myTabJust" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link active" id="home-tab-just" data-toggle="tab" href="#home-just" role="tab" aria-controls="home-just"
+                       aria-selected="true">Pendientes de Aprobación</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="profile-tab-just" data-toggle="tab" href="#profile-just" role="tab" aria-controls="profile-just"
+                       aria-selected="false">Aprobados</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="contact-tab-just" data-toggle="tab" href="#contact-just" role="tab" aria-controls="contact-just"
+                       aria-selected="false">Rechazados</a>
+                </li>
+            </ul>
+            <div class="tab-content card pt-1" id="myTabContentJust">
+                <div class="tab-pane fade show active" id="home-just" role="tabpanel" aria-labelledby="home-tab-just">
+
+                    <div class="p-3">
+
+                        <div class="card p-3" style="width: 100%">
+
+                            <div class="d-flex justify-content-between flex-wrap">
+                                <div class="d-flex justify-content-around flex-wrap">
+                                    <div>
+                                        <div style="font-weight: bold; ">Periodo Presupuesto</div>
+                                        <select class="browser-default custom-select selectPeriodo1" id="periodosLista1">
+                                            <option selected>Seleccione</option>
+                                        </select>
+                                    </div>
+                                    <div class="ml-1">
+                                        <div style="font-weight: bold" ;>Gerencia</div>
+                                        <select class="browser-default custom-select selectGerencia1" id="gerenciasLista1">
+                                            <option selected>Seleccione</option>
+                                        </select>
+                                    </div>
+                                    <div class="ml-2" style="font-weight: bold;">
+                                        <div>&nbsp;</div>
+                                        <button type="button" class="btn btn-primary" id="btnBuscar1">Buscar</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+
+                        <div class="mt-2">
+
+                            <table class="table table-bordered table-hover dt-responsive nowrap" id="tablaPrincipal1" style="width:100%">
+                                <thead>
+                                    <tr>
+                                        <th>Información</th>
+                                        <th class="all">Pedido</th>
+                                        <th>C. Costo</th>
+                                        <th>Fecha</th>
+                                        <th>Proveedor</th>
+                                        <th>Comprador</th>
+                                        <th>Descripción de pago</th>
+                                        <th class="all">Total</th>
+                                        <th class="all">Operación</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tablaCabeceraContenido1"></tbody>
+                            </table>
+
+                        </div>
+
+                    </div>
+
+                </div>
+                <div class="tab-pane fade seccion-ap-rech" id="profile-just" role="tabpanel" aria-labelledby="profile-tab-just">
+                    <div class="p-3">
+                        <div class="card cont-header-ap-rec">
+                            <div class="cont-seccion1-ap-rec">
+                                <div>
+                                    <div style="font-weight: bold; ">Periodo Presupuesto</div>
+                                    <select class="browser-default custom-select selectPeriodo2" id="periodosLista2">
+                                        <option selected>Seleccione</option>
+                                    </select>
+                                </div>
+
+                                <div class="ml-2" style="font-weight: bold;">
+                                    <div>&nbsp;</div>
+                                    <button type="button" class="btn btn-primary btn-buscar" id="btnBuscar2">Buscar</button>
+                                </div>
+                            </div>
+                            <div class="cont-seccion2-rech">
+                                <div class="cont-item12-ap-re">
+                                    <div>&nbsp;</div>
+                                    <button type="button" class="btn btn-outline-success kpi-cant" id="kpiCantidad2" style="cursor: default">Cantidad: 0</button>
+                                </div>
+                                <div class="cont-item22-ap-rec">
+                                    <div>&nbsp;</div>
+                                    <button type="button" class="btn btn-outline-success kpi-total" id="kpiTotal2" style="cursor: default">Total: 0</button>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="mt-2">
+                            <table class="table table-bordered table-hover dt-responsive nowrap" id="tablaPrincipal2" style="width:100%">
+                                <thead>
+                                    <tr>
+                                        <th>Pedido Compra</th>
+                                        <th>Centro Costo</th>
+                                        <th>Fecha</th>
+                                        <th>Proveedor</th>
+                                        <th>Comprador</th>
+                                        <th>Tipo. Pago.</th>
+                                        <th>Total</th>
+                                        <th>Fecha. Aprob.</th>
+                                        <th>Usuario. Aprob.</th>
+                                        <th>Observacion. Aprob.</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tablaCabeceraContenido2"></tbody>
+
+                            </table>
+                        </div>
+
+                    </div>
+
+                </div>
+                <div class="tab-pane fade seccion-ap-rech" id="contact-just" role="tabpanel" aria-labelledby="contact-tab-just">
+                    <div class="p-3">
+                        <div class="card cont-header-ap-rec">
+                            <div class="cont-seccion1-ap-rec">
+                                <div>
+                                    <div style="font-weight: bold; ">Periodo Presupuesto</div>
+                                    <select class="browser-default custom-select selectPeriodo3" id="periodosLista3">
+                                        <option selected>Seleccione</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <div>&nbsp;</div>
+                                    <button type="button" class="btn btn-primary btn-buscar" id="btnBuscar3">Buscar</button>
+                                </div>
+                            </div>
+                            <div class="cont-seccion2-rech">
+                                <div class="cont-item12-ap-re">
+                                    <div>&nbsp;</div>
+                                    <button type="button" class="btn btn-outline-danger kpi-cant" id="kpiCantidad3" style="cursor: default">Cantidad: 0</button>
+                                </div>
+                                <div class="cont-item22-ap-rec">
+                                    <div>&nbsp;</div>
+                                    <button type="button" class="btn btn-outline-danger kpi-total" id="kpiTotal3" style="cursor: default">Total: 0</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-2">
+                            <table class="table table-bordered table-hover dt-responsive nowrap" id="tablaPrincipal3" style="width:100%">
+                                <thead>
+                                    <tr>
+                                        <th>Pedido Compra</th>
+                                        <th>Centro Costo</th>
+                                        <th>Fecha</th>
+                                        <th>Proveedor</th>
+                                        <th>Comprador</th>
+                                        <th>Tipo. Pago.</th>
+                                        <th>Total</th>
+                                        <th>Fecha. Rechazo.</th>
+                                        <th>Usuario. Rechazo.</th>
+                                        <th>Observacion. Rechazo.</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tablaCabeceraContenido3"></tbody>
+                            </table>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal modal-primero" tabindex="-1" role="dialog" id="modalInformacion1">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Detalle Orden Compra</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+
+                    <div class="card">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item"><span style="font-weight:bold">Pedido: </span><span id="info-pedido"></span></li>
+                            <li class="list-group-item"><span style="font-weight:bold">Motivo: </span><span id="info-motivo"></span></li>
+                        </ul>
+                    </div>
+
+                    <div class="table-responsive" style="height:250px">
+                        <table class="table table-bordered table-hover" style="width:100%" id="tablaDetalle">
+                            <thead>
+                                <tr>
+                                    <th>Secuencia</th>
+                                    <th>Descripcion</th>
+                                    <th nowrap>C.x| Costo</th>
+                                    <th>Descripción C. Costo</th>
+                                    <th>UM</th>
+                                    <th>Reserva Plane.</th>
+                                    <th>Qtde. Pedida</th>
+                                    <th>Valor Unit.</th>
+                                    <th>Valor Total</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tablaDetalleContenido1"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalaprobacion" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">Orden de Compra - aprobación</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div>
+                        <label for="exampleInputEmail1">Motivo de aprobación: </label>
+                        <input type="text" class="form-control" id="motivoaprobacion" aria-describedby="emailHelp">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-success" id="btnAprobar">Aprobar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalrechazo" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">Orden de Campra - Rechazo</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <label for="exampleInputEmail1">Motivo de rechazo: </label>
+                    <input type="text" class="form-control" id="motivorechazo" aria-describedby="emailHelp">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-danger" id="btnRechazar">Rechazar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modal_plancont_det" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">Detalle de Disponible</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+
+                    <table class="table table-bordered table-hover" style="width:100%" id="tablaPlanCont">
+                        <thead>
+                            <tr>
+                                <th>Plan Contable</th>
+                                <th>Disponible Ppto.</th>
+                                <th>Valor OC x Cuenta</th>
+                                <th style="min-width:150px">Monto Exceso</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tablaPlanContDet">
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Aceptar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+<style>
+
+    .cont-visualizar #tablaPlanContDet .inf-exc {
+        background-color: #E74C3C;
+        padding: 7px;
+        border-radius: 5px;
+        color: #fff;
+    }
+
+    .cont-visualizar .seccion-ap-rech .correcto-ap-re {
+        padding: 7px;
+        border-radius: 5px;
+        background-color: #2ECC71;
+        display: block;
+        width: 80%;
+        margin: auto;
+        text-align: center;
+    }
+
+    .cont-visualizar .seccion-ap-rech .anulado-ap-re {
+        padding: 7px;
+        border-radius: 5px;
+        background-color: #EC7063;
+        display: block;
+        width: 80%;
+        margin: auto;
+        text-align: center;
+    }
+
+    @@media (min-width: 320px) and (max-width: 479.98px) {
+
+        .cont-header-ap-rec {
+            padding: 5px;
+        }
+
+            .cont-header-ap-rec .cont-seccion1-ap-rec {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+
+                .cont-header-ap-rec .cont-seccion1-ap-rec .selectPeriodo3 {
+                    width: 100%;
+                }
+
+                .cont-header-ap-rec .cont-seccion1-ap-rec .btn-buscar {
+                    width: 100%;
+                }
+
+
+            .cont-header-ap-rec .cont-seccion2-rech {
+                width: 100%;
+                border-top: 1px solid #CCD1D1;
+            }
+
+                .cont-header-ap-rec .cont-seccion2-rech .kpi-cant {
+                    width: 100%;
+                }
+
+                .cont-header-ap-rec .cont-seccion2-rech .kpi-total {
+                    width: 100%;
+                }
+    }
+
+    @@media (min-width: 480px) and (max-width: 767.98px) {
+
+        .cont-header-ap-rec .cont-seccion1-ap-rec {
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+            .cont-header-ap-rec .cont-seccion1-ap-rec .selectPeriodo3 {
+                width: 100%;
+            }
+
+            .cont-header-ap-rec .cont-seccion1-ap-rec .btn-buscar {
+                width: 100%;
+            }
+
+
+        .cont-header-ap-rec .cont-seccion2-rech {
+            width: 100%;
+            border-top: 1px solid #EAECEE;
+        }
+
+            .cont-header-ap-rec .cont-seccion2-rech .kpi-cant {
+                width: 100%;
+            }
+
+            .cont-header-ap-rec .cont-seccion2-rech .kpi-total {
+                width: 100%;
+            }
+    }
+
+    @@media (min-width: 768px) and (max-width: 991.98px) {
+
+        .cont-header-ap-rec {
+            width: 100%;
+            padding: 10px;
+        }
+
+            .cont-header-ap-rec .cont-seccion1-ap-rec {
+                width: 100%;
+                margin: 0px !important;
+                display: flex;
+                justify-content: space-between;
+            }
+
+            .cont-header-ap-rec .cont-seccion2-rech {
+                border-top: 1px solid #EAECEE;
+                width: 100%;
+                margin-top: 10px !important;
+                display: flex;
+                justify-content: space-around;
+            }
+
+                .cont-header-ap-rec .cont-seccion2-rech .cont-item12-ap-re {
+                    width: 50%;
+                    text-align: center;
+                }
+
+                .cont-header-ap-rec .cont-seccion2-rech .cont-item22-ap-rec {
+                    width: 50%;
+                    text-align: center;
+                }
+
+
+                .cont-header-ap-rec .cont-seccion2-rech .cont-item12-ap-re .kpi-cant {
+                    width: 80%
+                }
+
+                .cont-header-ap-rec .cont-seccion2-rech .cont-item22-ap-rec .kpi-total {
+                    width: 80%
+                }
+    }
+
+    @@media (min-width: 992px) and (max-width: 1199.98px) {
+        .cont-header-ap-rec {
+            width: 100%;
+            padding: 10px;
+        }
+
+            .cont-header-ap-rec .cont-seccion1-ap-rec {
+                width: 100%;
+                margin: 0px !important;
+                display: flex;
+                justify-content: space-between;
+            }
+
+            .cont-header-ap-rec .cont-seccion2-rech {
+                border-top: 1px solid #EAECEE;
+                width: 100%;
+                margin-top: 10px !important;
+                display: flex;
+                justify-content: space-around;
+            }
+
+                .cont-header-ap-rec .cont-seccion2-rech .cont-item12-ap-re {
+                    width: 50%;
+                    text-align: center;
+                }
+
+                .cont-header-ap-rec .cont-seccion2-rech .cont-item22-ap-rec {
+                    width: 50%;
+                    text-align: center;
+                }
+
+
+                .cont-header-ap-rec .cont-seccion2-rech .cont-item12-ap-re .kpi-cant {
+                    width: 80%
+                }
+
+                .cont-header-ap-rec .cont-seccion2-rech .cont-item22-ap-rec .kpi-total {
+                    width: 80%
+                }
+    }
+
+    @@media (min-width: 1200px) {
+
+        .cont-header-ap-rec {
+            width: 100%;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            flex-direction: row;
+        }
+
+            .cont-header-ap-rec .cont-seccion1-ap-rec {
+                width: 40%;
+                margin: 0px !important;
+                display: flex;
+            }
+
+                .cont-header-ap-rec .cont-seccion1-ap-rec .btn-buscar {
+                    margin-left: 3px;
+                }
+
+            .cont-header-ap-rec .cont-seccion2-rech {
+                border-top: 0px !important;
+                width: 50%;
+                margin-top: 0px !important;
+                display: flex;
+                justify-content: space-between;
+            }
+
+                .cont-header-ap-rec .cont-seccion2-rech .cont-item12-ap-re {
+                    width: 50%;
+                    text-align: right;
+                }
+
+                .cont-header-ap-rec .cont-seccion2-rech .cont-item22-ap-rec {
+                    width: 50%;
+                    text-align: right;
+                    margin-left: 4px;
+                }
+
+
+                .cont-header-ap-rec .cont-seccion2-rech .cont-item12-ap-re .kpi-cant {
+                    width: 80%
+                }
+
+                .cont-header-ap-rec .cont-seccion2-rech .cont-item22-ap-rec .kpi-total {
+                    width: 80%
+                }
+    }
+</style>
+
+
+
+
+@section scripts {
+    <script>
+
+        var codPeriodo1 = "Seleccione";
+        var codGerencia1 = "Seleccione";
+
+        var codPeriodo2 = "Seleccione";
+        var codGerencia2 = "Seleccione";
+
+        var codPeriodo3 = "Seleccione";
+        var codPeriodo3_f = "Seleccione";
+        var codGerencia3 = "Seleccione";
+
+        var pedidoCompra = 0;
+
+        $(document).ready(function () {
+
+            LlenarCBO_Periodos1();
+            LlenarCBO_Gerencias1();
+
+            LlenarCBO_Periodos2();
+
+            LlenarCBO_Periodos3();
+
+
+            //  TAB - 1
+
+            function LlenarCBO_Periodos1() {
+                LimpiarCBO_Periodos1();
+                $.ajax({
+                    type: "GET",
+                    url: '/logistica/ListarPeriodos',
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (data) {
+                        $.each(data, function () {
+                            $("#periodosLista1").append($("<option/>").val(this.COD_PERIODO).text(this.DESC_PERIODO));
+                        });
+                    },
+                    failure: function () {
+                        console.error('error al cargar los periodos');
+                    }
+                });
+            }
+
+            function LlenarCBO_Gerencias1() {
+
+                LimpiarCBO_Gerencias1();
+                $.ajax({
+                    type: "GET",
+                    url: '/logistica/ListarGerencias',
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (data) {
+                        $.each(data, function () {
+                            $("#gerenciasLista1").append($("<option/>").val(this.CodGerencia).text(this.DescGerencia));
+                        });
+                    },
+                    failure: function () {
+                        console.error('error al cargar las gerencias');
+                    }
+                });
+            }
+
+            function LimpiarCBO_Gerencias1() {
+                $('#gerenciasLista1').empty().append('<option selected="selected">Seleccione</option>');
+            }
+
+            function LimpiarCBO_Periodos1() {
+                $('#periodosLista1').empty().append('<option selected="selected">Seleccione</option>');
+            }
+
+            $("#btnBuscar1").click(function () {
+
+                if (codPeriodo1 == "Seleccione") {
+                    Swal.fire('Seleccione el Periodo por favor')
+                }
+                else if (codGerencia1 == "Seleccione") {
+                    Swal.fire('Seleccione la Gerencia por favor')
+                }
+                else {
+                    ListarOCPendientes();
+                }
+            });
+
+            function ListarOCPendientes() {
+                var datos = {
+                    'codperiodo': codPeriodo1,
+                    'codgerencia': codGerencia1
+                }
+                $.ajax({
+                    type: "GET",
+                    url: '/logistica/ListarOcExcentePendientes',
+                    contentType: "application/json; charset=utf-8",
+                    data: datos,
+                    dataType: "json",
+                    success: function (data) {
+                        let tabla = $("#tablaPrincipal1").DataTable();
+                        tabla.destroy();
+                        var tr = "";
+
+                        data.forEach((obj) => {
+
+                            tr += "<tr> "
+                                + " <td class='text-center'>"
+                                + "<button type='button' data-codoc='" + obj.PEDIDO + "' data-codcc='" + obj.CENTROCOSTO + "' class='ml-1 btn btn-danger btn-sm informacion'><i class='fas fa-info-circle' style='color:#ffffff;''></i></button>"
+                                + "</td>"
+                                + " <td> " + obj.PEDIDO + "</td> "
+                                + " <td> " + obj.CENTROCOSTO + "</td>"
+                                + " <td> " + obj.FECHA + "</td>"
+                                + " <td> " + obj.PROVEEDOR + "</td> "
+                                + " <td> " + obj.COMPRADOR + "</td> "
+                                + " <td> " + obj.DESCRIPCIONPAGO + "</td>"
+                                + " <td> " + obj.SIMBOLO_MOEDA + " " + obj.TOTAL_PEDIDO + "</td> "
+                                + " <td class='text-center'>"
+                                + "<button type='button' data-pedido='" + obj.PEDIDO + "' data-motivo='" + obj.CH_MOTIVO + "' class='btn btn-primary btn-sm detalle'><i class='fas fa-eye' style='color:#ffffff;'></i></button>"
+                                + "<button type='button' data-pedido='" + obj.PEDIDO + "' class='ml-1 btn btn-success btn-sm aprobar'><i class='fas fa-check' style='color:#ffffff;'></i></button>"
+                                + "<button type='button' data-pedido='" + obj.PEDIDO + "' class='ml-1 btn btn-danger btn-sm rechazar'><i class='fas fa-trash' style='color:#ffffff;''></i></button>"
+                                + "</td>"
+                                + "</tr>";
+                        });
+
+                        $("#tablaCabeceraContenido1").html(tr);
+
+                        $("#tablaPrincipal1").DataTable(
+                            {
+                                'language': { 'url': '/libs/datatables/spanish.json' },
+                                lengthMenu: [[5, 10, 20, -1], [5, 10, 20, 'Todos']]
+                            }
+                        );
+
+                    },
+                    failure: function () {
+                        console.error('error al cargar los periodos');
+                    }
+                });
+            }
+
+            $("select.selectPeriodo1").change(function () {
+                codPeriodo1 = $(this).children("option:selected").val();
+            });
+
+            $("select.selectGerencia1").change(function () {
+                codGerencia1 = $(this).children("option:selected").val();
+            });
+
+            $("#tablaPrincipal1").on('click', '.detalle', function () {
+                var pedido = $(this).attr("data-pedido");
+                var motivo = $(this).attr("data-motivo");
+
+                var datos = { 'ordencompra': pedido }
+
+                $(".modal-primero #info-pedido").text(pedido);
+                $(".modal-primero #info-motivo").text(motivo);
+
+                ListarDetalleOC1(datos);
+            });
+
+            $("#tablaPrincipal1").on('click', '.aprobar', function () {
+                pedidoCompra = $(this).attr("data-pedido");
+                $("#modalaprobacion").modal("show");
+            });
+
+            $("#tablaPrincipal1").on('click', '.rechazar', function () {
+                pedidoCompra = $(this).attr("data-pedido");
+                $("#modalrechazo").modal("show");
+            });
+
+            $("#btnAprobar").on('click', function () {
+                var motivoAprobacion = $("#motivoaprobacion").val();
+                MostrarCarga("Liberando...");
+
+                var datos = {
+                    'periodo': codPeriodo1,
+                    'ordencompra': pedidoCompra,
+                    'estado': 1,
+                    'observacion': motivoAprobacion
+                }
+
+                $.ajax({
+                    url: '/logistica/AprobacionRechazo/',
+                    type: 'post',
+                    data: datos,
+                    success: function (e) {
+                        if (e.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: e.mensaje,
+                                text: "Textile Sourcing Company",
+                                showConfirmButton: false,
+                                timer: 1800
+                            });
+                        } else {
+                            Advertir(e.mensaje);
+                        }
+                        $("#modalaprobacion").modal("hide");
+                        ListarOCPendientes();
+                    }
+                });
+            });
+
+            $("#motivoaprobacion").on('keyup', function (e) {
+                if (e.keyCode === 13) {
+                    var motivoAprobacion = $("#motivoaprobacion").val();
+
+                    MostrarCarga("Liberando...");
+
+                    var datos = {
+                        'periodo': codPeriodo1,
+                        'ordencompra': pedidoCompra,
+                        'estado': 1,
+                        'observacion': motivoAprobacion
+                    }
+
+                    $.ajax({
+                        url: '/logistica/AprobacionRechazo/',
+                        type: 'post',
+                        data: datos,
+                        success: function (e) {
+                            if (e.success) {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: e.mensaje,
+                                    text: "Textile Sourcing Company",
+                                    showConfirmButton: false,
+                                    timer: 1800
+                                });
+                            } else {
+                                Advertir(e.mensaje);
+                            }
+
+                            $("#modalaprobacion").modal("hide");
+                            ListarOCPendientes();
+                        }
+                    });
+                }
+            });
+
+            $("#btnRechazar").on('click', function () {
+                var motivoRechazo = $("#motivorechazo").val();
+
+                MostrarCarga("Liberando...");
+
+                var datos = {
+                    'periodo': codPeriodo1,
+                    'ordencompra': pedidoCompra,
+                    'estado': 0,
+                    'observacion': motivoRechazo
+                }
+
+                $.ajax({
+                    url: '/logistica/AprobacionRechazo/',
+                    type: 'post',
+                    data: datos,
+                    success: function (e) {
+                        if (e.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: e.mensaje,
+                                text: "Textile Sourcing Company",
+                                showConfirmButton: false,
+                                timer: 1500
+                            });
+                        } else {
+                            Advertir(e.mensaje);
+                        }
+
+                        $("#modalrechazo").modal("hide");
+                        ListarOCPendientes();
+                    }
+                });
+            });
+
+            $("#motivorechazo").on('keyup', function (e) {
+                if (e.keyCode === 13) {
+                    var motivoRechazo = $("#motivorechazo").val();
+
+                    MostrarCarga("Liberando...");
+
+                    var datos = {
+                        'periodo': codPeriodo1,
+                        'ordencompra': pedidoCompra,
+                        'estado': 0,
+                        'observacion': motivoRechazo
+                    }
+
+                    $.ajax({
+                        url: '/logistica/AprobacionRechazo/',
+                        type: 'post',
+                        data: datos,
+                        success: function (e) {
+                            if (e.success) {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: e.mensaje,
+                                    text: "Textile Sourcing Company",
+                                    showConfirmButton: false,
+                                    timer: 1800
+                                });
+                            } else {
+                                Advertir(e.mensaje);
+                            }
+
+                            $("#modalrechazo").modal("hide");
+                            ListarOCPendientes();
+                        }
+                    });
+                }
+            });
+
+            $('#modalaprobacion').on('hidden.bs.modal', function (e) {
+                $(this)
+                    .find("input,textarea,select")
+                    .val('')
+                    .end()
+                    .find("input[type=checkbox], input[type=radio]")
+                    .prop("checked", "")
+                    .end();
+            });
+
+            $('#modalrechazo').on('hidden.bs.modal', function (e) {
+                $(this)
+                    .find("input,textarea,select")
+                    .val('')
+                    .end()
+                    .find("input[type=checkbox], input[type=radio]")
+                    .prop("checked", "")
+                    .end();
+            });
+
+            $("#tablaPrincipal1").on('click', '.informacion', function () {
+
+                var codpedcompra = $(this).attr("data-codoc");
+                var codcc = $(this).attr("data-codcc");
+
+                if (codPeriodo1 == "Seleccione") {
+                    Swal.fire('Seleccione el Periodo por favor')
+                }
+                else if (codGerencia1 == "Seleccione") {
+                    Swal.fire('Seleccione el Periodo por favor')
+                }
+                else {
+                    var datos =
+                    {
+                        'codgerencia': codGerencia1,
+                        'periodo': codPeriodo1,
+                        'codcc': codcc,
+                        'pedido': codpedcompra
+                    }
+                    ListarInformacion(datos);
+                }
+            });
+
+            function ListarDetalleOC1(datos) {
+
+                $.ajax({
+                    url: '/logistica/ListarDetalleOCAlterSit/',
+                    type: 'get',
+                    data: datos,
+                    success: function (e) {
+                        var tr = "";
+
+                        e.forEach((obj) => {
+                            tr += "<tr>"
+                                + "<td>" + obj.seq_item_pedido + "</td>"
+                                + "<td>" + obj.descricao_item + "</td>"
+                                + "<td>" + obj.centro_custo + "</td>"
+                                + "<td>" + obj.DESCRICAO + "</td>"
+                                + "<td>" + obj.unidade_conv + "</td>"
+                                + "<td>" + obj.reservaplane + "</td>"
+                                + "<td>" + obj.QTDE_PEDIDA_ITEM + "</td>"
+                                + "<td>" + obj.VALOR_CONV + "</td>"
+                                + "<td>" + obj.total + "</td>"
+                                + "</tr>";
+                        });
+
+                        $("#tablaDetalleContenido1").html(tr);
+
+                        $("#modalInformacion1").modal("show");
+                    }
+                });
+            }
+
+            function ListarInformacion(datos) {
+
+                $.ajax({
+                    url: '/logistica/InformacionExcedente/',
+                    type: 'get',
+                    data: datos,
+                    success: function (e) {
+                        var tr = "";
+                        e.forEach((obj) => {
+                            tr += "<tr>"
+                                + "<td>" + obj.CUENTA + "</td>"
+                                + "<td>" + obj.SIM_PRE + " " + obj.DISPONIBLE + "</td>"
+                                + "<td>" + obj.SIM_OC + " " + obj.VALOR_OC + "</td>"
+                                + "<td><span class='inf-exc'> " + obj.SIM_OC + " " + formatoNumero(obj.V_VALOR_OC - obj.V_DISPONIBLE) + "</span></td>"
+                                + "</tr>";
+                        });
+
+                        $("#tablaPlanContDet").html(tr);
+                        $("#modal_plancont_det").modal("show");
+                    }
+                });
+            }
+
+
+            // TAB - 2
+
+            function LlenarCBO_Periodos2() {
+                LimpiarCBO_Periodos2();
+                $.ajax({
+                    type: "GET",
+                    url: '/logistica/ListarPeriodos',
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (data) {
+                        $.each(data, function () {
+                            $("#periodosLista2").append($("<option/>").val(this.COD_PERIODO).text(this.DESC_PERIODO));
+                        });
+                    },
+                    failure: function () {
+                        console.error('error al cargar los periodos');
+                    }
+                });
+            }
+
+            function LimpiarCBO_Periodos2() {
+                $('#periodosLista2').empty().append('<option selected="selected">Seleccione</option>');
+            }
+
+            $("#btnBuscar2").click(function () {
+                if (codPeriodo2 == "Seleccione") {
+                    Swal.fire('Seleccione el Periodo por favor')
+                }
+                else {
+
+                    var datos = {
+                        'codperiodo': codPeriodo2
+                    }
+
+                    $.ajax({
+                        type: "GET",
+                        url: '/logistica/ListarAprobados',
+                        contentType: "application/json; charset=utf-8",
+                        data: datos,
+                        dataType: "json",
+                        success: function (data) {
+                            let tabla = $("#tablaPrincipal2").DataTable();
+
+                            tabla.destroy();
+                            var tr = "";
+                            let cantidad = 0;
+                            let monto = 0;
+                            let clasecolor = "";
+
+                            $('#kpiCantidad2').text("Cantidad: 0");
+                            $('#kpiTotal2').text("Total: 0");
+
+                            data.forEach((obj) => {
+
+                                if (obj.CODCANCEL > 0) {
+                                    clasecolor = "anulado-ap-re";
+                                }
+                                else {
+                                    clasecolor = "correcto-ap-re";
+                                }
+
+                                tr += "<tr> "
+                                    + " <td> <span class='" + clasecolor + "'>" + obj.PEDIDO + "</td>"
+                                    + " <td> " + obj.CENTROCOSTO + "</td>"
+                                    + " <td> " + obj.FECHA + "</td>"
+                                    + " <td> " + obj.PROVEEDOR + "</td>"
+                                    + " <td> " + obj.COMPRADOR + "</td>"
+                                    + " <td> " + obj.DESCRIPCIONPAGO + "</td>"
+                                    + " <td> " + obj.SIMBOLO_MOEDA + " " + obj.TOTAL_PEDIDO + "</td>"
+                                    + " <td> " + obj.FECHA_APROB + "</td>"
+                                    + " <td> " + obj.USUARIO_APROB + "</td>"
+                                    + " <td> " + obj.OBS_APROB + "</td>"
+                                    + "</tr>";
+
+                                cantidad = cantidad + 1;
+                                monto = monto + obj.VALOR_DOLAR;
+
+                                $('#kpiCantidad2').text("Cantidad: " + " " + cantidad);
+                                $('#kpiTotal2').text("U$ " + formatoNumero(monto));
+                            });
+
+
+                            $("#tablaCabeceraContenido2").html(tr);
+                            $("#tablaPrincipal2").DataTable(
+                                {
+                                    'language': { 'url': '/libs/datatables/spanish.json' },
+                                    lengthMenu: [[5, 10, 20, -1], [5, 10, 20, 'Todos']]
+                                });
+
+
+                        },
+                        failure: function () {
+                            console.error('error al cargar los periodos');
+                        }
+                    });
+                }
+            });
+
+            $("select.selectPeriodo2").change(function () {
+                codPeriodo2 = $(this).children("option:selected").val();
+
+                if (codPeriodo2 == "Seleccione") {
+                    $('#btnPresupuesto2').text("0.00");
+                    $('#btnConsumido2').text("0.00");
+                    $('#btnDisponible2').text("0.00");
+                }
+            });
+
+            // TAB3.
+
+            function LlenarCBO_Periodos3() {
+
+                LimpiarCBO_Periodos3();
+
+                $.ajax({
+                    type: "GET",
+                    url: '/logistica/ListarPeriodos',
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (data) {
+                        $.each(data, function () {
+                            $("#periodosLista3").append($("<option/>").val(this.COD_PERIODO).text(this.DESC_PERIODO));
+                        });
+                    },
+                    failure: function () {
+                        console.error('error al cargar los periodos');
+                    }
+                });
+            }
+
+            function LimpiarCBO_Periodos3() {
+                $('#periodosLista3').empty().append('<option selected="selected">Seleccione</option>');
+            }
+
+            $("#btnBuscar3").click(function () {
+                if (codPeriodo3 == "Seleccione") {
+                    Swal.fire('Seleccione el Periodo por favor')
+                }
+                else {
+
+                    var datos = {
+                        'codperiodo': codPeriodo3
+                    }
+
+                    $.ajax({
+                        type: "GET",
+                        url: '/logistica/ListarRechazados',
+                        contentType: "application/json; charset=utf-8",
+                        data: datos,
+                        dataType: "json",
+                        success: function (data) {
+                            let tabla = $("#tablaPrincipal3").DataTable();
+                            tabla.destroy();
+                            var tr = "";
+                            let cantidad = 0;
+                            let monto = 0;
+
+                            $('#kpiCantidad3').text("Cantidad: 0");
+                            $('#kpiTotal3').text("Total: 0");
+
+                            data.forEach((obj) => {
+
+                                if (obj.CODCANCEL > 0) {
+                                    clasecolor = "anulado-ap-re";
+                                }
+                                else {
+                                    clasecolor = "correcto-ap-re";
+                                }
+
+                                tr += "<tr> "
+                                    + " <td> <span class='" + clasecolor + "'>" + obj.PEDIDO + "</td> "
+                                    + " <td> " + obj.CENTROCOSTO + "</td>"
+                                    + " <td> " + obj.FECHA + "</td>"
+                                    + " <td> " + obj.PROVEEDOR + "</td> "
+                                    + " <td> " + obj.COMPRADOR + "</td> "
+                                    + " <td> " + obj.DESCRIPCIONPAGO + "</td>"
+                                    + " <td> " + obj.SIMBOLO_MOEDA + " " + obj.TOTAL_PEDIDO + "</td> "
+                                    + " <td> " + obj.FECHA_RECH + "</td>"
+                                    + " <td> " + obj.USUARIO_RECH + "</td>"
+                                    + " <td> " + obj.OBS_RECH + "</td>"
+                                    + "</tr>";
+
+                                cantidad = cantidad + 1;
+                                monto = monto + obj.VALOR_DOLAR;
+
+                                $('#kpiCantidad3').text("Cantidad: " + " " + cantidad);
+                                $('#kpiTotal3').text("Total: U$ " + formatoNumero(monto));
+
+                            });
+
+                            $("#tablaCabeceraContenido3").html(tr);
+                            $("#tablaPrincipal3").DataTable(
+                                {
+                                    'language': { 'url': '/libs/datatables/spanish.json' },
+                                    lengthMenu: [[5, 10, 20, -1], [5, 10, 20, 'Todos']]
+                                });
+
+                        },
+                        failure: function () {
+                            console.error('error al cargar los periodos');
+                        }
+                    });
+                }
+            });
+
+            $("select.selectPeriodo3").change(function () {
+                codPeriodo3 = $(this).children("option:selected").val();
+
+                if (codPeriodo3 == "Seleccione") {
+                    $('#btnPresupuesto3').text("0.00");
+                    $('#btnConsumido3').text("0.00");
+                    $('#btnDisponible3').text("0.00");
+                }
+            });
+
+            function formatoNumero(x) {
+                x = x.toFixed(2);
+                return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            }
+
+
+        });
+
+
+    </script>
+}

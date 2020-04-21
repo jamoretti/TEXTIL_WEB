@@ -1,0 +1,321 @@
+﻿@model List<TSC_WEB.Models.Entidades.DesarrolloProducto.FichaTecnica.EtapasEntidad>
+@{
+    ViewBag.Title = "Visualización de moldes";
+    ViewBag.Modulo = "Desarrollo producto";
+    Layout = "~/Views/Plantillas/_Layout.cshtml";
+}
+
+
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">Filtros</h3>
+    </div>
+
+    <div class="card-body">
+        <div class="row">
+            <div class="col-xl-6 form-group">
+                <label>Pedido</label>
+                <input type="text" class="form-control" id="txtpedidofiltro" />
+            </div>
+            <!--
+            <div class="col-xl-3 form-group">
+                <label>Fecha Inicio</label>
+                <input type="date" class="form-control" id="txtfechaifiltro" />
+            </div>
+            <div class="col-xl-3 form-group">
+                <label>Fecha Fin</label>
+                <input type="date" class="form-control" id="txtfechaffiltro" />
+            </div>
+                -->
+            <div class="col-xl-6 form-group">
+                <label>Estilo</label>
+                <input type="text" class="form-control" id="txtestilofiltro" />
+            </div>
+
+            <div class="col-xl-4 form-group">
+                <label>Cliente</label>
+                <select class="custom-select select2" style="width:100%" id="cboClientefiltro"></select>
+            </div>
+
+            <div class="col-xl-4 form-group">
+                <label>Programa</label>
+                <select class="custom-select select2" style="width:100%" id="cboProgramaFiltro"></select>
+            </div>
+
+            <div class="col-xl-2 form-group">
+                <label>&nbsp;</label>
+                <button class="btn btn-danger btn-block" id="btnBuscar">Buscar</button>
+            </div>
+            <div class="col-xl-2 form-group">
+                <label>&nbsp;</label>
+                <button class="btn btn-primary btn-block" id="btnNuevo">Nuevo</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <table class="table table-bordered table-hover" id="tablaGeneral">
+            <thead class="text-center">
+                <tr>
+                    <th>Pedido</th>
+                    <th>Estilo</th>
+                    <th>Programa</th>
+                    <th>Descripción</th>
+                    <th>Fecha</th>
+                    <th>Ver</th>
+                </tr>
+            </thead>
+            <tbody id="tablaRegistros"></tbody>
+
+        </table>
+    </div>
+</div>
+
+
+<!-- MODAL -->
+<div class="modal" tabindex="-1" role="dialog" id="modalRegistro">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Registro de moldes</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form class="modal-body row" id="frmArchivos">
+                <div class="form-group col-xl-12">
+                    <label>Estilo Cliente:</label>
+                    <input type="text" id="txtEstiloCliente" class="form-control" />
+                </div>
+                <div class="form-group col-xl-6">
+                    <label>Cliente:</label>
+                    <select class="custom-select select2" style="width:100%" id="cboCliente"></select>
+                </div>
+                <div class="form-group col-xl-6">
+                    <label>Programas:</label>
+                    <select class="custom-select select2" style="width:100%" id="cboPrograma"></select>
+                </div>
+                <div class="form-group col-xl-6">
+                    <label>Pedidos:</label>
+                    <textarea class="form-control" id="txtPedido" readonly></textarea>
+                </div>
+                <div class="form-group col-xl-6">
+                    <label>Observación:</label>
+                    <textarea class="form-control" id="txtobservacion"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Archivo:</label>
+                    <input type="file" id="file" class="form-control" accept="application/pdf" />
+                </div>
+
+            </form>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="btnSubir">Subir</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    <script>
+        $(document).ready(function(){
+            ListarClientes();
+        });
+        //ABRIMOS MODAL
+        $("#btnNuevo").click(function () {
+            $("#modalRegistro").modal("show");
+            $("#txtPedido").focus();
+            //RegistrarFicha();
+
+        });
+
+        //REGISTRAMOS
+        $("#btnSubir").click(function () {
+            RegistrarMolde();
+        });
+
+        $("#btnBuscar").click(function () {
+            Buscar();
+        });
+
+        //LISTA CLIENTES
+        function ListarClientes(){
+            $.ajax({
+                url: '/operaciones/ListarClientesFtec/',
+                type:'GET',
+                datatype: 'json',
+                success:function(e){
+                    //console.log(e);
+                    let option = "<option value=''>SELECIONE</option>";
+                    e.forEach(function(obj){
+                        option += `<option data-cli9="${obj.cliente9}"  data-cli4="${obj.cliente4}" data-cli2="${obj.cliente2}">${obj.nombre_cliente}</option>`;
+                    });
+
+                    $("#cboCliente").html(option);
+                    $("#cboClientefiltro").html(option);
+
+                }
+            });
+        }
+
+        //CARGA LOS PROGRAMAS DE UN CLIENTE
+        $("#cboCliente").on('change',function(){
+
+            let cliente9 = $(this).find(":selected").attr("data-cli9");
+            let cliente4 = $(this).find(":selected").attr("data-cli4");
+            let cliente2 = $(this).find(":selected").attr("data-cli2");
+
+            $.ajax({
+                url: '/operaciones/ListarProgramasClientesFtec/',
+                type:'GET',
+                data: {'cliente9':cliente9,'cliente4':cliente4,'cliente2':cliente2},
+                datatype: 'json',
+                success:function(e){
+                    let option = "";
+                    e.forEach(function(obj){
+                        option += `<option value="${obj.programa}">${obj.programa}</option>`;
+                    });
+
+                    $("#cboPrograma").html(option);
+
+                    $('#cboPrograma').trigger('change');
+                }
+            });
+
+        });
+
+        //CARGA LOS PROGRAMAS DE UN CLIENTE FILTRO
+        $("#cboClientefiltro").on('change',function(){
+
+            let cliente9 = $(this).find(":selected").attr("data-cli9");
+            let cliente4 = $(this).find(":selected").attr("data-cli4");
+            let cliente2 = $(this).find(":selected").attr("data-cli2");
+
+            $.ajax({
+                url: '/operaciones/ListarProgramasClientesFtec/',
+                type:'GET',
+                data: {'cliente9':cliente9,'cliente4':cliente4,'cliente2':cliente2},
+                datatype: 'json',
+                success:function(e){
+                    let option = "<option value=''>SELECIONE</option>";
+                    e.forEach(function(obj){
+                        option += `<option value="${obj.programa}">${obj.programa}</option>`;
+                    });
+
+                    $("#cboProgramaFiltro").html(option);
+
+                    $('#cboProgramaFiltro').trigger('change');
+                }
+            });
+
+        });
+
+        // getPedidosPrograma
+        $("#cboPrograma").on('change',function(){
+            let programa = $("#cboPrograma").val();
+
+            $.ajax({
+                url: '/desarrolloproducto/getPedidosPrograma/',
+                type:'GET',
+                data: {'programa':programa},
+                datatype: 'json',
+                success:function(e){
+                    $("#txtPedido").html(e[0].pedidos);
+                }
+            });
+        });
+
+        //BUSCAR
+        function Buscar() {
+            var datos = {
+                'pedido': $("#txtpedidofiltro").val() == "" ? 0 : $("#txtpedidofiltro").val(),
+                'fechai': '',
+                'fechaf': '',
+                'estilo': $("#txtestilofiltro").val(),
+                'programa': $("#cboProgramaFiltro").val()
+            }
+
+            $.ajax({
+                url: '/desarrolloproducto/ListarMoldes/',
+                type: 'GET',
+                data: datos,
+                success: function (e) {
+
+                    var tbl = $("#tablaGeneral").DataTable();
+                    tbl.destroy();
+                    var tr = "";
+
+                    e.forEach(function (obj) {
+                        tr +=`
+                            <tr>
+                                <td>${obj.pedidos}</td>
+                                <td>${obj.estilo}</td>
+                                <td>${obj.programa}</td>
+
+                                <td>${obj.observacion}</td>
+                                <td>${obj.fecha}</td>
+                                <td class='text-center'><a href="${obj.rutacompartida}" target="_blank"><i style="color:red" class="fas fa-file-pdf"></i></a></td>
+
+                            </tr>
+
+                        `;
+                    });
+
+                    $("#tablaRegistros").html(tr);
+                    ArmarDataTable("tablaGeneral");
+
+                }
+
+
+            });
+        }
+
+        //REGISTRAR
+        function RegistrarMolde() {
+            let pedidos = $("#txtPedido").val();
+            let observacion = $("#txtobservacion").val();
+            let estilo = $("#txtEstiloCliente").val();
+            let programa = $("#cboPrograma").val();
+            let archivo = $("#file")[0].files[0];
+            let archivovalida = document.getElementById("file").files.length;
+
+            if (pedidos != "" && archivovalida > 0) {
+                let formData = new FormData();
+                formData.append("pedidos", pedidos);
+                formData.append("programa", programa);
+                formData.append("observacion", observacion);
+                formData.append("estilo", estilo);
+                formData.append("archivo", archivo);
+
+
+                MostrarCarga("Subiendo Molde...");
+
+                $.ajax({
+                    url: '/desarrolloproducto/RegistrarMoldes/',
+                    type: 'POST',
+                    data: formData,
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    success: function (e) {
+
+                        if (!e.error) {
+                            $("#frmArchivos")[0].reset();
+                            Informar(e.mensaje);
+                            //CIERRA MODAL
+                            $("#modalRegistro").modal("hide");
+                        } else {
+                            Advertir(e.mensaje);
+                        }
+                    }
+                });
+            } else {
+                Advertir("Algunos campos estan incompletos");
+            }
+
+        }
+
+    </script>
+}

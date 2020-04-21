@@ -1,0 +1,214 @@
+﻿@{
+    var modulo = PageContext.Page.Request.RequestContext.RouteData.Values["controller"].ToString();
+    var submodulo = PageContext.Page.Request.RequestContext.RouteData.Values["action"].ToString();
+}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">	<!-- CELULARES -->
+    <title>TSC-WEB - @ViewBag.Title </title>
+    <!-- FONT AWESOME-->
+    <link href="~/Libs/fontawesome-free/css/all.min.css" rel="stylesheet" />
+    <!-- SELECT 2 -->
+    <link href="~/Libs/select2/css/select2.min.css" rel="stylesheet" />
+    <!-- DATATABLES -->
+    <link href="~/Libs/datatables/dataTables.bootstrap4.min.css" rel="stylesheet" />
+    <link href="~/Libs/Datatables/extensions/Responsive/css/responsive.bootstrap4.min.css" rel="stylesheet" />
+    <link href="~/Libs/Datatables/extensions/Export/css/buttons.dataTables.min.css" rel="stylesheet" />
+
+
+    <!-- SWAL -->
+    @*<link href="~/Libs/sweetalert2/sweetalert2.min.css" rel="stylesheet" />*@
+    <!-- DASHBOARD -->
+    <link href="~/Libs/Dashboard/css/adminlte.min.css" rel="stylesheet" />
+    <!-- CHECK -->
+    <link href="~/Libs/icheck-bootstrap/icheck-bootstrap.min.css" rel="stylesheet" />
+    <!-- PROPIOS -->
+    <link href="~/Admin/css/sistema.css" rel="stylesheet" />
+    <!-- ICONO -->
+    <link rel="shortcut icon" type="image/x-icon" href="/public/favicon.ico" />
+
+    <link href="~/Libs/Multi-select/multiple-select.min.css" rel="stylesheet" />
+</head>
+<body class="hold-transition sidebar-mini layout-fixed">
+    <div class="wrapper">
+        <!-- Navbar -->
+        <nav class="main-header navbar navbar-expand border-bottom navbar-dark navbar-danger">
+            <!-- Left navbar links -->
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" data-widget="pushmenu" href="#"><i class="fas fa-bars"></i></a>
+                </li>
+            </ul>
+
+            <!-- Right navbar links -->
+            <ul class="navbar-nav ml-auto">
+                <!-- Notifications Dropdown Menu -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link" data-toggle="dropdown" href="#">
+                        <i class="fas fa-cog"></i>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
+                        <span class="dropdown-item dropdown-header">Configuración</span>
+                        <!-- CAMBIAR CONTRASEÑA -->
+                        <div class="dropdown-divider"></div>
+                        <a href="#" class="dropdown-item">
+                            <i class="fas fa-lock mr-2"></i> Cambiar contraseña
+                        </a>
+                        <!-- CERRAR SESION -->
+                        <div class="dropdown-divider"></div>
+                        <a href="/dashboard/cerrarsesion" class="dropdown-item">
+                            <i class="fas fa-sign-out-alt mr-2"></i>Cerrar Sesión
+                        </a>
+                    </div>
+                </li>
+
+            </ul>
+        </nav>
+        <!-- /.navbar -->
+        <!-- Main Sidebar Container -->
+        <aside class="main-sidebar elevation-4 sidebar-dark-danger">
+            <!-- LOGO TSC -->
+            <a href="/dashboard/" class="brand-link text-center">
+                <h4>T.S.C.</h4>
+            </a>
+            <!-- FIN LOGO TSC -->
+            <!-- Sidebar -->
+            <div class="sidebar">
+                <!-- Sidebar user panel (optional) -->
+                <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+                    <div class="image">
+                        <img src="~/public/tecsito.png" class="img-circle elevation-2" alt="User Image">
+                    </div>
+                    <div class="info ">
+                        <a href="#" class="d-block"> @Session["nombre"]</a>
+                    </div>
+                </div>
+                <!-- Sidebar Menu -->
+                <nav class="mt-2">
+                    <ul class="nav nav-pills nav-sidebar flex-column" id="ModulosLi" data-widget="treeview" role="menu" data-accordion="false">
+                        @* AQUI VAN LOS MODULOS*@
+
+                        @Html.Partial("/views/plantillas/modulos.cshtml")
+
+                    </ul>
+                </nav>
+                <!-- /.sidebar-menu -->
+            </div>
+            <!-- /.sidebar -->
+        </aside>
+        <!-- Content Wrapper. Contains page content -->
+        <div class="content-wrapper">
+            <!-- Content Header (Page header) -->
+            <div class="content-header">
+                <div class="container-fluid">
+                    <div class="row mb-2">
+                        <div class="col-sm-6">
+                            <h1 class="m-0 text-dark">@ViewBag.Title</h1>
+                        </div><!-- /.col -->
+                        <div class="col-sm-6">
+                            <ol class="breadcrumb float-sm-right">
+                                <li class="breadcrumb-item"><a href="/dashboard/index">Home</a></li>
+                                <li class="breadcrumb-item active">@ViewBag.Modulo</li>
+                                <li class="breadcrumb-item active">@ViewBag.Title</li>
+                            </ol>
+                        </div><!-- /.col -->
+                    </div><!-- /.row -->
+                </div><!-- /.container-fluid -->
+            </div>
+            @* AQUI VA EL CUERPO DE CADA VISTA *@
+            <div class="container-fluid">
+                @*@if (Session["usuario"] != null)
+                    {*@
+                @RenderBody()
+                @*}*@
+            </div>
+
+        </div>
+        <!-- /.content-wrapper -->
+        <footer class="main-footer">
+            <strong>Copyright &copy; @DateTime.Now.Year <a href="http://textilweb.tsc.com.pe:8094/">Textil Sourcing Company</a>.</strong>
+            All rights reserved.
+            <div class="float-right d-none d-sm-inline-block">
+                <b>Version</b> 1.0.0
+            </div>
+        </footer>
+        <!-- Control Sidebar -->
+        <!-- /.control-sidebar -->
+    </div>
+
+    <!-- GIF DE CARGA -->
+    <div class="loader"></div>
+
+
+    <!-- #############-->
+    <!-- ## SCRIPTS ##-->
+    <!-- #############-->
+    <!-- JQUERY -->
+    <script src="~/Libs/Jquery/jquery-3.4.1.min.js"></script>
+    <!-- BOOTSTRAP -->
+    <script src="~/Libs/Bootstrap/js/bootstrap.bundle.min.js"></script>
+    <!-- SELECT 2-->
+    <script src="~/Libs/select2/js/select2.full.min.js"></script>
+    <!-- DATATABLES -->
+    <script src="~/Libs/datatables/jquery.dataTables.min.js"></script>
+    <script src="~/Libs/datatables/dataTables.bootstrap4.min.js"></script>
+    <script src="~/Libs/datatables/dataTables.responsive.min.js"></script>
+    <script src="~/Libs/datatables/responsive.bootstrap4.min.js"></script>
+
+    <script src="~/Libs/Datatables/extensions/Export/js/dataTables.buttons.min.js"></script>
+    <script src="~/Libs/Datatables/extensions/Export/js/jszip.min.js"></script>
+    <script src="~/Libs/Datatables/extensions/Export/js/pdfmake.min.js"></script>
+    <script src="~/Libs/Datatables/extensions/Export/js/vfs_fonts.js"></script>
+    <script src="~/Libs/Datatables/extensions/Export/js/buttons.html5.min.js"></script>
+    <script src="~/Libs/Datatables/extensions/Export/js/buttons.print.min.js"></script>
+
+
+
+
+    <!-- DASHBOARD -->
+    <script src="~/Libs/Dashboard/js/adminlte.min.js"></script>
+    <!-- SWAL -->
+    @*<script src="~/Libs/sweetalert2/sweetalert2.min.js"></script>*@
+    <script src="~/Libs/sweetalert2/sweetalert2.all.min.js"></script>
+
+    <!-- JQUERY MASK -->
+    <script src="~/Libs/Jquery-mask/jquery.mask.min.js"></script>
+    <!-- SCRIPTS PROPIOS -->
+    <script src="~/Admin/js/Generales/select2.admin.js"></script>
+    <script src="~/Admin/js/generales/sweetalert2.admin.js"></script>
+    <script src="~/Admin/js/generales/Modulos.admin.js"></script>
+    <script src="~/Admin/js/generales/DataTables.admin.js"></script>
+
+    <script src="~/Libs/Multi-select/multiple-select.min.js"></script>
+
+    <!-- CHART JS -->
+    <script src="~/Libs/Chartjs/Chart.bundle.min.js"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $(".loader").fadeOut("slow");
+        });
+    </script>
+
+    <!-- MASCARAS -->
+    <script>
+
+        $(".numeros").mask("0000000000");
+        $(".numeros2").mask("00");
+    </script>
+
+    <script>
+        //PARA TODOS LOS MODULOS
+        ModulosSubmodulosActivar("@modulo", "@submodulo");
+    </script>
+
+    @RenderSection("scripts", required: false)
+
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,474 @@
+﻿@{
+    ViewBag.Title = "Subir Ficha de Especificaciones Tecnicas";
+    ViewBag.Modulo = "Desarrollo Producto";
+    Layout = "~/Views/Plantillas/_Layout.cshtml";
+}
+
+<div class="card">
+
+    <div class="card-header">
+        <h3 class="card-title">Filtros</h3>
+
+        <div class="card-tools">
+            <button type="button" class="btn btn-tool" data-widget="collapse"><i class="fas fa-minus"></i></button>
+        </div>
+    </div>
+    
+    <div class="card-body">
+        
+        <div class="row">
+            <div class="col-xl-3 col-lg-2 col-md-4 col-sm-6 form-group">
+                <h6>Cliente:</h6>
+                <select class="custom-select select2 " id="cboCliente" style="width:100%"></select>
+            </div>
+
+            <div class="col-xl-2 col-lg-2 col-md-2 col-sm-6 form-group">
+                <h6>Estilo TSC:</h6>
+                <input type="text" class="form-control mayus" id="txtEstiloFiltro" />
+            </div>
+            <div class="col-xl-2 col-lg-2 col-md-2 col-sm-6 form-group">
+                <h6>Estilo Cliente:</h6>
+                <input type="text" class="form-control mayus" id="txtEstiloClienteFiltro" />
+            </div>
+            <div class="col-xl-1 col-lg-2 col-md-2 col-sm-6 form-group">
+                <h6>&nbsp;</h6>
+                <button class="btn btn-primary btn-block" id="btnBuscar" type="button">Buscar</button>
+            </div>
+
+            <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 form-group">
+                <h6>&nbsp;</h6>
+                <button class="btn btn-danger btn-block" id="btnNuevo" type="button">Registrar Spec</button>
+
+            </div>
+ 
+        </div>
+    </div>     
+
+</div>
+
+
+<!-- REGISTROS -->
+<div class="card">
+    <div class="card-body">
+        
+        <table class="table table-sm table-bordered dt-responsive nowrap" style="width:100%" id="tablaRegistros">
+            <thead>
+                <tr>
+                    <th>FT Tela</th>
+                    <th>Cliente</th>
+                    <th>Estilo TSC</th>
+                    <th>Estilo Cliente</th>                                       
+                    <th>Version</th>
+                    <th>Archivo</th>
+                    <th>Observación</th>
+                    <th>Usuario</th>
+                    <th>Fecha</th>
+                    <th>Hora</th>
+                    <th>SPEC</th>
+                    <th>FT Tela</th>
+                </tr>
+            </thead>
+            <tbody id="tablaCuerpoRegistros"></tbody>
+        </table>
+        
+        
+    </div>
+</div>
+
+<!-- MODAL REGISTRO -->
+<div class="modal fade" id="ModalRegistro" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Registro de SPEC</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form class="row" id="frmArchivos">
+                    <div class="col-4 form-group">
+                        <h6>Estilo TSC:</h6>
+                        <input type="text" class="form-control mayus" id="txtEstiloRegistro" />
+                    </div>
+                    <div class="col-4 form-group">
+                        <h6>&nbsp;</h6>
+                        <button class="btn btn-danger btn-block" id="btnRegistrar" type="button"> Registrar</button>
+                    </div>
+                   
+                        <div class="col-12 form-group">
+                            <div class="col-4 form-group">
+                                <h6>Cliente:</h6>                                
+                            </div>
+                            <table class="table table-bordered dt-responsive nowrap" style="width:100%" id="tablaCabecera">
+                                <tbody>
+                                    <tr style="background-color:#25495c;color:white">
+                                        <td id="idcliente"></td>
+                                    </tr>
+                                </tbody>
+
+                            </table>
+                        </div>
+                       
+                        <div class="col-12 form-group">
+                            <h6>Observación:</h6>
+                            <textarea class="form-control" id="txtObservacion"></textarea>
+                        </div>
+
+                        <div class="col-8 form-group">
+                            <h6>Archivo:</h6>
+                            <input type="file" id="fileFicha" accept="application/pdf" />
+                        </div>
+
+                        @*<div class="col-4 form-group">
+                <h6>&nbsp;</h6>
+                <button class="btn btn-danger btn-block" id="btnRegistrar" type="button"> Registrar</button>
+            </div>*@
+            </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<!-- MODAL REGISTRO -->
+<div class="modal fade" id="ModalFTTela" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Asociar FT Tela</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form class="row" id="frmArchivostela">
+                    <div class="col-4 form-group">
+                        <h6>&nbsp;</h6>
+                        <button class="btn btn-danger btn-block" id="btnRegistrarTela" type="button"> Registrar</button>
+                    </div>
+
+                    <div class="col-12 form-group">
+                        <h6>Observación:</h6>
+                        <textarea class="form-control" id="txtObsTela"></textarea>
+                    </div>
+
+                    <div class="col-8 form-group">
+                        <h6>Archivo:</h6>
+                        <input type="file" id="fileTela" accept="application/pdf" />
+                    </div>
+
+                    @*<div class="col-4 form-group">
+                            <h6>&nbsp;</h6>
+                            <button class="btn btn-danger btn-block" id="btnRegistrar" type="button"> Registrar</button>
+                        </div>*@
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+@section scripts{
+    <script src="~/Admin/js/OperacionesProceso/FichaTecnica/Filtros.js"></script>
+    <script src="~/Admin/js/OperacionesProceso/FichaTecnica/RegistrosSpec.js"></script>
+
+    <script>
+        let IDFT;
+        let IDESTILOX;
+        let IDCLIENTE;
+        let IDRUTAX;
+        $(document).ready(function(){
+
+            ListarClientes();
+            $("#btnRegistrar").click(function () {
+                Registrar()
+            });
+            $("#btnRegistrarTela").click(function () {
+             
+                RegistrarTela()
+            });
+            //ABRE MODAL
+            $("#btnNuevo").click(function(){
+                $("#ModalRegistro").modal("show");
+                //RECETEA CARGA
+                $("#btnRegistrar").html("Registrar");
+                //RECETEA SELECT 2
+                $('#cboCliente').val("1").trigger('change');
+            });
+            //FILTROS
+            $("#btnBuscar").click(function(){
+                BuscarRegistros();
+            });
+        });
+           
+
+
+        //BUSCAR ARCHIVOS FICHAS TECNICA
+        function BuscarRegistros() {
+            let idarea = $("#cboCliente").val();
+            let estilo ;// $("#txtEstiloFiltro").val()  ;
+            let estilocliente;
+
+            if ($("#txtEstiloClienteFiltro").val() == '' )
+            {
+                estilocliente = null  ;
+            }
+            else
+            {
+                estilocliente = $("#txtEstiloClienteFiltro").val()  ;
+            }
+
+            if ($("#txtEstiloFiltro").val() == '' )
+            {
+                 estilo = null  ;
+            }
+            else
+            {
+                 estilo = $("#txtEstiloFiltro").val()  ;
+            }
+
+
+            if(idarea == 0){
+                idarea = null;
+            }
+
+            let datos = {
+                'idarea' : idarea,
+                'estilo' : estilo,
+                'estilocliente':estilocliente,
+            }
+            //DATATABLE
+
+            $.ajax({
+                url: '/DesarrolloProducto/BuscarRegistrosSpec/',
+                type: 'GET',
+                contenType: 'json',
+                data :datos,
+                success: function (e) {
+                    let tabla = $("#tablaRegistros").DataTable();
+                    tabla.destroy();
+                    let tr = "";
+                    e.forEach(function(obj){
+                        //console.log(obj)
+                        tr +=  `<tr>;
+                        
+                        <td class='text-center'><a href='#' data-idft='${obj.idupload}' data-idest='${obj.estilo}' data-idcliente='${obj.cliente}' data-xruta='${obj.RUTAARCHIVOTELA}' class ="BtfTela" ><i style='color:Tomato' class='far fa-arrow-alt-circle-up'></i></a></td>
+                        IDRUTAX
+                        <td>${obj.cliente}</td>
+                        <td>${obj.estilo}</td>
+                        <td>${obj.proyecto}</td>
+                        <td>${obj.version}</td>
+                        <td>${obj.archivo}</td>
+                        <td>${obj.observacion}</td>
+                        <td>${obj.usuariocre}</td>
+                        <td>${obj.fechacre}</td>
+                        <td>${obj.horacre}</td>
+                        <td class='text-center'><a href='${obj.rutaarchivo}' target='_blank'><i style='color:red' class='fas fa-file-pdf'></i></a></td>`;
+                        if ( obj.RUTAARCHIVOTELA !="")
+                        {
+                            tr += `<td class='text-center'>
+                            <a href="${obj.RUTAARCHIVOTELA}" target="_blank">
+                            <i style="color:SeaGreen" class="fas fa-file-pdf"></i>
+                            </a></td>`;
+                        }
+                        else
+                        {
+                            tr +="<td></td>";
+                        }                       
+                        tr+="</tr>";
+          
+ 
+                    });
+
+                    $("#tablaCuerpoRegistros").html(tr);
+                    $("#tablaRegistros").DataTable(
+				        {'language' : {'url' : '/libs/datatables/spanish.json'},
+				            lengthMenu: [[10, 20, -1], [10, 20, 'Todos']]}
+
+			        );
+
+                }
+            });
+        }
+
+
+         //='#ModalFTTela'
+        $("#tablaCuerpoRegistros").on("click", ".BtfTela", function(){
+            IDFT = $(this).data('idft')
+            IDESTILOX = $(this).data('idest')
+            IDCLIENTE = $(this).data('idcliente')
+            IDRUTAX = $(this).data('xruta')
+            //console.log(IDESTILOX,IDFT);  
+            
+            console.log(IDFT, IDRUTAX);  
+            if (IDRUTAX != "")
+            {
+                Advertir("Este Registro ya Cuenta con FT Tela Asociada");
+            }
+            else
+            {
+                $("#ModalFTTela").modal("show")
+            }
+
+            
+
+           
+
+
+            
+
+        });
+   
+
+        
+        function RegistrarTela()
+        {
+            //////////
+    
+
+            let observacion = $("#txtObsTela").val().trim();
+            let archivo = $("#fileTela")[0].files[0];
+            let archivovalida = document.getElementById("fileTela").files.length;
+            let cliente="J.CREW";
+
+            if (archivovalida > 0 ) {
+                let formData = new FormData();
+                formData.append("ID", IDFT)
+                formData.append("observacion", observacion);
+                formData.append("cliente", IDCLIENTE);
+                formData.append("archivo", archivo);
+                formData.append("nomarchivo", IDESTILOX);
+ 
+
+                //PROCESO DE CARGA
+                let contenido = `<div class="spinner-border spinner-border-sm text-light" role="status"></div> Subiendo...`;
+                $("#btnRegistrarTela").html(contenido);
+     
+
+                $.ajax({
+                    url: '/DesarrolloProducto/RegistrarFTTELAS/',
+                    type: 'POST',
+                    data: formData,
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    success: function (e) {
+                        if (!e.error) {
+                            $("#frmArchivostela")[0].reset();
+                            Informar(e.mensaje);
+                            //CIERRA MODAL
+                            $("#ModalFTTela").modal("hide");
+                            //RESETEA SELECT 2
+                            $('#cboAreasRegistro').val("1").trigger('change');
+                        } else {
+                            Advertir(e.mensaje);
+                        }
+                        $("#btnRegistrarTela").html("Registrar");
+                        BuscarRegistrosx();
+
+                    }
+                 
+                });
+
+                
+            } else {
+                Advertir("Algunos campos estan incompletos");
+            }
+        }
+
+ 
+
+        //BUSCAR ARCHIVOS FICHAS TECNICA
+        function BuscarRegistrosx() {
+            let idarea = $("#cboCliente").val();
+            let estilo ;// $("#txtEstiloFiltro").val()  ;
+            let estilocliente;
+
+            if ($("#txtEstiloClienteFiltro").val() == '' )
+            {
+                estilocliente = null  ;
+            }
+            else
+            {
+                estilocliente = $("#txtEstiloClienteFiltro").val()  ;
+            }
+
+            if ($("#txtEstiloFiltro").val() == '' )
+            {
+                estilo = null  ;
+            }
+            else
+            {
+                estilo = $("#txtEstiloFiltro").val()  ;
+            }
+
+
+             
+                idarea = "-> TODOS <-";
+            
+
+            let datos = {
+                'idarea' : idarea,
+                'estilo' : estilo,
+                'estilocliente':estilocliente,
+            }
+            //DATATABLE
+
+            $.ajax({
+                url: '/DesarrolloProducto/BuscarRegistrosSpec/',
+                type: 'GET',
+                contenType: 'json',
+                data :datos,
+                success: function (e) {
+                    let tabla = $("#tablaRegistros").DataTable();
+                    tabla.destroy();
+                    let tr = "";
+                    e.forEach(function(obj){
+                        //console.log(obj)
+                        tr +=  `<tr>;
+                        
+                        <td class='text-center'><a href='#' data-idft='${obj.idupload}' data-idest='${obj.estilo}' data-idcliente='${obj.cliente}' data-xruta='${obj.RUTAARCHIVOTELA}' class ="BtfTela" ><i style='color:Tomato' class='far fa-arrow-alt-circle-up'></i></a></td>
+                        IDRUTAX
+                        <td>${obj.cliente}</td>
+                        <td>${obj.estilo}</td>
+                        <td>${obj.proyecto}</td>
+                        <td>${obj.version}</td>
+                        <td>${obj.archivo}</td>
+                        <td>${obj.observacion}</td>
+                        <td>${obj.usuariocre}</td>
+                        <td>${obj.fechacre}</td>
+                        <td>${obj.horacre}</td>
+                        <td class='text-center'><a href='${obj.rutaarchivo}' target='_blank'><i style='color:red' class='fas fa-file-pdf'></i></a></td>`;
+                        if ( obj.RUTAARCHIVOTELA !="")
+                        {
+                            tr += `<td class='text-center'>
+                            <a href="${obj.RUTAARCHIVOTELA}" target="_blank">
+                            <i style="color:SeaGreen" class="fas fa-file-pdf"></i>
+                            </a></td>`;
+                        }
+                        else
+                        {
+                            tr +="<td></td>";
+                        }                       
+                        tr+="</tr>";
+          
+ 
+                    });
+
+                    $("#tablaCuerpoRegistros").html(tr);
+                    $("#tablaRegistros").DataTable(
+				        {'language' : {'url' : '/libs/datatables/spanish.json'},
+				            lengthMenu: [[10, 20, -1], [10, 20, 'Todos']]}
+
+			        );
+
+                }
+            });
+        }
+
+    </script>
+}

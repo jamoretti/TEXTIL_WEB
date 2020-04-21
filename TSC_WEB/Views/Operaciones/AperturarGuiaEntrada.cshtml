@@ -1,0 +1,214 @@
+﻿@{
+    ViewBag.Title = "Aperturar guia entrada";
+    ViewBag.Modulo = "Operaciones";
+    Layout = "~/Views/Plantillas/_Layout.cshtml";
+}
+
+<!-- FILTROS - APERTURA -->
+<div class="card">
+
+    <div class="card-header">
+        <h3 class="card-title">Filtros</h3>
+        <div class="card-tools">
+            <button type="button" class="btn btn-tool" data-widget="collapse"><i class="fas fa-minus"></i></button>
+        </div>
+    </div>
+
+    <div class="card-body">
+        <div class="row">
+
+            <div class="col-xl-4  col-lg-4 col-md-6 col-sm-6 form-group">
+                <h6>Documento:</h6>
+                <input type="text" class="form-control" id="txtDocumento" />
+            </div>
+
+            <div class="col-xl-4 col-lg-4 col-md-6 col-sm-6 form-group">
+                <h6>Serie:</h6>
+                <input type="text" class="form-control" id="txtSerie" />
+            </div>
+
+            <div class="col-xl-4 col-lg-4 col-md-12 col-sm-12 form-group">
+                <h6>Ruc:</h6>
+                <input type="text" class="form-control" id="txtRuc" />
+            </div>
+
+            <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 form-group">
+                <h6>&nbsp;</h6>
+                <button class="btn btn-danger btn-block" id="btnApertura">Aperturar</button>
+            </div>
+            <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 form-group">
+                <h6>&nbsp;</h6>
+                <button class="btn btn-primary btn-block" id="btnBuscar">Buscar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- REGISTROS -->
+<div class="card">
+
+    <div class="card-body">
+
+        
+            <table class="table table-bordered dt-responsive nowrap" style="width:100%" id="tablaRegistros">
+                <thead>
+                    <tr>
+                        <th>T. Operación</th>
+                        <th>Operación</th>
+                        <th>Cod. Empresa</th>
+                        <th>Emisor</th>
+                        <th>Cod. Trans</th>
+                        <th>F. Trans</th>
+                        <th>F. Rep</th>
+                        <th>Estado</th>
+                        <th>Descripción</th>
+                    </tr>
+                </thead>
+                <tbody id="tablaCuerpoRegistros"></tbody>
+            </table>
+        
+
+    </div>
+</div>
+
+
+@section scripts{
+    <script>
+
+        $("#btnBuscar").click(function (e) {
+            VerDatosGuia();
+        });
+        //VARIABLES
+        var fichaR = 0;
+        var codcambio = 0;
+        var codtallero = "";
+        var codtallerd = "";
+
+        //LLENA GRILLA
+        function VerDatosGuia() {
+            var vrDocumento = $("#txtDocumento").val();
+            if (vrDocumento == '') {
+                vrDocumento = null;
+            }
+            var vrSerie = $("#txtSerie").val();
+            if (vrSerie == '') {
+                vrSerie = null;
+            }
+            var vrRuc = $("#txtRuc").val();
+            if (vrRuc == '') {
+                vrRuc = null;
+            }
+            var objFile = {
+                Documento: vrDocumento,
+                Serie: vrSerie,
+                Numero_Ruc: vrRuc,
+            };
+            $.ajax({
+                url: '/operaciones/GetVerDatosApertura',
+                type: 'GET',
+                data: objFile,
+                dataType: 'json',
+                success: function (response) {
+                    //DATATABLE
+                    let tabla = $("#tablaRegistros").DataTable();
+                    tabla.destroy();
+                    var rows = '';
+                    if(response.length > 0){
+                        response.forEach(function (obj) {
+                            rows += `
+                             <tr> 
+                                <td>${obj.Codigo_Operacion}</td>
+                                <td>${obj.Descripcion_Operacion}</td>
+                                <td>${obj.C_Codigo_Prov9}</td>
+                                <td>${obj.Descripcion_Emisor}</td>
+                                <td>${obj.Codigo_Transaccion}</td>
+                                <td>${obj.Fecha_Transaccion}</td>
+                                <td>${obj.Fecha_Emision}</td>
+                                <td>${obj.Estado_Entrada}</td>
+                                <td>${obj.Descripcion_Estado_Entrada}</td>
+                             </tr>   
+   `;
+                        });
+                    }else{
+                        Advertir('No se ha encontrado la guia de entrada');
+                    }
+
+                    $('#tablaCuerpoRegistros').html(rows);
+                    $("#tablaRegistros").DataTable(
+                        {'language' : {'url' : '/libs/datatables/spanish.json'},
+                            lengthMenu: [[5, 10, 20, -1], [5, 10, 20, 'Todos']]}
+                    );
+                },
+                error: function (err) {
+                    alert('Error:' + err.responseText);
+                }
+            });
+        }
+
+        //APERTURA
+        $("#btnApertura").click(function (e) {
+            if ($("#txtDocumento").val() == '') {
+                Advertir('No ha ingresado el numero de documento');
+                return;
+            }
+            if ($("#txtSerie").val() == '') {
+                Advertir('No ha ingresado el numero de serie');
+                return;
+            }
+            if ($("#txtRuc").val() == '') {
+                Advertir('No se ha ingresado el numero de RUC');
+                return;
+            }
+
+            var vrDocumento = $("#txtDocumento").val();
+            if (vrDocumento == '') {
+                vrDocumento = null;
+            }
+            var vrSerie = $("#txtSerie").val();
+            if (vrSerie == '') {
+                vrSerie = null;
+            }
+            var vrRuc = $("#txtRuc").val();
+            if (vrRuc == '') {
+                vrRuc = null;
+            }
+            var objFile = {
+                Documento: vrDocumento,
+                Serie: vrSerie,
+                Numero_Ruc: vrRuc,
+            };
+
+            $.ajax({
+                url: '/operaciones/SetAperturaGuia',
+                type: 'POST',
+                data: objFile,
+                dataType: 'json',
+                success: function (response) {
+                    console.log(response);
+                    if (response == 0) {
+                        Advertir('Documento Fiscal no se encuentra dentro del periodo actual');
+                    }
+                    else if (response == 4)
+                    {
+                        Advertir('Documento Fiscal no existe');
+                    }
+                    else if (response == 2)
+                    {
+                        Advertir('Documento Fiscal se encuentra aperturado');
+                    }
+                    else if (response == 3) {
+                        Advertir('Usuario no cuenta con acceso en el almacen de la guia ingresada');
+                    }
+                    else {
+                        Informar('Se ha realizado la apertura de la Guia correctamente');
+                        VerDatosGuia();
+                    }
+                },
+                error: function (err) {
+                    alert('Error:' + err.responseText);
+                }
+            });
+        });
+
+    </script>
+}

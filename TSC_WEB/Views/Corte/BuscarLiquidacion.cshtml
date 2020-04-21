@@ -1,0 +1,1013 @@
+﻿@model TSC_WEB.Models.Entidades.Corte.ReportePivot
+
+@{
+    
+    ViewBag.Title = "Buscar Liquidación de Tela";
+    ViewBag.Modulo = "Corte";
+    Layout = "~/Views/Plantillas/_Layout.cshtml";
+    
+
+}
+    @*var ListFichas = (from obj in Model.ObjFichas
+                      orderby obj.FICHA ascending
+                      select new
+                      {
+                          obj.FICHA
+                      }
+        ).Distinct().ToList();
+    }*@
+
+
+<div class="row">
+    <!-- FILTROS - APERTURA -->
+    <div class="col-xl-2 col-lg-6 col-md-12 col-sm-12 col-12">
+        <div class="card">
+
+            <div class="card-header">
+                <h3 class="card-title">Buscar Liquidación</h3>
+                <div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-widget="collapse"><i class="fas fa-minus"></i></button>
+                </div>
+            </div>
+
+            <div class="card-body">
+                <div class="row">
+
+                    <div class="col-xl-8  col-lg-8 col-md-10 col-sm-10 form-group">
+                        <h6>Ficha:</h6>
+                        <input type="text" class="form-control" id="txtpartida" />
+                    </div>
+                    <div class="col-xl-4 col-lg-4 col-md-2 col-sm-2 form-group">
+                        <h6>&nbsp;</h6>
+                        <button class="btn btn-primary btn-block" id="btnBuscar"><i class="fas fa-search"></i></button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    
+    <!--VERSIONES-->
+    <div class="col-xl-5">
+        <div class="card" style="max-height:250px">
+            <div class="card-header">
+                <h3 class="card-title">Versiones</h3>
+                <div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-widget="collapse"><i class="fas fa-minus"></i></button>
+                </div>
+            </div>
+            <div class="card-body overflow-auto">
+               
+                    <div class="table-responsive">
+                        <table class="table table-bordered dt-responsive nowrap" style="width:100%;text-align:center" id="tablaver">
+                            <thead>
+                                <tr>
+                                    <th>Ver</th>
+                                    <th>Version</th>
+                                    <th>Registro</th>
+                                    <th>Usuario</th>
+                                    <th>Tipo Tela</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tablaversiones"></tbody>
+                        </table>
+                    </div>
+             
+
+            </div>
+        </div>
+    </div>
+    <!--DATOS DE CONSUMO X FICHA-->
+    <div class="col-xl-5">
+        <div class="card " style="max-height:250px">
+            <div class="card-header">
+                <h3 class="card-title">Estilos</h3>
+                <div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-widget="collapse"><i class="fas fa-minus"></i></button>
+                </div>
+            </div>
+            <div class="card-body overflow-auto">
+                <div class="table-responsive">
+                    <table class="table table-bordered dt-responsive nowrap" style="width:100%;text-align:center" id="tablacons">
+                        <thead id="tablacabececons">
+                        </thead>
+                        <tbody id="tablaCuerpocons"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="row">
+    <!-- DATOS CABECERA -->
+    <div class="col-xl-3 col-lg-6 col-md-12 col-sm-12 col-12">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Informacion Adicional</h3>
+                <div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-widget="collapse"><i class="fas fa-minus"></i></button>
+                </div>
+            </div>
+            <div class="card-body">
+                <table class="table table-bordered dt-responsive nowrap" style="width:100%" id="tablaCabecera">
+                    <tbody>
+                        <tr>
+                            <td>Tipo de Tela</td>
+                            <td id="tipotelax"></td>
+                        </tr>
+                        <tr>
+                            <td>Partida</td>
+                            <td id="partida"></td>
+                        </tr>
+                        <tr>
+                            <td>Cliente</td>
+                            <td id="idcliente"></td>
+                        </tr>
+                        <tr>
+                            <td>Porgrama</td>
+                            <td id="idprograma"></td>
+                        </tr>
+                        <tr>
+                            <td>Pedidos</td>
+                            <td id="idpedidos"></td>
+                        </tr>
+                        <tr>
+                            <td>Estilos</td>
+                            <td id="idestilos"></td>
+                        </tr>
+                    </tbody>
+
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!--Mermas Tendido-->
+    <div class="col-xl-3">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Consumo</h3>
+                <div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-widget="collapse"><i class="fas fa-minus"></i></button>
+                </div>
+            </div>
+
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered dt-responsive nowrap" style="width:100%;text-align:center" id="tablaGrabar">
+                        <thead>
+                            <tr>
+                                <th nowrap>Datos Tela</th>
+                                <th nowrap>Ancho de Tela</th>
+                                <th nowrap>Densidad Tela</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tablaCuerpoGrabar"></tbody>
+                    </table>
+                </div>
+                
+            </div>
+
+        </div>
+
+        <div class="card">
+            <div class="card-body">
+                <table class="table table-bordered dt-responsive nowrap" style="width:100%" id="tablaTela">
+                    <tbody>
+                        <tr>
+                            <td>Descripcion de Tela:</td>
+                            <td id="TxtDescripcionTela" class="text-center"></td>
+                        </tr>
+                    </tbody>
+
+                </table>
+            </div>
+        </div>
+    </div>
+    
+    <!--Kilos Asignados-->
+    <div class="col-xl-3 col-lg-6 col-md-12 col-sm-12 col-12">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Kilos</h3>
+                <div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-widget="collapse"><i class="fas fa-minus"></i></button>
+                </div>
+            </div>
+            <div class="card-body">
+                <table class="table table-bordered dt-responsive nowrap" style="width:100%" id="tablaCabecera">
+                    <tbody>
+                        <tr>
+                            <td>Kilos Asignados</td>
+                            <td id="num1" nowrap></td>
+                        </tr>
+                        <tr>
+                            <td>Kilos Segun Tizados</td>
+                            <td id="num2" nowrap></td>
+                        </tr>
+                        <tr>
+                            <td id="num5">Faltante</td>
+                            <td id="num3" nowrap></td>
+                        </tr>
+                        <tr>
+                            <td>Variacion de Consumo</td>
+                            <td id="num4" nowrap></td>
+                        </tr>
+                    </tbody>
+
+                </table>
+
+                <hr />
+                <table class="table table-bordered dt-responsive nowrap" style="width:100%" id="tablaTelaxxx">
+                    <tbody>
+                        <tr>
+                            <td style="background-color:#25495c;color:white">Cantidad Prendas:</td>
+                            <td style="background-color:#25495c;color:white" id="cantPrendas"></td>
+                        </tr>
+                        <tr>
+                            <td style="background-color:#25495c;color:white">Total Paños:</td>
+                            <td style="background-color:#25495c;color:white" id="TotalPanos"></td>
+                        </tr>
+                    </tbody>
+
+                </table>
+
+            </div>
+   
+           
+        </div>
+    </div>
+    <!--Kilos Asignados-->
+    <div class="col-xl-3 col-lg-6 col-md-12 col-sm-12 col-12">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Collaretas y Tapetes</h3>
+                <div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-widget="collapse"><i class="fas fa-minus"></i></button>
+                </div>
+            </div>
+            <div class="card-body">
+                <table class="table table-bordered dt-responsive nowrap" style="width:100%" id="tablaColla">
+                    <tbody>
+                        <tr>
+                            <td>Consumo Mts.</td>
+                            <td id="num6"></td>
+                        </tr>
+                        <tr>
+                            <td>Consumo Kgs.</td>
+                            <td id="num7"></td>
+                        </tr>
+                        <tr>
+                            <td>Utilidad</td>
+                            <td id="num8"></td>
+                        </tr>
+ 
+                    </tbody>
+
+                </table>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Enviar Tela Complemento</h3>
+            </div>
+            <div class="card-body">
+                <table class="table table-bordered dt-responsive nowrap" style="width:100%" id="tablaTela">
+                    <tbody>
+                        <tr>
+                            <td>Metros</td>
+                            <td id="num9"></td>
+                        </tr>
+                        <tr>
+                            <td>Kilos</td>
+                            <td id="num10"></td>
+                        </tr>
+                    </tbody>
+
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+<div class="row">
+    <div class="col-xl-12 col-lg-6 col-md-12 col-sm-12 col-12">
+        <!-- TABLA FICHAS Y CANTIDADES -->
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Proporción de prendas por talla y estilo</h3>
+                <div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-widget="collapse"><i class="fas fa-minus"></i></button>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered dt-responsive nowrap" style="width:100%;text-align:center" id="tablafxc ">
+                        <thead id="tablacabecerafxc">
+                        </thead>
+                        <tbody id="tablaCuerpofxc"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-xl-8 col-lg-6 col-md-12 col-sm-12 col-12">
+        <!-- TABLA PIVOT -->
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Proporciones</h3>
+                <div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-widget="collapse"><i class="fas fa-minus"></i></button>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered dt-responsive nowrap" style="width:100%;text-align:center" id="tablaProporciones">
+                        <thead id="tablaCabeceraProporciones">
+                            
+                        </thead>
+                        <tbody id="tablaCuerpoProporciones"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--Total-->
+    <div class="col-xl-4">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Calculos</h3>
+                <div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-widget="collapse"><i class="fas fa-minus"></i></button>
+                </div>
+            </div>
+            <div class="card-body">
+ 
+                <div class="table-responsive">
+ 
+                    <table class="table table-bordered dt-responsive nowrap" style="width:100%;text-align:center" id="tablaTotal">
+                        <thead>
+                            <tr style="height:172px">
+                                <th style="vertical-align:middle;">Tallas y Q.Prendas</th>
+                                <th style="vertical-align:middle;">Largo de Tizado</th>
+                                <th style="vertical-align:middle;">Consumo x Prenda</th>
+                                <th style="vertical-align:middle;">Peso de Paño</th>
+                                <th style="vertical-align:middle;">Eficiencia de Tizado</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tablaCuerpoTotal"></tbody>
+                    </table>
+                </div>
+            </div>
+       </div>
+      
+       <!-- COMENTARIO -->
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Comentario</h3>
+            </div>
+            <div class="card-body text-justify">
+                <p class="font-weight-bold" id="txtComentario">
+
+                </p>
+            </div>
+        </div>
+
+
+    </div>
+
+    <div class="col-12 p-3">
+        <button class="btn btn-sm btn-success float-right d-none" id="btnRedireccionar">Registro de tendido</button>  
+    </div>
+
+</div>
+
+
+    @section scripts{
+        <script>
+            var FICHAMAESTRA;
+            var CONTADORCALCULOS = 0;
+            //REDIRECCIONAMOS
+            $("#btnRedireccionar").click(function(){
+                var ruta = "/Corte/LiquidacionCorte/?ficha="+FICHAMAESTRA;
+                window.open(ruta,'_blank');
+            });
+
+
+            $("#btnBuscar").click(function (e) {
+
+
+
+                var vrDocumento =  $("#txtpartida").val().trim();
+
+                if(vrDocumento == ""){
+                    Advertir("Escriba una ficha para realizar busqueda");
+                }else{
+                    let datosx = {
+                        'ficha'        : vrDocumento
+                    }
+
+                    FICHAMAESTRA =vrDocumento;
+
+                    $.ajax({
+                        url: '/Corte/BuscarExiste',
+                        type: 'GET',
+                        data: datosx,
+                        dataType: 'json',
+                        success: function (response) {
+                        
+                            var exis  = response.EXISTE;
+                        
+
+                            if (exis > 0)
+                            {
+                                VerVersionRegitradas()
+                                $("#btnRedireccionar").removeClass("d-none");
+                                //VerDatosCabecera();
+                                //VerDatosExtra();
+                                //VerDatosTela();
+                                //VerFichaConsumo();
+                                //VerDatosTotales();
+                                //VerProporciones();                
+                                //VerFxC();
+                            }
+                            else
+                            {
+                                $("#btnRedireccionar").addClass("d-none");
+
+                                Advertir('La Ficha no esta Registrada');
+                                $("#idcliente").text("");
+                                $("#idprograma").text("");
+                                $("#idpedidos").text("");
+                                $("#idestilos").text("");
+
+                                $("#num1").text("");
+                                $("#num2").text("");
+                                $("#num3").text("");
+                                $("#num4").text("");
+                                $("#num5").text("");
+                                $("#num6").text("");
+                                $("#num7").text("");
+                                $("#num8").text("");
+                                $("#num9").text("");
+                                $("#num10").text(""); 
+                                $("#cantPrendas").text("");
+                                $("#TotalPanos").text("");     
+                                $("#TxtDescripcionTela").text("");    
+                                $("#UsuFecha").text(""); 
+
+                                $('#tablaCuerpoGrabar').html("");
+                                $('#tablacabececons').html("");
+                                $('#tablaCuerpocons').html("");
+
+                                $('#tablaCuerpoTotal').html("");
+                                $('#tablaCabeceraProporciones').html("");
+                                $('#tablaCuerpoProporciones').html("");
+                                $('#tablacabecerafxc').html("");
+                                $('#tablaCuerpofxc').html("");
+
+                            }
+                        
+                        },
+                        error: function (err) {
+                            alert('Error:' + err.responseText);
+                        }
+                    });
+                }
+
+                
+            });
+            
+            //LISTAR VERSIONES REGISTRADAS
+            //LLENA DATOS DE TELA
+            function VerVersionRegitradas() {
+                var vrDocumento =  $("#txtpartida").val();
+                let datosx = {
+                    'ficha'        : vrDocumento
+                }
+
+                $.ajax({
+                    url: '/Corte/ListarVersiones',
+                    type: 'GET',
+                    data: datosx,
+                    dataType: 'json',
+                    success: function (response) {
+                        //DATATABLE
+                        let tabla = $("#tablaver").DataTable();
+                        tabla.destroy();
+                        var rows = '';
+                        console.log(response);
+                        if(response.length > 0){
+                            response.forEach(function (obj) {
+
+
+                                if(obj.contenido > 0){
+                                    rows += `
+                                     <tr style='background-color:#6c757d;color:white'>
+                                        <td class='text-center'><a href='#' data-idversiones='${obj.VERSIONES}' data-idtela='${obj.TIPO_TELA}' class ="BtfTela" ><i style='color:#138d75 ' class='fas fa-check-double'></i></a></td>
+                                        <td>${obj.VERSIONES}</td>
+                                        <td>${obj.F_REGISTRO}</td>
+                                        <td>${obj.U_REGISTRO}</td>
+                                       <td>${obj.TIPO_TELA}</td>
+                                     </tr>
+                                    `;
+                                }else{
+                                    rows += `
+                                     <tr>
+                                        <td class='text-center'><a href='#' data-idversiones='${obj.VERSIONES}' data-idtela='${obj.TIPO_TELA}' class ="BtfTela" ><i style='color:#138d75 ' class='fas fa-check-double'></i></a></td>
+                                        <td>${obj.VERSIONES}</td>
+                                        <td>${obj.F_REGISTRO}</td>
+                                        <td>${obj.U_REGISTRO}</td>
+                                       <td>${obj.TIPO_TELA}</td>
+                                     </tr>
+                                    `;
+                                }
+
+                                
+                            });
+                        }
+                        $('#tablaversiones').html(rows);
+                    },
+                    error: function (err) {
+                        alert('Error:' + err.responseText);
+                    }
+                });
+            }
+
+
+
+
+            //LLENAR DATOS CABECERA
+            function VerDatosCabecera(version,tela) {
+                var vrDocumento =  $("#txtpartida").val();
+                let vrVersion =version;
+                let vrTela =tela;
+
+                let datosx = {
+                    'ficha'        : vrDocumento,
+                    'version'      : vrVersion,
+                    'tela'         : vrTela,
+                }
+
+                $.ajax({
+                    url: '/Corte/ListarCabeceraCort001/',
+                    type: 'GET',
+                    data: datosx,
+                    dataType: 'json',
+                    success: function (response) {
+                        //DATATABLE     
+                        $("#idcliente").text(response.CLIENTES);
+                        $("#idprograma").text(response.PROGRAMAS);
+                        $("#idpedidos").text(response.PEDIDOS);
+                        $("#idestilos").text(response.ESTILOS);
+
+                        $("#num1").text(response.KG_ASIGNADO);
+                        $("#num2").text(response.KG_SEGUN_TIZADO);
+                        $("#num3").text(response.RESUL_KG);
+                        $("#num4").text(response.VARIACION + " %");
+                        $("#num5").text(response.LETRA_KG);
+                        $("#num6").text(response.CONSU_MTS);
+                        $("#num7").text(response.CONSU_KG);
+                        $("#num8").text(response.UTILIDAD);
+                        $("#num9").text(response.ENV_TELA_MTS);
+                        $("#num10").text(response.ENV_TELA_KG); 
+                        $("#UsuFecha").text(response.U_REGISTRO + " - " + response.F_REGISTRO ); 
+                        $("#partida").text(response.PARTIDA); 
+
+                        //COMENTARIO
+                        $("#txtComentario").text(response.comentario);
+                    },
+                    error: function (err) {
+                        alert('Error:' + err.responseText);
+                    }
+                });
+            }
+            
+            //TELA / CANT PRNDA / CANT PAÑOS
+            function VerDatosExtra(version,tela) {
+                var vrDocumento =  $("#txtpartida").val();
+                let vrVersion =version;
+                let vrTela =tela;
+
+                let datosx = {
+                    'ficha'        : vrDocumento,
+                    'version'      : vrVersion,
+                    'tela'         : vrTela,
+                }
+
+                $.ajax({
+                    url: '/Corte/ObjCant',
+                    type: 'GET',
+                    data: datosx,
+                    dataType: 'json',
+                    success: function (response) {
+                        //DATATABLE
+                        console.log(response)
+                        $("#cantPrendas").text(response.CANTPREND);
+                        $("#TotalPanos").text(response.CANTPANOS);     
+                        $("#TxtDescripcionTela").text(response.TELA);    
+                    },
+                    error: function (err) {
+                        alert('Error:' + err.responseText);
+                    }
+                });
+            }
+         
+            //LLENA DATOS DE TELA
+            function VerDatosTela(version,tela) {
+                var vrDocumento =  $("#txtpartida").val();
+                let vrVersion =version;
+                let vrTela =tela;
+
+                let datosx = {
+                    'ficha'        : vrDocumento,
+                    'version'      : vrVersion,
+                    'tela'         : vrTela,
+                }
+
+                $.ajax({
+                    url: '/Corte/ListaDatosTela',
+                    type: 'GET',
+                    data: datosx,
+                    dataType: 'json',
+                    success: function (response) {
+                        //DATATABLE
+                        let tabla = $("#tablaGrabar").DataTable();
+                        tabla.destroy();
+                        var rows = '';
+                        var cont=0;
+                        if(response.length > 0){
+                            
+                            response.forEach(function (obj) {
+                                cont++;
+                                if(cont<=1){
+                                    rows += `
+                                         <tr>
+                                            <td>${obj.columna1}</td>
+                                            <td>${obj.columna2}</td>
+                                            <td>${ obj.columna3 / 1000} Kg.</td>
+                                         </tr>
+                                    `;
+                                }else{
+                                    if(cont==4){
+                                        rows += `
+                                             <tr>
+                                                <td>${obj.columna1}</td>
+                                                <td>${obj.columna2}</td>
+                                                <td>${ obj.columna3} Kg.</td>
+                                             </tr>
+                                    `;
+                                    }else{
+                                        rows += `
+                                        <tr>
+                                           <td>${obj.columna1}</td>
+                                           <td>${obj.columna2}</td>
+                                           <td>${obj.columna3}</td>
+                                        </tr>
+                                    `;
+                                    }
+                                   
+                                }
+
+                                
+                                
+                            });
+                        }
+                        $('#tablaCuerpoGrabar').html(rows);
+                    },
+                    error: function (err) {
+                        alert('Error:' + err.responseText);
+                    }
+                });
+            }
+
+            //LLENAR FICHAS - CONSUMO
+            function VerFichaConsumo(version,tela) {
+                var vrDocumento =  $("#txtpartida").val();
+                let vrVersion =version;
+                let vrTela =tela;
+
+                let datosx = {
+                    'ficha'        : vrDocumento,
+                    'version'      : vrVersion,
+                    'tela'         : vrTela,
+                }
+
+                $.ajax({
+                    url: '/Corte/ListaConsumos',
+                    type: 'GET',
+                    data: datosx,
+                    dataType: 'json',
+                    success: function (response) {                        
+                        let js = JSON.parse(response);
+                        console.log(js);
+                        //ARMA CABECERA
+                        let th = "<tr>";
+                        let contador = 0;
+                        for (var key in js) {
+                            contador++;
+                            if(contador == 1){
+                                for (var key2 in js[key]) {
+                                    th += `<th>${key2}</th>`;
+                                    //console.log(key2);
+                                    //console.log(js[key][key2]);
+                                }
+                            }
+                        }
+                        th += "</th>";
+                        $("#tablacabececons").html(th);
+                        
+                        //ARMA CUERPO
+                        let tr = "";
+                        for (var key in js) {
+                            tr +="<tr>";
+                            for (var key2 in js[key]) {
+                                var resultado = js[key][key2];
+                                //resultado = resultado.toFixed(3);
+                                tr += `<td>${resultado}</td>`;
+                            }
+                            tr +="</tr>";
+                        }
+                        $("#tablaCuerpocons").html(tr);
+
+                    },
+                    error: function (err) {
+                        alert('Error:' + err.responseText);
+                    }
+                });
+            }
+
+            //LLENAR DATOS TOTALES
+            function VerDatosTotales(version,tela) {
+                var vrDocumento =  $("#txtpartida").val();
+                let vrVersion =version;
+                let vrTela =tela;
+                
+                let datosx = {
+                    'ficha'        : vrDocumento,
+                    'version'      : vrVersion,
+                    'tela'         : vrTela,
+                }
+
+                $.ajax({
+                    url: '/Corte/ListaTotal',
+                    type: 'GET',
+                    data: datosx,
+                    dataType: 'json',
+                    success: function (response) {
+                        
+                        let tabla = $("#tablaTotal").DataTable();
+                        tabla.destroy();
+                        var rows = '';
+                        CONTADORCALCULOS = 0;
+                        if(response.length > 0){
+                            response.forEach(function (obj) {
+                                if(obj.TALLAXPRENDA != "0"){
+                                    CONTADORCALCULOS++;
+                                    rows += `
+                                         <tr>
+                                            <td>${obj.TALLAXPRENDA == 0 ? " " : obj.TALLAXPRENDA  }</td>
+                                            <td>${obj.LARGO_TIZADO == 0 ? " " : obj.LARGO_TIZADO}</td>
+                                            <td>${obj.CONSUMO_PRENDA == 0 ? " " : obj.CONSUMO_PRENDA }</td>
+                                            <td>${obj.PESO_PANO == 0 ? " " : obj.PESO_PANO}</td>
+                                            <td>${obj.EFICIE_TIZADO == 0 ? " " : obj.EFICIE_TIZADO}</td>
+                                         </tr>
+                                    `;
+                                }
+                                
+                            });
+                        }
+                        $('#tablaCuerpoTotal').html(rows);
+
+                        //LLENA PROPORCIONES
+                        VerProporciones(version,tela);
+                    },
+                    error: function (err) {
+                        alert('Error:' + err.responseText);
+                    }
+                });
+            }
+           
+            //LLENAR PROPORCIONES
+            function VerProporciones(version,tela) {
+                var vrDocumento =  $("#txtpartida").val();
+                let vrVersion =version;
+                let vrTela =tela;
+
+                let datosx = {
+                    'ficha'        : vrDocumento,
+                    'version'      : vrVersion,
+                    'tela'         : vrTela,
+                }
+
+                $.ajax({
+                    url: '/Corte/ListaProporciones',
+                    type: 'GET',
+                    data: datosx,
+                    dataType: 'json',
+                    success: function (response) {                        
+                        let js = JSON.parse(response);
+                        //console.log(js);
+                        //ARMA CABECERA
+                        let th = "<tr>";
+                        let contador = 0;
+                        let contador2 = 0;
+                        for (var key in js) {
+                            contador++;
+                            if(contador == 1){
+
+                                for (var key2 in js[key]) {
+                                    contador2++;
+                                    if(contador2>=2){
+                                        let r1 = key2.replace(/_/g,"<br>");
+                                        r1 = r1.replace(/'/g,"");
+                                        //r1 = r1 == "PAÑOS" ? "PRENDAS" : r1;
+                                        
+                                        th += `<th>${r1}</th>`; 
+                                        
+                                    }
+                                                                      
+                                }
+                            }
+                        }
+                        th += "</th>";
+                        $("#tablaCabeceraProporciones").html(th);
+                        
+                        //ARMA CUERPO
+                        let tr = "";
+                        let td ="";
+                        let cont = 0;
+                        let cont2 = 0 ;
+                        let validar = false;
+                        let valor = "";
+                        for (var key in js) {
+                            td ="";
+                            cont++;
+                            if(cont == 1 || cont == 19 || cont == 20){
+                                tr +=`<tr style='background-color:#25495c;color:white' id='filaPropor${cont}'>`;
+                             
+                                
+                                    for (var key2 in js[key]) {
+                                        valor = js[key][key2].toString();
+                                        //valor = valor == "0" ? " " : valor;
+                                        if(key2 != "UBICA"){
+                                    
+
+                                            if(valor.includes("Calculo")){
+                                                valor ="Prendas por talla";
+                                            }
+
+                                            if(valor == "==>>" && cont == 20){
+                                                valor = "Prendas a recuperar";
+                                            }
+
+                                            tr += `<td nowrap>${valor}</td>`; 
+
+                                        }   
+                                    
+                                    }
+
+                                
+
+                            }else{
+                                tr +=`<tr id='filaPropor${cont}'>`;
+                                if(cont <= (CONTADORCALCULOS+2)){
+
+                                
+                                    for (var key2 in js[key]) {
+                                        valor = js[key][key2].toString();
+                                        valor = valor == "0" ? " " : valor;
+
+                                        if(key2 != "UBICA"){
+                                    
+
+                                            if(valor.includes("Calculo")){
+                                                valor ="Prendas por talla";
+                                            }
+
+                                            if(valor == "==>>"){
+                                                valor = "Prendas a recuperar";
+                                            }
+
+                                            tr += `<td nowrap>${valor}</td>`; 
+
+                                        }   
+                                    
+                                    }
+
+                                }
+                            }
+
+
+
+                            tr +="</tr>";
+                           
+
+                        }
+                        $("#tablaCuerpoProporciones").html(tr);
+                    },
+                    error: function (err) {
+                        alert('Error:' + err.responseText);
+                    }
+                });
+            }
+
+            //LLENAR FICHAS X CANTIDADES
+            function VerFxC(version,tela) {
+                var vrDocumento =  $("#txtpartida").val();
+                let vrVersion =version;
+                let vrTela =tela;
+
+                let datosx = {
+                    'ficha'        : vrDocumento,
+                    'version'      : vrVersion,
+                    'tela'         : vrTela,
+                }
+
+                $.ajax({
+                    url: '/Corte/FichasxCantidades',
+                    type: 'GET',
+                    data: datosx,
+                    dataType: 'json',
+                    success: function (response) {                        
+                        let js = JSON.parse(response);
+
+                        //ARMA CABECERA
+                        let th = "<tr style='vertical-align:middle'>";
+                        let contador = 0;
+ 
+                        for (var key in js) {
+                            contador++;
+                            if(contador == 1){
+                                for (var key2 in js[key]) {
+                                    let r1 = key2.replace(/_/g,"<br>");
+                                    r1 = r1.replace(/'/g,"");
+
+                                    th += `<th>${r1}</th>`;
+                                    //console.log(key2);
+                                    //console.log(js[key][key2]);
+                                }
+                            }
+                        }
+                        th += "</th>";
+                        $("#tablacabecerafxc").html(th);
+                        
+                        //ARMA CUERPO
+                        let tr = "";
+                        let cont = 0;
+                        for (var key in js) {
+                            cont++;
+                            if(cont == 1){
+                                tr +="<tr style='background-color:#25495c;color:white'>";
+                            }else{
+                                tr +="<tr>";
+                            }
+                            for (var key2 in js[key]) {
+                                var contenido = js[key][key2];
+                                contenido = contenido == "0" ? " " : contenido;
+                                contenido = contenido == "Paños ->>" ? "Prendas ->>" : contenido;
+                                tr += `<td>${contenido}</td>`;
+                            }
+                            tr +="</tr>";
+                        }
+                        $("#tablaCuerpofxc").html(tr);
+
+                    },
+                    error: function (err) {
+                        alert('Error:' + err.responseText);
+                    }
+                });
+            }
+
+            $("#tablaversiones").on('click','.BtfTela',function(){
+                var version = $(this).data("idversiones");
+                var tela = $(this).data("idtela");
+
+                if (tela =="C") {
+                    $("#tipotelax").text("COMPLEMENTO");
+                }
+                else
+                {
+                    $("#tipotelax").text("PRINCIPAL");
+                }
+
+                VerDatosCabecera(version,tela);
+                VerDatosExtra(version,tela);
+                VerDatosTela(version,tela);
+                VerFichaConsumo(version,tela);
+                VerDatosTotales(version,tela);
+                //VerProporciones(version,tela);
+                VerFxC(version,tela) ;
+
+            });
+            
+
+        </script>
+    }

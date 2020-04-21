@@ -1,0 +1,236 @@
+﻿@{
+    ViewBag.Title = "Aprobación cambio taller";
+    ViewBag.Modulo = "Gerencia";
+    Layout = "~/Views/Plantillas/_Layout.cshtml";
+
+}
+
+<!-- REGISTROS -->
+<div class="card">
+
+    <div class="card-header">
+        <h3 class="card-title">Registros</h3>
+
+        <div class="card-tools">
+            <button type="button" class="btn btn-tool" data-widget="collapse"><i class="fas fa-minus"></i></button>
+        </div>
+    </div>
+
+    <div class="card-body">
+        
+        <table class="table table-bordered dt-responsive nowrap" style="width:100%" id="tablaRegistros" >
+            <thead>
+                <tr>
+                    <th>Taller origen</th>
+                    <th>Taller destino</th>
+                    <th>Ficha</th>
+                    <th>Coordinador</th>
+                    <th>Motivo</th>
+                    <th>Operación</th>
+                </tr>
+            </thead>
+            <tbody id="tablaCuerpoRegistros"></tbody>
+        </table>
+        
+
+    </div>
+
+</div>
+
+
+<!-- MODAL PARA SELECCIONAR MOTIVO RECHAZO -->
+<div class="modal fade" id="ModalMotivoRechazo" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row" id="">
+
+                    <div class="col-8 form-group">
+                        <h6>Motivos rechazo:</h6>
+                        <select class="custom-select select2 " id="cboMotivosRechazo" style="width:100%"></select>
+                    </div>
+
+                    <div class="col-4 form-group">
+                        <h6>&nbsp;</h6>
+                        <button class="btn btn-danger btn-block" id="btnRechazarSolicitudModal" type="button">Rechazar</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+
+@section scripts{
+    <script>
+
+
+
+        //CARGA DATOS GRILLA
+        function VerDatosGrilla() {
+
+            $.ajax({
+                url: '/Gerencia/ListarCambioTaller',
+                type: 'GET',
+                dataType: 'json',
+                success: function (response) {
+
+                    let tabla = $("#tablaRegistros").DataTable();
+                    tabla.destroy();
+
+                    var rows = '';
+                    if (response.length != 0) {
+                        $.each(response, function (i, item) {
+                            rows += '<tr>';
+                            rows += '<td>' + item.Nombre_Taller_Original + '</td>'
+                            rows += '<td>' + item.Nombre_Taller_Destino + '</td>'
+                            rows += '<td >' + item.Codigo_Ficha + '</td>'
+                            rows += '<td >' + item.Responsable + '</td>'
+                            rows += '<td >' + item.Codigo_Motivo + '</td>'
+                            rows += '<td class="text-center" ><a class="fa fa-check mr-3" style="color:#00C851" href="#" aria-hidden="true" onclick ="SendAprobar(' + item.Codigo_Cambio_Taller + ',' + item.Codigo_Ficha + ',' + item.Codigo_Taller_Original + ',' + item.Codigo_Taller_Destino + ')"></a>'
+                            rows += '<a class="fa fa-times-circle eliminar" style="color:#ff4444" href="#"  aria-hidden="true" data-taller="' + item.Codigo_Cambio_Taller + '" data-ficha="' + item.Codigo_Ficha + '" data-origen="' + item.Codigo_Taller_Original + '" data-destino="' + item.Codigo_Taller_Destino + '"></a></td>'
+                            rows += '</tr>';
+                            
+                        });
+
+                        $('#tablaCuerpoRegistros').html(rows);
+
+                        ArmarDataTable("tablaRegistros");
+
+                    } else {
+                        $('#tablaCuerpoRegistros').html(rows);
+                    }
+
+                },
+                error: function (err) {
+                    alert('Error:' + err.responseText);
+                }
+            });
+        }
+
+        //BUSCA
+        $("#btnBusca").click(function (e) {
+            VerDatosGrilla();
+        });
+
+        //APRUEBA
+        async function SendAprobar(valor, ficha, codorigen, coddestino) {
+            //var opcion = confirm("Desea Aprobar el cambio de Taller");
+            data = await Preguntar("Confirme para aprobar cambio de taller");
+            if(data.value){
+                AprobarRechazarSolicitud(valor, 2, ficha, 0, codorigen, coddestino,'');
+                Informar("Aprobado con exito");
+            }
+        }
+        //DESAPRUEBA
+        async function SendRechazar(valor, ficha, codorigen, coddestino,motivor) {
+            /*var opcion = confirm("Desea Rechazar el cambio de Taller");
+            if (opcion == true) {
+                Informar("Desaprobado con exito");
+                AprobarRechazarSolicitud(valor, 3, ficha, $("#cboMotivosRechazo").val(), codorigen, coddestino, motivor);
+            } else {
+                return;
+            }*/
+            data = await Preguntar("Confirme para rechazar cambio de taller");
+            if(data.value){
+                AprobarRechazarSolicitud(valor, 3, ficha, $("#cboMotivosRechazo").val(), codorigen, coddestino, motivor);
+                Informar("Desaprobado con exito");
+            }
+        }
+
+        let cod_taller;
+        let cod_ficha;
+        let cod_taller_origen;
+        let cod_taller_destino;
+
+        $("#tablaCuerpoRegistros").on('click', '.eliminar', function () {
+
+            cod_taller = $(this).attr("data-taller");
+            cod_ficha = $(this).attr("data-ficha");
+            cod_taller_origen = $(this).attr("data-origen");
+            cod_taller_destino = $(this).attr("data-destino");
+            fGetMotivoRechazo();
+            $("#ModalMotivoRechazo").modal("show");
+
+        });
+
+        //RECHAZA
+        $("#btnRechazarSolicitudModal").on('click', function () {
+            var rechazo = $("#cboMotivosRechazo").find('option:selected').text();
+            SendRechazar(cod_taller, cod_ficha, cod_taller_origen, cod_taller_destino, rechazo);
+            $("#ModalMotivoRechazo").modal("hide");
+        });
+
+
+        function AprobarRechazarSolicitud(codigo, estado, ficha, codRec, codto, codtd, motivor) {
+            var vrEstado = estado;
+            var objFile = {
+                Codigo_Cambio_Taller: codigo,
+                Estado_Aprobacion: vrEstado,
+                Codigo_Ficha: ficha,
+                Codigo_Motivo_Rechazo: codRec[0],
+                MensajeRechazado: motivor,
+                Codigo_Taller_Original: codto,
+                Codigo_Taller_Destino: codtd,
+            };
+
+            $.ajax({
+                url: '/Gerencia/SetUpdateCambioTaller',
+                type: 'POST',
+                /*contentType: "application/json;charset=utf-8",*/
+                data: objFile,
+                dataType: 'json',
+                success: function (response) {
+                    VerDatosGrilla();
+                },
+                error: function (err) {
+                    console.log('Error:' + err.responseText);
+
+                }
+            });
+        };
+
+        //CARGA COMBO MOTIVOS RECHAZO
+        function fGetMotivoRechazo() {
+            $("#cboMotivosRechazo").html("");
+            $.ajax({
+                url: '/Gerencia/ListarMRechazoCTaller',
+                type: 'GET',
+                contentType: "application/json;charset=utf-8",
+                dataType: 'json',
+                success: function (data) {
+                    let op = '';
+                    data.forEach(function (obj) {
+                        op += `<option value='${obj.CODIGO_MOTIVO_RECHAZO}'>${obj.NOMBRE_MOTIVO_RECHAZO}</option>`;
+                    });
+                    $("#cboMotivosRechazo").html(op);
+                },
+                error: function (err) {
+                    alert('Error:' + err.responseText);
+                }
+            });
+        }
+
+        //MOTIVO RECHAZO 
+        $("#cboMotivosRechazo").change(function () {
+            $("#cboMotivosRechazo option:selected").each(function () {
+                myidmotivor = $(this).val();
+            });
+        });
+
+        VerDatosGrilla();
+
+
+
+
+
+    </script>
+}

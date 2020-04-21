@@ -1,0 +1,10 @@
+﻿@page {
+    @top-left {
+        content: "TOP SECRET";
+        color: red
+    }
+    @bottom-right {
+        content: counter(page);
+        font-style: italic
+    }
+}

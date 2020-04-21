@@ -1,0 +1,253 @@
+﻿@model List<TSC_WEB.Models.Entidades.Gerencia.CambioPrecio.MotivoRechazosEntidad>
+@{
+    ViewBag.Title = "Aprobación cambio precio";
+    ViewBag.Modulo = "Gerencia";
+    Layout = "~/Views/Plantillas/_Layout.cshtml";
+}
+
+
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">Registros</h3>
+        <div class="card-tools">
+            <button type="button" class="btn btn-tool" data-widget="collapse"><i class="fas fa-minus"></i></button>
+        </div>
+    </div>
+    <div class="card-body" style="display: block;">
+
+        <div class="form-group row justify-content-end">
+            <div class="col-xl-2 col-lg-2 col-md-3 col-sm-6 col-12 mb-2">
+                <button class="btn btn-success btn-block" id="btnAprobar">Aprobar <i class="fas fa-check"></i> </button>
+            </div>
+            <div class="col-xl-2 col-lg-2 col-md-3 col-sm-6 col-12">
+                <button class="btn btn-danger btn-block" id="btnDesaprobar">Desaprobar <i class="fas fa-times-circle"></i> </button>
+            </div>
+        </div> 
+
+        <hr />
+
+        <table class="table table-bordered dt-responsive nowrap no-footer dtr-inline" style="width: 100%;" id="tablaRegistros" role="grid" aria-describedby="tablaRegistros_info">
+            <thead>
+                <tr>
+                    <th>Cliente</th>
+                    <th>Motivo cambio</th>
+                    <th class="all">Pedido</th>
+                    <th>Precio old</th>
+                    <th>Precio new</th>
+                    <th>Estado</th>
+                    <th>Fecha</th>
+                    <th>Usuario</th>
+                    <th class="all">Operación</th>
+
+                </tr>
+            </thead>
+            <tbody id="tablaCuerpoRegistros">
+
+            </tbody>
+        </table>
+
+    </div>
+</div>
+
+<!-- MODAL -->
+<div class="modal" tabindex="-1" role="dialog" id="ModalDesaprobar">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Motivo rechazo</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="cboMotivosRechazo">Motivo rechazo</label>   
+                    <input type="text" class="form-control" id="cboMotivosRechazo" />
+                    @*<select class="select2" style="width:100%" id="cboMotivosRechazo">
+
+                        <option value="0">[SELECCIONE]</option>
+                        @foreach(var obj in Model){
+                               <option value="@obj.idmotivorechazo" >@obj.motivo</option>
+                        }
+                    </select>*@
+                </div>
+                
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="btnDesaprobarPrecio">Desaprobar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+@section scripts{
+    <script>
+
+        //GLOBALES
+        let PEDIDO;
+        let CLIENTE;
+        let PEDIDOS = [];
+        let CLIENTES = [];
+        let MOTIVO = null;
+
+            
+
+        $(document).ready(function(){
+            ListarPendientes();
+        });
+
+        //LISTAMOS PENDIENTES
+        function ListarPendientes(){
+            $.ajax({
+                url:'/gerencia/ListaSolicitudes/',
+                type:'GET',
+                datatype:'json',
+                success: function (e) {
+                    console.log(e);
+                    let tabla = $("#tablaRegistros").DataTable();
+                    tabla.destroy();
+                    let tr = "";
+                    e.forEach(function(obj){
+                        tr += 
+                            `
+                            <tr>
+                          <td>${obj.cliente}</td>
+                          <td>${obj.cod_cliente}</td>
+                          <td>${obj.pedido}</td>
+                          <td>${obj.antiguo_precio}</td>
+                          <td>${obj.nuevo_precio}</td>
+                          <td>${obj.estado}</td>
+                          <td>${obj.fecha_solicitud}</td>
+                          <td>${obj.usuario}</td>
+                          <td class="text-center ">`;
+
+                            if (obj.estado == "PENDIENTE")
+                            {
+                                tr += `      
+                          
+                                        <input type="checkbox" data-pedido="${obj.pedido}" data-cliente="${obj.cod_clientenumero}" class="operacion" >     
+                                    `;
+                            }
+                    tr += "</td></tr>";
+                    });
+
+                    /*
+                        <a href="#" class="aprobar" data-pedido="${obj.pedido}" data-cliente="${obj.cod_cliente}"><i style="color:#00C851" class="fas fa-check"></i> </a>
+                                    <a href="#" class="desaprobar" data-pedido="${obj.pedido}" data-cliente="${obj.cod_cliente}"><i style="color:#ff4444" class="fas fa-times-circle"></i></a>
+
+                    */
+                   
+                    $("#tablaCuerpoRegistros").html(tr);
+
+                    ArmarDataTable("tablaRegistros");
+
+                }
+            });
+        }
+
+
+        //APROBAMOS
+        $("#tablaCuerpoRegistros").on('click','.operacion',function () {
+            PEDIDO  = $(this).attr("data-pedido");
+            CLIENTE = $(this).attr("data-cliente");
+            
+            //AGREGANDO AL ARRAY
+            if($(this).prop("checked")){
+                
+                PEDIDOS.push(PEDIDO);
+                CLIENTES.push(CLIENTE);
+
+            }else{//QUITA DEL ARRAY
+                let pe = PEDIDOS.indexOf(PEDIDO);
+                let cli = CLIENTES.indexOf(CLIENTE);
+
+                    
+                if(pe >= 0 && cli >= 0){
+                    PEDIDOS.splice(pe,1);
+                    CLIENTES.splice(cli,1);
+                }
+            }
+        });
+
+        //APROBAMOS
+        $("#btnAprobar").click(function(){
+            AproDesa(2);
+        });
+
+
+        //MODAL
+        $("#btnDesaprobar").click(function(){
+            $("#cboMotivosRechazo").val("");
+            $("#ModalDesaprobar").modal("show");
+            $("#cboMotivosRechazo").focus();
+
+        });
+
+        //DESAPROBAMOS
+        $("#btnDesaprobarPrecio").click(function(){
+            MOTIVO = $("#cboMotivosRechazo").val();
+
+            if(MOTIVO != 0){
+            
+                AproDesa(0);
+
+            }else{
+                Advertir("Por favor seleccione un motivo");
+            }
+
+
+        });
+
+
+        //FUNCION APROBAR DESAPROBAR
+        function AproDesa(op){
+             
+            if(CLIENTES.length > 0 && PEDIDOS.length > 0){
+
+                for(let i = 0; i < PEDIDOS.length ; i++){
+                        
+                    let datos = {
+                        'pedido'        : PEDIDOS[i],
+                        'codcodigo'     : CLIENTES[i],
+                        'estado'        : op,
+                        'idmotivo'      : null,
+                        'motivo'        : MOTIVO
+                    }
+
+                    $.ajax({
+                        url: '/gerencia/AprobarCambioPrecio/',
+                        data: datos,
+                        dataType: 'json',
+                        success: function (e) {
+                            //console.log(e);
+                        }
+                    });
+
+                }
+
+                //LIMPIA
+                setTimeout(function(){
+                    Informar("Proceso realizado correctamente");
+                    ListarPendientes();
+                    $("#ModalDesaprobar").modal("hide");
+                    MOTIVO = null;
+                    PEDIDOS = [];
+                    CLIENTES = [];
+                },1000);
+
+                    
+
+            }else{
+                Advertir("Seleccione al menos un pedido para proceder");
+            }
+
+        }
+
+
+    </script>
+}

@@ -1,0 +1,380 @@
+﻿@{
+    ViewBag.Title = "Subir ficha tecnica";
+    ViewBag.Modulo = "Operaciones Proceso";
+    Layout = "~/Views/Plantillas/_Layout.cshtml";
+}
+
+<div class="card">
+
+    <div class="card-header">
+        <h3 class="card-title">Filtros</h3>
+
+        <div class="card-tools">
+            <button type="button" class="btn btn-tool" data-widget="collapse"><i class="fas fa-minus"></i></button>
+        </div>
+    </div>
+    
+    <div class="card-body">
+        
+        <div class="row">
+            <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6 form-group">
+                <h6>Areas:</h6>
+                <select class="custom-select select2 " id="cboAreasFiltro" style="width:100%"></select>
+            </div>
+
+            <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6 form-group">
+                <h6>Estilo cliente:</h6>
+                <input type="text" class="form-control mayus" id="txtEstiloFiltro" />
+            </div>
+
+            <div class="col-xl-3 col-lg-2 col-md-4 col-sm-12 form-group">
+                <h6>N° Pedido:</h6>
+                <input type="text" class="form-control" id="txtPedidoFiltro" />
+            </div>
+
+            <div class="col-xl-2 col-lg-2 col-md-3 col-sm-6 form-group">
+                <h6>&nbsp;</h6>
+                <button class="btn btn-primary btn-block" id="btnBuscar" type="button">Buscar</button>
+            </div>
+            <div class="col-xl-1 col-lg-2 col-md-3 col-sm-6 form-group">
+                <h6>&nbsp;</h6>
+                <button class="btn btn-danger btn-block" id="btnNuevo" type="button">Nuevo</button>
+
+            </div>
+        </div>
+    </div>     
+
+</div>
+
+
+<!-- REGISTROS -->
+<div class="card">
+    <div class="card-body">
+        
+        <table class="table table-sm table-bordered dt-responsive nowrap" style="width:100%" id="tablaRegistros">
+            <thead>
+                <tr>
+                    <th>Area</th>
+                    <th>Pedido</th>
+                    <th>Estilo cliente</th>
+                    <th>Actualización</th>
+                    <th>Cliente</th>
+                    <th>Programa</th>
+                    <th>M. Actualización</th>
+                    <th>Observación</th>
+                    <th>Fecha carga</th>
+                    <th>Hora carga</th>
+                    <th>Usuario</th>
+                    <th>Aprobación</th>
+                </tr>
+            </thead>
+            <tbody id="tablaCuerpoRegistros"></tbody>
+        </table>
+        
+        
+    </div>
+</div>
+
+<!-- MODAL REGISTRO -->
+<div class="modal fade" id="ModalRegistro" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Registro</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form class="row" id="frmArchivos">
+
+                    <div class="col-4 form-group">
+                        <h6>Areas:</h6>
+                        <select class="custom-select select2 " id="cboAreasRegistro" style="width:100%"></select>
+                    </div>
+
+                    <div class="col-4 form-group">
+                        <h6>Estilo cliente:</h6>
+                        <input type="text" class="form-control mayus" id="txtEstiloRegistro" />
+                    </div>
+
+                    <div class="col-4 form-group">
+                        <h6>N° Pedido: </h6>
+                        <input type="text" class="form-control" id="txtPedidoRegistro" />
+                    </div>
+
+
+                    <div class="col-6 form-group">
+                        <h6>Cliente: </h6>
+                        <!--<input type="text" class="form-control" id="txtCliente" />-->
+                        <select id="cboCliente" class="custom-select select2" style="width:100%"></select>
+                    </div>
+
+                    <div class="col-6 form-group">
+                        <h6>Programa: </h6>
+                        <!--<input type="text" class="form-control" id="txtPrograma" />-->
+                        <select id="cboPrograma" class="custom-select select2" style="width:100%"></select>
+
+                    </div>
+
+                    <div class="col-12 form-group">
+                        <h6>Observación:</h6>
+                        <textarea class="form-control" id="txtObservacion"></textarea>
+                    </div>
+
+                    <div class="col-8 form-group">
+                        <h6>Archivo:</h6>
+                        <input type="file" id="fileFicha" accept="application/pdf" />
+                    </div>
+
+                    <div class="col-4 form-group">
+                        <h6>&nbsp;</h6>
+                        <button class="btn btn-danger btn-block" id="btnRegistrar" type="button"> Registrar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+@section scripts{
+    <script src="~/Admin/js/OperacionesProceso/FichaTecnica/Filtros.js"></script>
+    <script src="~/Admin/js/OperacionesProceso/FichaTecnica/Registros.js"></script>
+
+    <script>
+        $(document).ready(function(){
+            ListarAreas("cboAreasFiltro");
+            ListarAreas("cboAreasRegistro");
+            ListarMotivosActualizacion();
+            ListarClientes();
+
+            $("#btnRegistrar").click(function () {
+
+                //PRIMERO VALIDA EXISTENCIA ANTES DE REGISTRAR
+                $.ajax({
+                    url : '/operaciones/ValidaActualizacion/',
+                    type: 'GET',
+                    data: {'idarea':$("#cboAreasRegistro").val(),'estilo':$("#txtEstiloRegistro").val().toUpperCase(),'proyecto':$("#txtPedidoRegistro").val()},
+                    success:function(e){
+                        if(e.actualizacion > 1){
+                            //SI ENCUENTRA REGISTROS - ES UN ACTUALIZACION
+                            $("#ModalRegistro").modal("hide"); //CIERRA MODAL PARA REGISTRO DE MOTIVO DE ACTUALIZACION
+                            SeleccionarMotivo(e.actualizacion);
+                                                                                                
+
+
+
+                        }else{
+                            //SI NO ENCUENTRA REGISTROS ES UN REGISTRO NUEVO
+                            //alert("es un registro nuevo");
+                            RegistrarFicha(null);
+                        }
+                    }
+                });
+
+
+            });
+
+            //ABRE MODAL
+            $("#btnNuevo").click(function(){
+                $("#ModalRegistro").modal("show");
+                //RECETEA CARGA
+                $("#btnRegistrar").html("Registrar");
+                //RECETEA SELECT 2
+                $('#cboAreasRegistro').val("1").trigger('change');
+            });
+            //FILTROS
+            $("#btnBuscar").click(function(){
+                BuscarRegistros();
+            });
+        });
+        //VARIBALES
+        let listamotivos = {};
+
+        //LISTA MOTIVOS DE ACTUALIZACION
+        function ListarMotivosActualizacion(){
+            $.ajax({
+                url: '/operaciones/ListarMActualizacion/',
+                type:'get',
+                contenType:'json',
+                success:function(e){
+                    let cont = 0;
+                    //AGREGANDO DATOS
+                    e.forEach(function(obj){
+                        cont++;
+                        listamotivos[cont] = obj.descripcion;
+                    });
+                }
+            });
+        }
+
+        //CLIENTES
+        function ListarClientes(){
+            $.ajax({
+                url: '/operaciones/ListarClientesFtec/',
+                type:'GET',
+                datatype: 'json',
+                success:function(e){
+                    //console.log(e);
+                    let option = "<option value='0'>SELECCIONE</option>";
+                    e.forEach(function(obj){
+                        option += `<option data-cli9="${obj.cliente9}"  data-cli4="${obj.cliente4}" data-cli2="${obj.cliente2}">${obj.nombre_cliente}</option>`;
+                    });
+
+                    $("#cboCliente").html(option);
+                }
+            });
+        }
+
+        //CARGA LOS PROGRAMAS DE UN CLIENTE
+        $("#cboCliente").on('change',function(){
+            let cliente9 = $(this).find(":selected").attr("data-cli9");
+            let cliente4 = $(this).find(":selected").attr("data-cli4");
+            let cliente2 = $(this).find(":selected").attr("data-cli2");
+
+            $.ajax({
+                url: '/operaciones/ListarProgramasClientesFtec/',
+                type:'GET',
+                data: {'cliente9':cliente9,'cliente4':cliente4,'cliente2':cliente2},
+                datatype: 'json',
+                success:function(e){
+                    let option = "";
+                    e.forEach(function(obj){
+                        option += `<option value="${obj.programa}">${obj.programa}</option>`;
+                    });
+
+                    $("#cboPrograma").html(option);
+                }
+            });
+
+        });
+
+
+        //ACTULIZA APROBACION
+        $("#tablaCuerpoRegistros").on('click','.fichasaprobar',function(){
+            let id = $(this).attr("data-id");
+            //console.log(id);
+            $.ajax({
+                url: '/operaciones/CambiarEAprobacion/',
+                type:'get',
+                data: 'idupload='+id,
+                contenType:'json',
+                success:function(e){
+                    BuscarRegistros();
+                }
+            });
+        });
+
+        //PARA SELECCIONAR UN MOTIVO DE ACTUALIZACION
+        async function SeleccionarMotivo(numero){
+
+            const { value: motivo } = await Swal.fire({
+                title: 'Actualizacion número: '+ numero,
+                input: 'select',
+                inputOptions:listamotivos,
+                inputPlaceholder: 'Seleccione motivo',
+                confirmButtonText: 'Actualizar',
+                showCancelButton: true,
+                inputValidator: (value) => {
+                    return new Promise((resolve) => {
+                        if (value != '') {
+                            resolve()
+                        } else {
+                            resolve('Seleccione un motivo')
+                        }
+                    })
+                }   
+            })
+
+            if (motivo) {
+                //MUESTRA MODAL
+                $("#ModalRegistro").modal("show");
+                //SI SELECCIONA UN MOTIVO - REGISTRA
+                RegistrarFicha(motivo);
+            }
+        }
+        
+
+        //LISTAR
+        function BuscarRegistros() {
+            let op = null;
+            let idarea = $("#cboAreasFiltro").val();
+            let estilo = $("#txtEstiloFiltro").val() != '' ?  "'"+$("#txtEstiloFiltro").val().toUpperCase().trim() +"'" : '';
+            let pedido  = $("#txtPedidoFiltro").val().trim();
+
+            if(idarea == 0){
+                idarea = null;
+            }
+
+            if((idarea == null || idarea == 0) && estilo == "" && pedido == ""){
+                console.log(idarea);
+                console.log(estilo);
+                console.log(pedido);
+                Advertir("Coloque al menos un filtro");
+                return;
+            }
+
+            let datos = {
+                'op' : op,
+                'idarea' : idarea,
+                'estilo' : estilo,
+                'pedido' : pedido
+            }
+            //DATATABLE
+
+            $.ajax({
+                url: '/operaciones/BuscarRegistrosFichaTenica/',
+                type: 'GET',
+                contenType: 'json',
+                data :datos,
+                success: function (e) {
+                    //console.log(e);
+                    let tabla = $("#tablaRegistros").DataTable();
+                    tabla.destroy();
+                    let tr = "";
+                    let cont = 0;
+                    e.forEach(function(obj){
+                        cont++;
+                        let estado = obj.aprobacion == '1' ? 'true' : 'false';
+                        
+                        tr +=  `<tr>;
+                        <td>${obj.nombreareas}</td>
+                        <td>${obj.estilo}</td>
+                        <td>${obj.proyecto}</td>
+                        <td>${obj.version}</td>
+                        <td>${obj.cliente}</td>
+                        <td>${obj.programa}</td>
+                        <td>${obj.motivoactualizacion}</td>
+
+                        <td>${obj.observacion}</td>
+                        <td>${obj.fechacre}</td>
+                        <td>${obj.horacre}</td>
+
+                        <td>${obj.usuariocre}</td>
+                        <td class='text-center'>
+                            <div class='custom-control custom-switch'>`;
+                        if(obj.aprobacion == '1'){
+                            tr += `<input type='checkbox' class='custom-control-input fichasaprobar' data-id='${obj.idupload}' id='customSwitch${cont}' checked='checked'>`;
+                        }else{
+                            tr += `<input type='checkbox' class='custom-control-input fichasaprobar' data-id='${obj.idupload}' id='customSwitch${cont}'>`;
+                        }
+                        tr +=`    
+                              <label class='custom-control-label' for='customSwitch${cont}'></label>
+                            </div>               
+                        </tr>`;
+                    });
+
+                    $("#tablaCuerpoRegistros").html(tr);
+                    ArmarDataTable("tablaRegistros",true,false);
+
+                }
+            });
+        }
+
+    </script>
+}

@@ -1,0 +1,88 @@
+﻿@{
+    ViewBag.Title = "Desasociar Ficha";
+    ViewBag.Modulo = "Operaciones Proceso";
+    Layout = "~/Views/Plantillas/_Layout.cshtml";
+}
+
+<div class="card">
+
+    <div class="card-body">
+        <div class="row justify-content-end">
+            <div class="col-xl-2 form-group">
+                <label>OS:</label>   
+                <input type="text" id="txtOrdenServicio"  class="form-control" autofocus />   
+            </div>
+            <div class="col-xl-2 form-group">
+                <label>Ficha:</label>
+                <input type="text" id="txtFicha" class="form-control" />
+            </div>
+            <div class="col-xl-2 form-group">
+                <label>&nbsp;</label>
+                <button class="btn btn-primary btn-block">Desasociar</button>  
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- DESPACHOS -->
+<div class="card">
+
+    <div class="card-header">
+         <h3 class="card-title">Despachos</h3>
+    </div>
+    <div class="card-body">
+
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>Operación</th>
+                        <th>Descripción Operación</th>
+                        <th>Fecha Emisión</th>
+                        <th>N° Guia</th>
+                        <th>Serie Guia</th>
+                        <th>Almacen</th>
+                        <th>Cantidad</th>
+                    </tr>
+                </thead>
+                <tbody id="tblDespachos"></tbody>
+            </table>
+        </div>
+
+        
+    </div>
+        
+
+</div>
+
+<!-- DEVOLUCIONES -->
+<div class="card">
+
+    <div class="card-header">
+        <h3 class="card-title">Devoluciones</h3>
+    </div>
+    <div class="card-body">
+
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>Operación</th>
+                        <th>Descripción Operación</th>
+                        <th>Fecha Emisión</th>
+                        <th>N° Guia</th>
+                        <th>Serie Guia</th>
+                        <th>Almacen</th>
+                        <th>Cantidad</th>
+                    </tr>
+                </thead>
+                <tbody id="tblDevoluciones"></tbody>
+            </table>
+        </div>
+
+        
+    </div>
+
+
+</div>

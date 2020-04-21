@@ -1,0 +1,118 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <script>
+function subst() {
+    var vars={};
+    var x=document.location.search.substring(1).split('&');
+    for(var i in x) {var z=x[i].split('=',2);vars[z[0]] = unescape(z[1]);}
+    var x=['frompage','topage','page','webpage','section','subsection','subsubsection'];
+    for(var i in x) {
+        var y = document.getElementsByClassName(x[i]);
+        for(var j=0; j<y.length; ++j) y[j].textContent = vars[x[i]];
+    }
+}
+    </script>
+</head>
+<body style="border: 0; margin: 0;" onload="subst()">
+
+    <table style="width: 100%;">
+        <tr>
+            <td rowspan="3">
+                <img src="../../Public/ImprimirFichaTecnica/tsclogo.png" class="float-left mt-10" style="width:40px;" />
+            </td>
+            <td colspan="3" align="center"  style="font-weight:bold">FICHA DE ESPECIFICACIONES TECNICAS</td>
+        </tr>
+        <tr>
+            <td colspan="3" align="center" style="border-bottom:1px solid black;border-top:1px solid black">&nbsp;</td>
+        </tr>
+        <tr >
+            <td align="left" style="border-bottom:1px solid black;font-weight:bold">FECHA DE GENERACIÓN: <label id="fechageneracion"></label> </td>
+            <td align="center" style="border-bottom:1px solid black;font-weight:bold">ALTERNATIVA</td>
+            <td align="right" style="border-bottom:1px solid black;font-weight:bold">RUTA</td>
+
+            <!--<td colspan="2" align="right">Page <span class="page"></span>of <span class="topage"></span></td>-->
+        </tr>
+    </table>
+
+    <table style="width: 100%;">
+        <tr>
+            <td align="left">
+                <table>
+                    <tr>
+                        <td>CLIENTE</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>ESTILO CLIENTE</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>ESTILO PROPIO</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>TIPO MUESTRA</td>
+                        <td></td>
+                    </tr>
+
+                </table>
+
+
+            </td>
+            <td align="center">
+                <table>
+                    <tr>
+                        <td>PEDIDO:</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>TEMPORADA:</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>TALLAS:</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>PO:</td>
+                        <td></td>
+                    </tr>
+
+                </table>
+
+            </td>
+            <td align="left">
+                <table>
+                    <tr>
+                        <td>SOLI.DESARROLLO</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>ESTAMPADO</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>BORDADO</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>LAVADO</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>NUEVO</td>
+                        <td></td>
+                    </tr>
+
+                </table>
+            </td>
+        </tr>
+    </table>
+
+    <hr class="w-100" style=" border-top: 1px solid black;width:100%" />
+
+    
+
+</body>
+</html>

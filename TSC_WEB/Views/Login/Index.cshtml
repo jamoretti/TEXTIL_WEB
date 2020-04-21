@@ -1,0 +1,146 @@
+﻿@model  List<TSC_WEB.Models.Entidades.Sistema.EmpresasEntidad>
+
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>TSC Web - Login</title>
+    <!-- PARA CELULARES -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- FONT AWESOME -->
+    <link rel="stylesheet" href="~/Libs/fontawesome-free/css/all.min.css">
+    <!-- SELECT 2 -->
+    <link href="~/Libs/select2/css/select2.min.css" rel="stylesheet" />
+    <!-- DASHBOARD ESTILOS -->
+    <link rel="stylesheet" href="~/Libs/Dashboard/css/adminlte.min.css">
+    <!-- SWEET ALERT 2 -->
+    <!--<link href="~/Libs/sweetalert2/sweetalert2.min.css" rel="stylesheet" />-->
+    <!-- SISTEMA -->
+    <link href="~/Admin/css/sistema.css" rel="stylesheet" />
+    <!-- ICONO -->
+    <link rel="shortcut icon" type="image/x-icon" href="/public/favicon.ico" />
+
+</head>
+<!--<body class="hold-transition login-page" style="background-image: url('../../Public/fondo1opa.jpg');background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-color:transparent !important;
+ 
+" >-->
+    <body class="hold-transition login-page" >
+        <div class="login-box">
+            <div class="login-logo">
+                <a href="#"><b>T.S.C.</b></a>
+            </div>
+            <!-- /.login-logo -->
+            <div class="card">
+                <div class="card-body login-card-body">
+                    <p class="login-box-msg">Iniciar Sesión</p>
+                    <form method="post">
+                        <!-- IMAGEN -->
+                        <div class="text-center mb-3">
+                            <img src="~/Public/tecsito.png" class="rounded-circle w-25">
+                        </div>
+                        <!-- EMPRESAS -->
+                        <div class="form-group">
+                            <select class="form-control select2" id="cboEmpresa" style="width:100%">
+                                @foreach (var objEmpresas in Model)
+                                {
+                                    <option value="@objEmpresas.codigo_empresa">@objEmpresas.nome_empresa</option>
+                                }
+
+                            </select>
+                        </div>
+                        <!-- USUARIO -->
+                        <div class="input-group mt-3">
+                            <input type="text" class="form-control mayus credenciales" placeholder="Usuario" id="txtUsuario" value="" autofocus>
+                            <div class="input-group-append input-group-text">
+                                <span class="fas fa-user"></span>
+                            </div>
+                        </div>
+                        <!-- CLAVE -->
+                        <div class="input-group mt-3">
+                            <input type="password" class="form-control mayus credenciales" placeholder="Contraseña" id="txtPassword" value="">
+                            <div class="input-group-append input-group-text">
+                                <span class="fas fa-lock"></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div class="social-auth-links text-center mt-3">
+                        <a href="#" class="btn btn-block btn-danger" id="btnLogin">
+                            Login
+                        </a>
+                    </div>
+                    <!-- /.social-auth-links -->
+                </div>
+                <!-- /.login-card-body -->
+            </div>
+            <div class="text-center">
+                <a href="#" class="">Copyright © Textil Soucing Company @DateTime.Now.Year </a>
+            </div>
+        </div>
+        <!-- /.login-box -->
+        <!-- JQUERY -->
+        <script src="~/Libs/Jquery/jquery-3.4.1.min.js"></script>
+        <!-- BOOTSTRAP 4 -->
+        <script src="~/Libs/Bootstrap/js/bootstrap.bundle.min.js"></script>
+        <!-- SELECT 2 -->
+        <script src="~/Libs/select2/js/select2.full.min.js"></script>
+        <!-- SWEET ALERT 2 -->
+        <script src="~/Libs/sweetalert2/sweetalert2.all.min.js"></script>
+        <!-- SCRIPTS PROPIOS -->
+        <script src="~/Admin/js/Generales/select2.admin.js"></script>
+        <script src="~/Admin/js/generales/sweetalert2.admin.js"></script>
+        <!-- LOGIN -->
+        <script>
+
+            function Login() {
+                let idempresa = $("#cboEmpresa").val();
+                let usuario = $("#txtUsuario").val().toUpperCase();
+                let clave = $("#txtPassword").val().toUpperCase();
+
+                if (clave != "" && usuario != "") {
+                    let datos = {
+                        'usuario': usuario,
+                        'clave': clave,
+                    'idempresa': idempresa
+                    }
+
+                    $.ajax({
+                        url: '/Dashboard/Login',
+                        type: 'POST',
+                        dataType: 'json',
+                        data: datos,
+                        success: function (e) {
+                            if (e.result) {
+                                EntrarSistema(e.mensaje);
+                            } else {
+                                Advertir(e.mensaje);
+
+                            }
+                        }
+                    });
+                }
+                else {
+                    Advertir("Complete los campos");
+                }
+            }
+            //BOTON CLICK
+            $("#btnLogin").click(function () {
+                Login();
+            });
+            //KEYPRESS
+            $(".credenciales").keypress(function (e) {
+                if (e.keyCode == 13) {
+                    Login();
+                }
+            });
+
+        </script>
+    </body>
+</html>
+

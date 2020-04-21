@@ -1,0 +1,257 @@
+﻿@{
+    ViewBag.Title = "Indicador Liquidación";
+    ViewBag.Modulo = "Corte";
+    Layout = "~/Views/Plantillas/_Layout.cshtml";
+
+}
+
+
+<div class="card">
+    
+    <div class="card-body">
+        <div class="row">
+            <div class="col-xl-4 form-group">
+                <label>Semana Inicio</label>   
+                <select class="custom-select select2" style="width:100%" id="cboSemanaInicio"></select>
+            </div>
+            <div class="col-xl-4 form-group">
+                <label>Semana Fin</label>
+                <select class="custom-select select2" style="width:100%" id="cboSemanaFin"></select>
+            </div>
+            <div class="col-xl-4 form-group">
+                <label>&nbsp;</label>
+                <button class="btn btn-primary btn-block" id="btnBuscar">Buscar</button>
+            </div>
+        </div>
+    </div>
+
+</div> 
+
+
+<div class="card">
+
+    <div class="card-header">
+
+        <h3 class="card-title">Registros</h3>
+
+        <div class="card-tools">
+            <button type="button" class="btn btn-tool d-none" id="btnModal" onclick="$('#modalGrafico').modal('show')" ><i class="fas fa-chart-line" style="color:#007bff"></i></button>
+        </div>
+    </div>
+
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover" id="tblGeneral">
+                <thead id="tblCabecera">
+
+                </thead>
+                <tbody id="tblCuerpo"></tbody>
+            </table>
+        </div>
+
+    </div>
+
+</div> 
+
+
+
+<!-- MODAL PARA EL GRAFICO-->
+<div class="modal" tabindex="-1" role="dialog" id="modalGrafico">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Grafico</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="cuerpomodal">
+                <canvas id="myChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+@section scripts{
+
+    <script src="~/Admin/js/Corte/ReporteControlUsoIndicador.js"></script>
+
+    <script>
+        //VARIABLES GLOBALES
+        var NUMEROSEMANA;
+        var arraytizado         = [];
+        var arraycortado        = [];
+        var arraydescripcion    = [];
+        var arrayporcentaje     = [];
+
+
+        $(document).ready(function () {
+            //OBTENEMOS EL NUMERO DE LA SSEMANA
+            NUMEROSEMANA = new Date().getWeekNumber();
+
+            var option = "<option value='0'>SELECCIONE</option>";
+            for (var i = 1; i <= NUMEROSEMANA;i++){
+                option += `<option value=${i}>SEMANA ${i} </option>`;
+            }
+
+            $("#cboSemanaInicio").html(option);
+            $("#cboSemanaFin").html(option);
+
+        });
+
+
+        function Buscar() {
+
+            var semana1 = parseInt($("#cboSemanaInicio").val());
+            var semana2 = parseInt($("#cboSemanaFin").val());
+
+            
+            if(semana1 <= semana2){
+
+                //MOSTRAMOS CARGA
+                MostrarCarga("Cargando Reporte");
+
+                $.ajax({
+                    url: '/corte/ReporteControlUsoListar2/',
+                    type: 'GET',
+                    data: { 'semana1': semana1, 'semana2': semana2 },
+                    success: function (e) {
+                        if (e.mensaje == "") {
+                            //LIMPIAMOS VARIABLES
+                            var js = JSON.parse(e.registros);
+                            var contador = 0;
+                            var th = "<tr>";
+                            var tr = "";
+                            var dato = "";
+                            var titulo = "";
+                            arraytizado = [];
+                            arraycortado = [];
+                            arraydescripcion = [];
+                            arrayporcentaje = [];
+
+
+
+                            //ARMANDO TABLA
+                            for (var key in js.Table) {
+                                contador++;
+
+                                tr += "<tr>";
+
+                                //TABLA 1 MESES
+                                for (var key2 in js.Table[key]) {
+
+                                    dato = js.Table[key][key2];
+                                    if (contador == 1) {
+                                        titulo = key2.replace(/'/g, "");
+                                        th += `<th>${titulo}</th>`;
+                                        //AGREGAMOS DATO DE TIZADO
+                                        arraytizado.push(dato);
+                                        //AGREGAMOS TITULO
+                                        arraydescripcion.push(titulo);
+                                    }
+
+                                    if (contador == 3) {
+                                        //AGREGAMOS DATO DE CORTE
+                                        arraycortado.push(dato);
+                                    }
+
+                                    tr += `<td>${dato}</td>`;
+                                }
+                                //TABLA 2 SEMANAS
+                                for (var key2 in js.Table1[key]) {
+
+                                    dato = js.Table1[key][key2];
+
+                                    if (contador == 1 && key2 != "OPERACION") {
+                                        titulo = key2.replace(/'/g, "");
+                                        th += `<th>${titulo}</th>`;
+                                        //AGREGAMOS DATO DE TIZADO
+                                        arraytizado.push(dato);
+                                        //AGREGAMOS TITULO
+                                        arraydescripcion.push(titulo);
+                                    }
+
+                                    if (contador == 3 && key2 != "OPERACION") {
+                                        //AGREGAMOS DATO DE TIZADO
+                                        arraycortado.push(dato);
+                                    }
+
+                                    if (key2 != "OPERACION") {
+
+                                        tr += `<td>${dato}</td>`;
+                                    }
+                                }
+
+                                tr += "</tr>";
+
+                                //FILA  EXTRA % REGISTRO
+                                if (contador == 3) {
+
+                                    tr += "<tr>";
+                                    tr += "<td> % Registro </td>";
+                                    for (var i = 1; i < arraycortado.length ; i++) {
+                                        var rpt = Math.round((arraycortado[i] / arraytizado[i]) * 100);
+                                        arrayporcentaje.push(rpt);
+                                        tr += `
+                                        <td>${rpt} %</td>
+                                    `;
+                                    }
+
+                                    tr += "<tr>";
+                                }
+                            }
+
+                            th += "</tr>";
+
+                            //REMOVEMOS DATOS
+                            arraytizado.splice(0, 1);
+                            arraycortado.splice(0, 1);
+                            arraydescripcion.splice(0, 1);
+                            //QUITAMOS CANVAS
+                            $("#myChart").remove();
+                            $("#cuerpomodal").append("<canvas id='myChart'></canvas>");
+
+
+                            //ARMAMOS GRAFICO
+                            ArmarGrafico1('myChart', arraytizado, arraycortado, arraydescripcion, arrayporcentaje);
+
+
+                            $("#tblCabecera").html(th);
+                            $("#tblCuerpo").html(tr);
+                            //MOSTRAMOS BOTON PARA EL GRAFICO
+                            $("#btnModal").removeClass("d-none");
+
+                            Informar("Reporte Generado");
+                            
+                        } else {
+                            
+                            Advertir(e.mensaje);
+                            //OCULTAMOS BOTON
+                            $("#btnModal").addClass("d-none");
+                        }
+
+                    }
+
+                });
+
+
+
+            } else {
+                Advertir("La primera semana no puede ser mayor que la segunda");
+            }
+            
+
+        }
+
+        $("#btnBuscar").click(function () {
+            Buscar();
+        });
+
+       
+    </script>
+
+}

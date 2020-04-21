@@ -1,0 +1,114 @@
+﻿@{
+    ViewBag.Title = "Asignacion de Presupuesto OC";
+    ViewBag.Modulo = "Logística";
+    Layout = "~/Views/Plantillas/_Layout.cshtml";
+}
+
+
+<div class="cont-asig-pre">
+
+    <div class="card">
+
+        <div class="card-header" style="width: 100%">
+            <div class="d-flex justify-content-between flex-wrap">
+
+                <div class="d-flex justify-content-around flex-wrap">
+                    <div>
+                        <div style="font-weight: bold;">Versiones</div>
+                        <select class="browser-default custom-select selectPeriodo" id="versionesLista">
+                            <option selected>Seleccione</option>
+                        </select>
+                    </div>
+                    <div class="ml-2">
+                        <div style="font-weight: bold;">Periodo Presupuesto</div>
+                        <select class="browser-default custom-select selectPeriodo" id="periodosLista">
+                            <option selected>Seleccione</option>
+                        </select>
+                    </div>
+                    <div class="ml-1" style="font-weight: bold;">
+                        <div>&nbsp;</div>
+                        <button type="button" class="btn btn-primary" id="btnBuscar">Buscar</button>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-between flex-wrap">
+                    <div class="ml-1" style="font-weight: bold;">
+                        <div>&nbsp;</div>
+                        <button id="btnDisponible" type="button" class="btn btn-success" style="font-weight: bold; width: 190px;">Crear nueva version</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="card-body">
+
+            <table class="table table-bordered table-hover dt-responsive nowrap" id="tablaPrincipal" style="width:100%">
+                <thead>
+                    <tr>
+                        <th>Disponible</th>
+                        <th class="all">Pedido</th>
+                        <th>C. Costo</th>
+                        <th>Fecha</th>
+                        <th>Proveedor</th>
+                        <th>Comprador</th>
+                        <th>Descripción de pago</th>
+                        <th class="all">Total</th>
+                        <th class="all">Operación</th>
+
+                    </tr>
+                </thead>
+                <tbody id="tablaCabeceraContenido"></tbody>
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+@section scripts {
+    <script>
+
+        $(document).ready(function () {
+
+            LlenarCBO_Periodos();
+
+            function LlenarCBO_Periodos() {
+                LimpiarCBO_Periodos();
+                $.ajax({
+                    type: "GET",
+                    url: '/logistica/ListarPeriodos',
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (data) {
+                        $.each(data, function () {
+                            $("#periodosLista").append($("<option/>").val(this.COD_PERIODO).text(this.DESC_PERIODO));
+                        });
+                    },
+                    failure: function () {
+                        console.error('error al cargar los periodos');
+                    }
+                });
+            }
+
+            function LimpiarCBO_Periodos() {
+                $('#periodosLista').empty().append('<option selected="selected">Seleccione</option>');
+            }
+
+            $("select.selectPeriodo").change(function () {
+                codPeriodo = $(this).children("option:selected").val();
+                if (codPeriodo != "Seleccione" &&
+                    codGerencia != "Seleccione"
+                ) {
+                }
+            });
+
+
+        });
+
+
+    </script>
+}

@@ -1,0 +1,373 @@
+﻿@model List<TSC_WEB.Models.Entidades.DesarrolloProducto.FichaTecnica.EtapasEntidad>
+@{
+    ViewBag.Title = "ReporteFichaTecnica";
+    ViewBag.Modulo = "Desarrollo producto";
+    Layout = "~/Views/Plantillas/_Layout.cshtml";
+}
+<!-- FILTROS -->
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">Filtros</h3>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-lg-4 col-xl-4  col-md-6 col-sm-6 col-12 form-group">
+                <label for="cboEtapas">Etapas:</label>
+                <select class="select2" id="cboEtapas" style="width:100%">
+                    @foreach (var obj in Model)
+                    {
+                        <option value="@obj.codigo_estagio">@obj.descricao</option>
+                    }
+                </select>
+            </div>
+            <div class="col-lg-3 col-xl-3  col-md-6 col-sm-6 col-12 form-group">
+                <label for="txtPedidos">Pedidos:</label>
+                <input type="text" class="form-control numeros" id="txtPedidos" autofocus />
+            </div>
+           
+            <div class="col-lg-1 col-xl-1  col-md-12 col-sm-12 col-12">
+                <label for="btnBuscar">&nbsp;</label>
+                <button class="btn btn-danger btn-block" id="btnBuscar">Buscar</button>
+            </div>
+            <div class="col-12 form-group">
+                <a href="/desarrolloproducto/VistaReporteFichaTecnica/" target="_blank" class="btn btn-primary">Imprimir</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <!-- FICHA TECNICA -->
+    <div class="col-xl-10 col-lg-10 col-md-12 col-sm-12 col-12">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Ficha tecnica</h3>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover dt-responsive nowrap" id="tablaFichaTecnica" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th>Fecha generación</th>
+                                <th>Cliente</th>
+                                <th>Estilo cliente</th>
+                                <th>N° Solicitud</th>
+                                <th>Temporada</th>
+                                <th>Estilo propio</th>
+                                <th>Tipo muestra</th>
+                                <th>Pedidos</th>
+                                <th>Tallas</th>
+                                <th>PO</th>
+                                <th>Grafico prenda</th>
+                                <th>Descripción de la prenda</th>
+                                <th>Estampado</th>
+                                <th>Bordado</th>
+                                <th>Lavado</th>
+                                <th>Título</th>
+                                <th>Densidad</th>
+                                <th>Ancho de tela</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tablaFichaTecnicaCuerpo"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- IMAGEN -->
+    <div class="col-xl-2 col-lg-2 col-md-12 col-sm-12 col-12">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Imagen</h3>
+            </div>
+            <div class="card-body">
+                <img  id="imagenimprimir" class="w-100" />
+            </div>
+        </div>
+    </div>
+    <!-- RUTA -->
+    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12">
+
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Ruta</h3>
+            </div>
+            <div class="card-body">
+
+                <table class="table table-bordered table-hover dt-responsive nowrap" id="tablaRuta" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>Item</th>
+                            <th>Ruta</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tablaRutaContenido"></tbody>
+                </table>
+
+            </div>
+        </div>
+
+    </div>
+    <!-- COMBINACIONES -->
+    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12">
+        <div></div>
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Combinaciones</h3>
+            </div>
+            <div class="card-body">
+
+                <table class="table table-bordered table-hover dt-responsive nowrap" id="tablaCombinaciones" style="width: 100%">
+                    <thead>
+                        <tr>
+                            <th>Combinación</th>
+                            <th>Descripción combinación</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tablaCombinacionesContenido"></tbody>
+                </table>
+
+            </div>
+        </div>
+    </div>
+    <!-- AVIOS -->
+    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Avios</h3>
+            </div>
+            <div class="card-body">
+
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover dt-responsive nowrap" id="tablaAvios" style="width: 100%">
+                        <thead>
+                            <tr>
+                                <th>Código estagio</th>
+                                <th>Ruta</th>
+                                <th>Tipo avio</th>
+                                <th>Código</th>
+                                <th>Descripcion</th>
+                                <th>Unidad medida</th>
+                                <th>Consumo por avio</th>
+                                <th>Tallas</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tablaAviosContenido"></tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!-- SECUENCIA DE OPERACIONES -->
+    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Secuencia de operaciones</h3>
+            </div>
+            <div class="card-body">
+
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover dt-responsive nowrap" id="tablaOperaciones" style="width: 100%">
+                        <thead>
+                            <tr>
+                                <th>Secuencia estagio</th>
+                                <th>Secuencia operación</th>
+                                <th>Código operación</th>
+                                <th>Nombre operación</th>
+                                <th>Código maquina</th>
+                                <th>Tiempo hombre</th>
+                                <th>Etapa operación</th>
+                                <th>Código parde de prenda</th>
+                                <th>Descripción parte prenda</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tablaOperacionesContenido"></tbody>
+                    </table>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts{
+
+    <script>
+
+        $("#btnBuscar").click(function () {
+            Buscar();
+        });
+
+        $("#txtPedidos").keyup(function (e) {
+            if(e.keyCode == 13){
+                Buscar();
+            }
+        });
+
+        function Buscar() {
+            let pedido = $("#txtPedidos").val();
+
+            if (pedido != "") {
+
+                let datos = {
+                    'etapa': $("#cboEtapas").val(),
+                    'pedido': $("#txtPedidos").val()
+                }
+
+                $.ajax({
+                    url: '/desarrolloproducto/BuscarFichaTecnica/',
+                    type: 'POST',
+                    data: datos,
+                    contenType: 'json',
+                    success: function (e) {
+                        let js = JSON.parse(e);
+                        console.log(js);
+                        //DESTRUYE TODOS LOS DATATABLES
+                        let tabla = $("#tablaFichaTecnica").DataTable();
+                        tabla.destroy();
+                        let tabla1 = $("#tablaRuta").DataTable();
+                        tabla1.destroy();
+                        let tabla2 = $("#tablaCombinaciones").DataTable();
+                        tabla2.destroy();
+                        let tabla3 = $("#tablaAvios").DataTable();
+                        tabla3.destroy();
+                        let tabla4 = $("#tablaOperaciones").DataTable();
+                        tabla4.destroy();
+
+
+                        //FICHA TECNICA
+                        let tr1 = "";
+
+                        tr1 += `
+                               <tr>
+                                    <td>${js.objFichaEntidad.fecha_generacion}</td>
+                                    <td>${js.objFichaEntidad.cliente}</td>
+                                    <td>${js.objFichaEntidad.estilo_cliente}</td>
+                                    <td>${js.objFichaEntidad.n_solicitud}</td>
+                                    <td>${js.objFichaEntidad.temporada}</td>
+                                    <td>${js.objFichaEntidad.estilo_propio}</td>
+                                    <td>${js.objFichaEntidad.tipo_muestra}</td>
+                                    <td>${js.objFichaEntidad.pedido}</td>
+                                    <td>${js.objFichaEntidad.tallas}</td>
+                                    <td>${js.objFichaEntidad.po}</td>
+                                    <td>${js.objFichaEntidad.grafico_prenda}</td>
+                                    <td>${js.objFichaEntidad.descripcion_prenda}</td>
+                                    <td>${js.objFichaEntidad.estampado}</td>
+                                    <td>${js.objFichaEntidad.bordado}</td>
+                                    <td>${js.objFichaEntidad.lavado}</td>
+                                    <td>titulo</td>
+                                    <td>${js.objFichaEntidad.densidad}</td>
+                                    <td>${js.objFichaEntidad.ancho_tela}</td>
+                               </tr>
+                              `;
+                        //IMAGEN
+                        $("#imagenimprimir").attr("src", js.objFichaEntidad.grafico_prenda);
+
+
+                        $("#tablaFichaTecnicaCuerpo").html(tr1);
+                        //RUTA
+                        let tr2 = "";
+                        js.objRutasEntidadLista.forEach(function (obj) {
+                            tr2 += `
+                                <tr>
+                                    <td>${obj.SEQUENCIA_ESTAGIO}</td>
+                                    <td>${obj.DESCRICAO}</td>
+                                </tr>
+                            `;
+                        });
+                        $("#tablaRutaContenido").html(tr2);
+                        //COMBINACIONES
+                        let tr3 = "";
+
+                        var flags = js.objCombinacionesLista, output = [], l = js.objCombinacionesLista.length, i;
+                        for (i = 0; i < l; i++) {
+                            if (flags[js.objCombinacionesLista[i].COMBINACAO_ITEM]) continue;
+                            flags[js.objCombinacionesLista[i].COMBINACAO_ITEM] = true;
+                            output.push({ 'COMBINACAO_ITEM': js.objCombinacionesLista[i].COMBINACAO_ITEM, 'DESCR_COMBINACAO': js.objCombinacionesLista[i].DESCR_COMBINACAO });
+                            //output.push(js.objCombinacionesLista[i].COMBINACAO_ITEM);
+
+                        }
+                        console.log(output);
+                        output./*js.objCombinacionesLista.*/forEach(function (obj) {
+                            tr3 += `
+                                <tr>
+                                    <td>${obj.COMBINACAO_ITEM}</td>
+                                    <td>${obj.DESCR_COMBINACAO}</td>
+                                </tr>
+                            `;
+                        });
+
+                        $("#tablaCombinacionesContenido").html(tr3);
+                        //AVIOS
+                        let tr4 = "";
+                        js.objAviosLista.forEach(function (obj) {
+                            tr4 += `
+                                <tr>
+                                    <td>${obj.ESTAGIO}</td>
+                                    <td>${obj.DESCRICAO}</td>
+                                    <td>${obj.NARRATIVA}</td>
+                                    <td>${obj.CODIGO2}</td>
+                                    <td>${obj.DESCRICAO_01}</td>
+                                    <td>${obj.UNIDADE_MEDIDA}</td>
+                                    <td>${obj.CONSUMO}</td>
+                                    <td>${obj.TALLA_A}</td>
+                                </tr>
+                             `;
+                        });
+                        $("#tablaAviosContenido").html(tr4);
+                        //SECUENCIA DE OPERACIONES
+                        let tr5 = "";
+                        js.objSecuenciaOperacionesLista.forEach(function (obj) {
+                            tr5 += `
+                                <tr>
+                                    <td>${obj.sequencia_estagio}</td>
+                                    <td>${obj.seq_operacao}</td>
+                                    <td>${obj.codigo_operacao}</td>
+                                    <td>${obj.nome_operacao}</td>
+                                    <td>${obj.observacao1}</td>
+                                    <td>${obj.minutos}</td>
+                                    <td>${obj.descricao}</td>
+                                    <td>${obj.codigo_parte_peca}</td>
+                                    <td>${obj.desc_parte_peca}</td>
+
+                                </tr>
+                            `;
+                        });
+                        $("#tablaOperacionesContenido").html(tr5);
+
+                        //ARMANDO DATATABLES
+                        $("#tablaFichaTecnica").DataTable({
+                            'language': { 'url': "/lib/datatable/js/Spanish.json" },
+                            lengthMenu: [[5, 10, 20, -1], [5, 10, 20, 'Todos']]
+                        });
+                        $("#tablaRuta").DataTable({
+                            'language': { 'url': "/lib/datatable/js/Spanish.json" },
+                            lengthMenu: [[5, 10, 20, -1], [5, 10, 20, 'Todos']]
+                        });
+                        $("#tablaCombinaciones").DataTable({
+                            'language': { 'url': "/lib/datatable/js/Spanish.json" },
+                            lengthMenu: [[5, 10, 20, -1], [5, 10, 20, 'Todos']]
+                        });
+                        $("#tablaAvios").DataTable({
+                            'language': { 'url': "/lib/datatable/js/Spanish.json" },
+                            lengthMenu: [[5, 10, 20, -1], [5, 10, 20, 'Todos']]
+                        });
+                        $("#tablaOperaciones").DataTable({
+                            'language': { 'url': "/lib/datatable/js/Spanish.json" },
+                            lengthMenu: [[5, 10, 20, -1], [5, 10, 20, 'Todos']]
+                        });
+
+
+                    }
+
+                });
+
+
+            } else {
+                Advertir("Seleccione un pedido");
+            }
+        }
+
+    </script>
+}

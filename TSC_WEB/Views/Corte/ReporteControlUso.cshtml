@@ -1,0 +1,148 @@
+﻿
+@{
+    ViewBag.Title = "Reporte Control de Uso Liquidación";
+    ViewBag.Modulo = "Corte";
+    Layout = "~/Views/Plantillas/_Layout.cshtml";
+}
+
+
+<div class="card">
+    <div class="card-body">
+        <div class="row">
+            <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6 form-group">
+                <label>Fecha Inicio:</label>   
+                <input type="date" id="txtFechaInicio" class="form-control" />
+            </div>
+            <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6 form-group">
+                <label>Fecha Fin:</label>
+                <input type="date" id="txtFechaFin" class="form-control" />
+            </div>
+            <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6 form-group">
+                <label>Partida:</label>
+                <input type="text" id="txtPartida" class="form-control" />
+            </div>
+            <div class="col-xl-2 col-lg-2 col-md-4 col-sm-6 form-group">
+                <label>Ficha:</label>
+                <input type="text" id="txtFicha" class="form-control numeros" />
+            </div>
+            <div class="col-xl-1 col-lg-1 col-md-4 col-sm-6 form-group">
+                <label>&nbsp;</label>
+                <button class="btn btn-primary btn-block" id="btnBuscar"> <i class="fas fa-search"></i> </button>  
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="card">
+
+    <div class="card-body">
+
+        <table class="table table-bordered table-hover dt-responsive nowrap" id="tbl" style="width:100%">
+            <thead>
+                <tr>
+                    <th>Partida</th>
+                    <th>Ficha</th>
+                    <th>Fecha</th>
+                    <th>Tizado</th>
+                    <th>Tendido</th>
+                    <th>Corte</th>
+                    <th>Cantidad Programada</th>
+                    <th>Versiones</th>
+                    <th>Etapas</th>
+                </tr>
+            </thead>
+            <tbody id="tblCuerpo">
+
+            </tbody>
+        </table>
+
+    </div>
+
+</div>
+
+
+@section scripts{
+
+    <script>
+
+        //CLICK BUSCAR
+        $("#btnBuscar").click(function () {
+            Buscar();
+        });
+
+
+        function Buscar() {
+
+            var datos = {
+                'fechainicio'   : $("#txtFechaInicio").val(),
+                'fechafin'      : $("#txtFechaFin").val(),
+                'partida'       : $("#txtPartida").val(),
+                'ficha'         : $("#txtFicha").val() == "" ? null : $("#txtFicha").val() ,
+            }
+
+            MostrarCarga("Generando Reporte");
+            $.ajax({
+                url: '/corte/ReporteControlUsoListar/',
+                type: 'POST',
+                data: datos,
+                success: function (e) {
+                    //DATATABLA
+                    var tabla = $("#tbl").DataTable();
+                    tabla.destroy();
+
+                    if(e.mensaje == ""){
+
+                        //ARMANDO REGISTROS
+                        var tr = "";
+                        //MOSTRANDO CARGA
+                       
+
+
+
+                        e.registros.forEach((obj) => {
+                            var icono = "";
+                            tr += `
+                            <tr>
+                                <td>${obj.partida}</td>
+                                <td>${obj.ficha}</td>
+                                <td>${obj.fecha}</td>
+                                <td>${obj.tizado}</td>
+                                <td>${obj.tendido}</td>
+                                <td>${obj.corte}</td>
+                                <td>${obj.cantidadprogramada}</td>
+                                <td>${obj.version}</td>`;
+                            if (obj.etapas) {
+                                tr += `<td class='text-center'><i class='fas fa-check' style="color:green"></i></td>`;
+                            } else {
+                                tr += `<td class='text-center'><i class='fas fa-times-circle' style="color:red"></i></td>`;
+                            }
+
+
+                            tr += `   </tr>`;
+
+                        });
+
+                        $("#tblCuerpo").html(tr);
+                        //ARMAMOS DATATABLE
+                        ArmarDataTable("tbl",true);
+                        Informar("Reporte Generado");
+
+                    } else {
+                        Advertir(e.mensaje);
+                    }
+                   
+                    
+                }
+
+            })
+
+
+        }
+            
+
+    </script>
+
+}
+
+

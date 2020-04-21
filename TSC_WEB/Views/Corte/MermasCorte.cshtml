@@ -1,0 +1,329 @@
+﻿@{
+    
+    ViewBag.Title = "Registro Mermas Corte";
+    ViewBag.Modulo = "Corte";
+    Layout = "~/Views/Plantillas/_Layout.cshtml";
+}
+    @*var ListFichas = (from obj in Model.ObjFichas
+                      orderby obj.FICHA ascending
+                      select new
+                      {
+                          obj.FICHA
+                      }
+        ).Distinct().ToList();
+    }*@
+
+
+<div class="row">
+    <!-- FILTROS - APERTURA -->
+    <div class="col-xl-3 col-lg-6 col-md-12 col-sm-12 col-12">
+        <div class="card">
+
+            <div class="card-header">
+                <h3 class="card-title">Buscar por Ficha</h3>
+                <div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-widget="collapse"><i class="fas fa-minus"></i></button>
+                </div>
+            </div>
+
+            <div class="card-body">
+                <div class="row">
+
+                    <div class="col-xl-6  col-lg-5 col-md-6 col-sm-6 form-group">
+                        <h6>Ficha:</h6>
+                        <input type="text" class="form-control" id="txtpartida" />
+                    </div>
+                    <div class="col-xl-6 col-lg-5 col-md-6 col-sm-6 form-group">
+                        <h6>&nbsp;</h6>
+                        <button class="btn btn-primary btn-block" id="btnBuscar">Buscar</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>   
+    <div class="col-xl-8">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Versiones</h3>
+                <div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-widget="collapse"><i class="fas fa-minus"></i></button>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered dt-responsive nowrap" style="width:100%;text-align:center" id="tablaver">
+                        <thead>
+                            <tr>
+                                <th>Ver</th>
+                                <th>Version</th>
+                                <th>Registro</th>
+                                <th>Usuario</th>
+                                <th>Tipo Tela</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tablaversiones"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div> 
+</div>
+
+<!-- LISTA DE FICHAS -->
+<div class="row">
+    <!--Mermas Tendido-->
+    <div class="col-xl-4">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Mermas de Corte</h3>
+                <div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-widget="collapse"><i class="fas fa-minus"></i></button>
+                </div>
+            </div>
+
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-xl-4 col-lg-1 col-md-4 col-sm-6 form-group">
+                        <h6>Orillos:</h6>                      
+                    </div>
+
+                    <div class="col-xl-4 col-lg-2 col-md-4 col-sm-6 form-group">
+                        <input type="text" class="form-control" id="txtorillos" value="0" />
+                    </div>                   
+                </div>
+                <div class="row">
+                    <div class="col-xl-4 col-lg-1 col-md-4 col-sm-6 form-group">
+                        <h6>Extremos:</h6>
+                    </div>
+
+                    <div class="col-xl-4 col-lg-2 col-md-4 col-sm-6 form-group">
+                        <input type="text" class="form-control" id="txtextremos" value="0" />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xl-4 col-lg-1 col-md-4 col-sm-6 form-group">
+                        <h6>Entrecorte:</h6>
+                    </div>
+
+                    <div class="col-xl-4 col-lg-2 col-md-4 col-sm-6 form-group">
+                        <input type="text" class="form-control" id="txtentrecorte" value="0" />
+                    </div>
+                </div>
+                <div class="col-xl-6 col-lg-5 col-md-6 col-sm-6 form-group">
+                    <h6>&nbsp;</h6>
+                    <button class="btn btn-primary btn-block" id="btngrabar">Grabar</button>
+                </div>
+            </div>
+            
+
+
+        </div>
+    </div>
+</div>
+
+
+
+    @section scripts{
+        <script>
+            var version = "";
+            var tela = "";
+
+            $("#btnBuscar").click(function (e) {
+
+
+                var vrDocumento = $("#txtpartida").val().trim();
+                if(vrDocumento != ""){
+                    let vrVersion =version;
+                    let vrTela =tela;
+
+                    let datosx = {
+                        'ficha': vrDocumento,
+                        'version'      : vrVersion,
+                        'tela'         : vrTela,
+                    }
+
+                    $.ajax({
+                        url: '/Corte/BuscarExisteCort007',
+                        type: 'GET',
+                        data: datosx,
+                        dataType: 'json',
+                        success: function (response) {
+
+                            var exis = response.EXISTE;
+
+                            if (exis > 0) {
+                                VerVersionRegitradas();
+                            
+                                $("#btngrabar").removeClass("d-none");
+                            }
+                            else {
+                                Advertir('No tiene Registro de Tendedor');
+                                $("#btngrabar").addClass("d-none");
+                            }
+
+                        },
+                        error: function (err) {
+                            alert('Error:' + err.responseText);
+                        }
+                    });              
+                }else{
+                    Advertir("Escriba una ficha para realizar busqueda");
+                }
+
+                 
+            });
+            //LISTA DE VERSIONES   
+            function VerVersionRegitradas() {
+                var vrDocumento =  $("#txtpartida").val();
+                let datosx = {
+                    'ficha'        : vrDocumento
+                }
+
+                $.ajax({
+                    url: '/Corte/ListarVersiones',
+                    type: 'GET',
+                    data: datosx,
+                    dataType: 'json',
+                    success: function (response) {
+                        //DATATABLE
+                        let tabla = $("#tablaver").DataTable();
+                        tabla.destroy();
+                        var rows = '';
+                        if(response.length > 0){
+                            response.forEach(function (obj) {
+                                rows += `
+                                 <tr>
+                                    <td class='text-center'><a href='#' data-idversiones='${obj.VERSIONES}' data-idtela='${obj.TIPO_TELA}' class ="BtfTela" ><i style='color:#138d75 ' class='fas fa-check-double'></i></a></td>
+                                    <td>${obj.VERSIONES}</td>
+                                    <td>${obj.F_REGISTRO}</td>
+                                    <td>${obj.U_REGISTRO}</td>
+                                   <td>${obj.TIPO_TELA}</td>
+                                 </tr>
+                                    `;
+                            });
+                        }
+                        $('#tablaversiones').html(rows);
+                    },
+                    error: function (err) {
+                        alert('Error:' + err.responseText);
+                    }
+                });
+            }
+
+            //LLENAR DATOS 
+            function VerDatos(version,tela) {
+                var vrDocumento = $("#txtpartida").val();
+                let vrVersion =version;
+                let vrTela =tela;
+                let datosx = {
+                    'ficha': vrDocumento,
+                    'version'      : vrVersion,
+                    'tela'         : vrTela,
+                }
+
+                $.ajax({
+                    url: '/Corte/BuscarRegistro008',
+                    type: 'GET',
+                    data: datosx,
+                    dataType: 'json',
+                    success: function (response) {
+                        //DATATABLE
+
+                        if (response.ENTRECORTE > 0 ) {
+                            $("#txtorillos").val(response.ORILLOS);
+                            $("#txtextremos").val(response.EXTREMOS);
+                            $("#txtentrecorte").val(response.ENTRECORTE);
+                            $("#btngrabar").addClass("d-none");                            
+                        }
+                        else {
+                            $("#btngrabar").removeClass("d-none");
+                            $("#txtorillos").val("0");
+                            $("#txtextremos").val("0");
+                            $("#txtentrecorte").val("0");
+                        }
+                    },
+                    error: function (err) {
+                        alert('Error:' + err.responseText);
+                    }
+                });
+            }
+
+            $("#btngrabar").click(async function (e) {
+
+                var rpt = await Preguntar("Confirme para realizar registro de merma");
+
+                if(rpt.value){
+
+                    //GRABANDO
+                    MostrarCarga("Registrando merma...");
+
+
+                    var partida = $("#txtpartida").val();
+                    var vrnum1 = $("#txtorillos").val();
+                    var vrnum2 = $("#txtextremos").val();
+                    var vrnum3 = $("#txtentrecorte").val();
+                    let vrVersion =version;
+                    let vrTela =tela;
+
+
+                    let datos = {
+                        'PARTIDA': partida,
+                        'ORILLOS': vrnum1,
+                        'EXTREMOS': vrnum2,
+                        'ENTRECORTE': vrnum3,
+                        'version'      : vrVersion,
+                        'tela'         : vrTela,
+                    }
+
+
+                    $.ajax({
+                        url: '/Corte/RegistrarCorte008',
+                        type: 'POST',
+                        data: datos,
+                        dataType: 'json',
+                        success: function (response) {
+
+                            if (response == 0) {
+                                Advertir('-');
+                            }
+                            else if (response == 2) {
+                                Advertir('-');
+                            }
+                            else if (response == 3) {
+                                Advertir('-');
+                            }
+                            else {
+                                Informar('Se Agrego correctamente');
+                                VerDatos();
+                                $("#txtpartida").val("");
+                                $("#txtorillos").val("");
+                                $("#txtextremos").val("");
+                                $("#txtentrecorte").val("");
+                            }
+                        },
+                        error: function (err) {
+                            alert('Error:' + err.responseText);
+                        }
+                    });
+
+                }
+
+            });
+
+
+            $("#tablaversiones").on('click', '.BtfTela', function () {
+                version = $(this).data("idversiones");
+                tela = $(this).data("idtela");
+                VerDatos(version,tela);
+                //VerDatosCabecera(version, tela);
+                //VerDatosExtra(version, tela);
+                //VerDatosTela(version, tela);
+                //VerFichaConsumo(version, tela);
+                //VerDatosTotales(version, tela);
+                //VerProporciones(version, tela);
+                //VerFxC(version, tela);
+
+            });
+        </script>
+    }

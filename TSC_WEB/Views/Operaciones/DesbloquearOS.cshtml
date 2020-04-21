@@ -1,0 +1,101 @@
+﻿.@{
+    ViewBag.Title = "Desbloquear orden servicio";
+    ViewBag.Modulo = "Operaciones";
+    Layout = "~/Views/Plantillas/_Layout.cshtml";
+}
+
+<div class="card">
+    <div class="card-body">
+        <div class="row">
+            <div class="col-xl-4 col-lg-4 col-md-4 col-sm-6">
+                <h6>Orden servicio:</h6>
+                <input type="text" class="form-control" id="txtOrdenServicio" />
+            </div>
+            <div class="col-xl-4 col-lg-4 col-md-4 col-sm-6">
+                <h6>&nbsp;</h6>
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <div class="input-group-text">
+                            <input type="checkbox" id="cbEstado">
+                        </div>
+                    </div>
+                    <input type="text" class="form-control" value="Regresa a estado anterior" disabled>
+                </div>
+            </div>
+            <div class="col-xl-4 col-lg-4 col-md-4 col-sm-6">
+                <h6>&nbsp;</h6>
+                <button class="btn btn-danger btn-block" id="btnDesbloquear">Desbloquear</button>
+            </div>
+        </div>
+    </div>
+
+</div>
+    
+@section scripts{
+    <script>
+        $(document).ready(function () {
+            //MASK
+            $("#txtOrdenServicio").mask("0000000");
+        });
+
+        let MARCADO = 0;
+
+
+        //FUNCION PRINCIPAL
+        $("#btnDesbloquear").click(function (e) {
+            if ($("#txtOrdenServicio").val() == '') {
+                Advertir('No ha ingresado el numero de OS');
+                return;
+            }
+
+            var vrDocumento = $("#txtOrdenServicio").val();
+            if (vrDocumento == '') {
+                vrDocumento = null;
+            }
+            var objFile = {
+                Numero_Orden_String: vrDocumento,
+                Indicador_Inicial: MARCADO,
+            };
+
+            $.ajax({
+                url: '/operaciones/GetValidaOrden/',
+                type: 'POST',
+                datatType: "json",
+                data: objFile,
+                success: function (response) {
+                    if (response == 1) {
+                        Advertir('Orden de Servicio no existe');
+                    }
+                    else if (response == 2) {
+                        Advertir('Orden de Serivio se encuentra bloqueada');
+                    }
+                    else if (response == 3) {
+                        Informar('Se realizo la operación correctamente');
+                        $('#txtOrden').val('');
+                        document.getElementById("cbestado").checked = false;
+                    }
+                    else if (response == 4) {
+                        Advertir('Mensaje de tiempo de espera');
+                    }
+
+                },
+                error: function (err) {
+                    Advertir('Error:' + err.responseText);
+                }
+            });
+        });
+
+
+
+        //ESTADO CHECK
+        $("#cbEstado").click(function (e) {
+            if ($("#cbEstado").is(":checked")) {
+                MARCADO = 1;
+            }
+            else {
+                MARCADO = 0;
+            }
+        });
+
+    </script>
+}

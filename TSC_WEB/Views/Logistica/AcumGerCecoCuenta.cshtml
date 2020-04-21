@@ -1,0 +1,1848 @@
+﻿@{
+    ViewBag.Title = "Acumulado por Gerencia";
+    ViewBag.Modulo = "Logística";
+    Layout = "~/Views/Plantillas/_Layout.cshtml";
+}
+
+
+<div class="acum-ger-ceco">
+
+    <div class="card">
+        <div class="card-body">
+
+            <ul class="nav nav-tabs nav-justified md-tabs indigo" id="myTabJust" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link active" id="tab1-tab-just" data-toggle="tab" href="#tab1-just" role="tab" aria-controls="tab1-just"
+                       aria-selected="true">Gerencial</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="tab2-tab-just" data-toggle="tab" href="#tab2-just" role="tab" aria-controls="tab2-just"
+                       aria-selected="false">Centro de Costo</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="tab3-tab-just" data-toggle="tab" href="#tab3-just" role="tab" aria-controls="tab3-just"
+                       aria-selected="false">Plan Contable</a>
+                </li>
+            </ul>
+            <div class="tab-content card pt-1" id="myTabContentJust">
+
+                <div class="tab-pane fade show active" id="tab1-just" role="tabpanel" aria-labelledby="tab1-tab-just">
+
+                    <div class="p-3">
+
+                        <div class="card p-3" style="width: 100%">
+
+                            <div class="cont-header-1-1">
+
+                                <div class="cont-header-section-1-1">
+                                    <div class="cont-header-item-1-1">
+                                        <div style="font-weight: bold; ">Periodo Presupuesto</div>
+                                        <select class="browser-default custom-select selectPeriodo1" id="periodosLista1">
+                                            <option selected>Seleccione</option>
+                                        </select>
+                                    </div>
+                                    <div class="cont-header-item-1-2">
+                                        <div>&nbsp;</div>
+                                        <button type="button" class="btn btn-primary" id="btnBuscar1">Buscar</button>
+                                    </div>
+                                </div>
+
+                                <div class="cont-header-section-1-2">
+                                    <div class="cont-header-item-1-2-1">
+                                        <div style="font-weight: bold;">Presupuestado Total</div>
+                                        <button id="btnPresupuesto1" type="button" class="btn btn-presupuesto">0.00</button>
+                                    </div>
+                                    <div class="cont-header-item-1-2-2">
+                                        <div style="font-weight: bold;">Saldo Comprado Total</div>
+                                        <button id="btnConsumido1" type="button" class="btn btn-consumido">0.00</button>
+                                    </div>
+                                    <div class="cont-header-item-1-2-3">
+                                        <div style="font-weight: bold;">Disponible Total</div>
+                                        <button id="btnDisponible1" type="button" class="btn btn-disponible">0.00</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-2">
+
+                            <table class="table table-bordered table-hover dt-responsive nowrap" id="tablaPrincipal1" style="width:100%">
+                                <thead>
+                                    <tr>
+                                        <th>Periodo</th>
+                                        <th>Gerencia </th>
+                                        <th>Presupuesto</th>
+                                        <th>Consumido</th>
+                                        <th>Saldo</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tablaCabeceraContenido1"></tbody>
+                            </table>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="tab-pane fade" id="tab2-just" role="tabpanel" aria-labelledby="tab2-tab-just">
+                    <div class="p-3">
+
+                        <div class="card p-3" style="width: 100%">
+
+                            <div class="cont-header-2-1">
+                                <div class="cont-header-section-2-1">
+                                    <div class="cont-header-item-2-1">
+
+                                        <div class="cont-header-item-2-1-1">
+                                            <div style="font-weight: bold;">Periodo Presupuesto</div>
+                                            <select class="browser-default custom-select selectPeriodo2" id="periodosLista2">
+                                                <option selected>Seleccione</option>
+                                            </select>
+                                        </div>
+                                        <div class="cont-header-item-2-1-2">
+                                            <div style="font-weight: bold; ">Gerencia</div>
+                                            <select class="browser-default custom-select selectGerencia2" id="gerenciasLista2">
+                                                <option selected>Seleccione</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="cont-header-item-2-2">
+                                        <div>&nbsp;</div>
+                                        <button type="button" class="btn btn-primary" id="btnBuscar2">Buscar</button>
+                                    </div>
+                                </div>
+
+                                <div class="cont-header-section-2-2">
+                                    <div class="cont-header-item-2-2-1">
+                                        <div style="font-weight: bold;">Presupuestado Total</div>
+                                        <button id="btnPresupuesto2" type="button" class="btn btn-presupuesto">0.00</button>
+                                    </div>
+                                    <div class="cont-header-item-2-2-2">
+                                        <div style="font-weight: bold;">Saldo Comprado Total</div>
+                                        <button id="btnConsumido2" type="button" class="btn btn-consumido">0.00</button>
+                                    </div>
+                                    <div class="cont-header-item-2-2-3">
+                                        <div style="font-weight: bold;">Disponible Total</div>
+                                        <button id="btnDisponible2" type="button" class="btn btn-disponible">0.00</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-2">
+                            <table class="table table-bordered table-hover dt-responsive nowrap" id="tablaPrincipal2" style="width:100%">
+                                <thead>
+                                    <tr>
+                                        <th>Periodo</th>
+                                        <th>Gerencia</th>
+                                        <th>Codigo CC.</th>
+                                        <th>Centro de Costo</th>
+                                        <th>Presupuesto</th>
+                                        <th>Comprado</th>
+                                        <th>Disponible</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tablaCabeceraContenido2"></tbody>
+                            </table>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="tab-pane fade" id="tab3-just" role="tabpanel" aria-labelledby="tab3-tab-just">
+                    <div class="p-3">
+
+                        <div class="card p-3" style="width: 100%">
+
+                            <div class="cont-header-3-1">
+                                <div class="cont-header-section-3-1">
+
+                                    <div class="cont-header-item-3-1">
+
+                                        <div class="cont-h-i-3-1">
+                                            <div style="font-weight: bold;">Periodo Presupuesto</div>
+                                            <select class="form-control selectPeriodo3" id="periodosLista3">
+                                            </select>
+
+                                        </div>
+                                        <div class="cont-h-i-3-2">
+                                            <div style="font-weight: bold; ">Gerencia</div>
+                                            <select class="form-control selectGerencia3" id="gerenciasLista3">
+                                            </select>
+
+                                        </div>
+                                        <div class="cont-h-i-3-3">
+                                            <div style="font-weight: bold; ">Centro de Costo</div>
+                                            <select class="form-control selectCC3" id="ccLista3" placeholder="Seleccione">
+                                            </select>
+                                        </div>
+
+                                        <div class="cont-h-i-3-4">
+                                            <div style="font-weight: bold;">Familia</div>
+                                            <select class="form-control selectFamilia3" multiple="multiple" id="IdFamiliaLista3" placeholder="Seleccione">
+                                            </select>
+                                        </div>
+
+                                        <div class="cont-h-i-3-5">
+                                            <div class="item2">
+                                                <div>&nbsp;</div>
+                                                <button type="button" class="btn btn-primary" id="btnBuscar3">Buscar</button>
+
+                                            </div>
+                                        </div>
+
+
+                                    </div>
+
+                                </div>
+
+                                @*<div class="buscar-3">
+                                        <div class="item2">
+                                            <div>&nbsp;</div>
+                                            <button type="button" class="btn btn-primary" id="btnBuscar3">Buscar</button>
+                                        </div>
+                                    </div>*@
+
+                            </div>
+
+                            <div class="cont-tipos">
+
+                                <div class="clase-excedidas">
+                                    <div class="lblExceso">0</div>
+                                    <div class="lblExcesoDesc">Exceso</div>
+                                </div>
+
+                                <div class="checks-montos">
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="inlineRadioOptions" id="idchktodos" value="chktodos">
+                                        <label class="form-check-label" for="inlineRadio1">Todos</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="inlineRadioOptions" id="idchkexcedentes" value="chkexcedentes">
+                                        <label class="form-check-label" for="inlineRadio2">Exceso</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="inlineRadioOptions" id="idchkdisponible" value="chkdisponible">
+                                        <label class="form-check-label" for="inlineRadio3">Disponibles</label>
+                                    </div>
+                                </div>
+
+                                @*<div class="buscar-3">
+                                        <div class="item2">
+                                            <button type="button" class="btn btn-primary" id="btnBuscar3">Buscar</button>
+                                        </div>
+                                    </div>*@
+                                <div class="clase-disponible">
+                                    <div class="lbldisponible">0</div>
+                                    <div class="lbldisponibleDesc">Disponible</div>
+                                </div>
+
+                            </div>
+
+                            <div class="cont-header-section-3-2">
+
+                                <div class="cont-header-item-3-2-1">
+                                    <div class="indicador ind-presupuesto">
+                                        <div id="btnPresupuesto3" class="valor">0</div>
+                                        <div class="descripcion">Presupuestado</div>
+                                    </div>
+                                </div>
+
+                                <div class="cont-header-item-3-2-2">
+                                    <div class="indicador ind-comprado">
+                                        <div id="btnConsumido3" class="valor">0</div>
+                                        <div class="descripcion">Comprado</div>
+                                    </div>
+                                </div>
+
+                                <div class="cont-header-item-3-2-3">
+                                    <div class="indicador ind-saldo">
+                                        <div id="btnDisponible3" class="valor">0</div>
+                                        <div class="descripcion">Saldo</div>
+                                    </div>
+                                </div>
+
+
+                                @*<div class="cont-header-item-3-2-2">
+                                        <div style="font-weight: bold;">Saldo Comprado Total</div>
+                                        <button id="btnConsumido3" type="button" class="btn btn-consumido">0.00</button>
+                                    </div>
+                                    <div class="cont-header-item-3-2-3">
+                                        <div style="font-weight: bold;">Saldo Total</div>
+                                        <button id="btnDisponible3" type="button" class="btn btn-disponible">0.00</button>
+                                    </div>*@
+
+
+                            </div>
+
+                            <div class="mt-2">
+                                <table class="table table-bordered table-hover dt-responsive nowrap" id="tablaPrincipal3" style="width:100%">
+                                    <thead>
+                                        <tr>
+
+                                            <th>Codigo Plan Cont.</th>
+                                            <th>Plan Cont.</th>
+
+                                            <th>Codigo CC.</th>
+                                            <th>Centro de Costo</th>
+
+                                            <th>Presupuesto</th>
+                                            <th>Comprado</th>
+                                            <th>Disponible</th>
+
+                                            @*<th class="all">Detalle</th>*@
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tablaCabeceraContenido3"></tbody>
+                                </table>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+
+</div>
+
+
+
+<!-- Modal -->
+<div class="modal fade bd-example-modal-lg" id="modalInformacion" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content" style="min-width : 900px">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Detalle Comprado por Partida Contable</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="table-responsive" style="height:250px">
+                    <table class="table table-bordered table-hover" style="width:100%" id="tablaDetalle">
+                        <thead>
+                            <tr>
+                                <th>Cod.Autorización</th>
+                                <th>Fecha</th>
+                                <th>Pedido</th>
+                                <th>Centro Costo</th>
+                                <th>Proveedor</th>
+                                <th>Comprador</th>
+                                <th>Valor OC.</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tablaDetalleContenido3"></tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<style>
+
+    .acum-ger-ceco label span {
+        font-weight: 300 !important;
+    }
+
+
+    .acum-ger-ceco .btn-presupuesto {
+        font-weight: 500;
+        font-size: 18px;
+        min-width: 250px;
+        color: white;
+        background-color: #2E86C1;
+        margin-left: 4px;
+    }
+
+    .acum-ger-ceco .btn-consumido {
+        font-weight: 500;
+        font-size: 18px;
+        min-width: 250px;
+        color: white;
+        background-color: #EC7063;
+        margin-left: 4px;
+    }
+
+    .acum-ger-ceco .btn-disponible {
+        font-weight: 500;
+        font-size: 18px;
+        min-width: 250px;
+        color: white;
+        background-color: #2ECC71;
+        margin-left: 4px;
+    }
+
+
+    .selectPeriodo3 {
+        min-width: 200px;
+    }
+
+    .selectGerencia3 {
+        min-width: 200px;
+    }
+
+    .selectCC3 {
+        min-width: 200px;
+    }
+
+    .selectFamilia3 {
+        min-width: 200px;
+    }
+
+
+
+    .cont-tipos {
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        border-top: 1px solid #D5D8DC;
+        margin-top: 10px;
+    }
+
+        .cont-tipos .clase-excedidas {
+            padding: 5px;
+            border-radius: 5px;
+            margin-top: 10px;
+            flex-grow: 1;
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
+            align-items: center;
+        }
+
+            .cont-tipos .clase-excedidas .lblExceso {
+                color: #CB4335;
+                font-weight: bold;
+                font-size: 19px;
+            }
+
+            .cont-tipos .clase-excedidas .lblExcesoDesc {
+                color: #CB4335;
+                font-weight: bold;
+                font-size: 12px;
+            }
+
+        .cont-tipos .checks-montos {
+            border: 1px solid #2C3E50;
+            padding: 5px;
+            border-radius: 5px;
+            margin-top: 10px;
+            flex-grow: 2;
+            /*background-color: lightgreen;*/
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+
+        .cont-tipos .clase-disponible {
+            padding: 5px;
+            border-radius: 5px;
+            margin-top: 10px;
+            flex-grow: 1;
+            /*background-color: cornsilk;*/
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
+            align-items: center;
+        }
+
+            .cont-tipos .clase-disponible .lbldisponible {
+                color: #28B463;
+                font-weight: bold;
+                font-size: 19px;
+            }
+
+            .cont-tipos .clase-disponible .lbldisponibleDesc {
+                color: #28B463;
+                font-weight: bold;
+                font-size: 12px;
+            }
+
+
+
+    .cont-header-section-3-2 {
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        border-top: 1px solid #D5D8DC;
+        margin-top: 10px;
+    }
+
+        .cont-header-section-3-2 .cont-header-item-3-2-1 {
+            padding: 5px;
+            border-radius: 5px;
+            margin-top: 10px;
+            flex-grow: 1;
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .cont-header-section-3-2 .cont-header-item-3-2-2 {
+            padding: 5px;
+            margin-top: 10px;
+            flex-grow: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .cont-header-section-3-2 .cont-header-item-3-2-3 {
+            padding: 5px;
+            border-radius: 5px;
+            margin-top: 10px;
+            flex-grow: 1;
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
+            align-items: center;
+        }
+
+
+
+
+
+    #btnBuscar3 {
+        min-width: 200px;
+        margin-left: 20px;
+    }
+
+
+    .selectFamilia3 {
+        /*overflow: hidden !important;*/
+        margin-left: 5px;
+    }
+
+    .indicador {
+        text-align: center;
+        padding: 5px;
+        width: 90%;
+        border-radius: 7px;
+    }
+
+        .indicador .valor {
+            font-size: 22px;
+            color: white;
+        }
+
+        .indicador .descripcion {
+            font-size: 14px;
+            color: white;
+            line-height: 1;
+        }
+
+    .cont-header-section-3-2 .ind-presupuesto {
+        background-color: #3498DB;
+    }
+
+    .cont-header-section-3-2 .ind-comprado {
+        background-color: #EC7063;
+    }
+
+    .cont-header-section-3-2 .ind-saldo {
+        background-color: #2ECC71;
+    }
+
+    @@media (min-width: 320px) and (max-width: 479.98px) {
+        /* Tab1 - Responsive */
+        .selectPeriodo3 {
+            width: 100% !important;
+        }
+
+        .selectGerencia3 {
+            width: 100% !important;
+        }
+
+        .selectCC3 {
+            width: 100% !important;
+        }
+
+        .selectFamilia3 {
+            width: 100% !important;
+        }
+
+
+
+        .acum-ger-ceco .cont-header-1-1 {
+            width: 100%;
+        }
+
+
+            .acum-ger-ceco .cont-header-1-1 .cont-header-section-1-1 {
+                display: flex;
+                flex-direction: column;
+            }
+
+                .acum-ger-ceco .cont-header-1-1 .cont-header-section-1-1 select {
+                    width: 100% !important;
+                }
+
+                .acum-ger-ceco .cont-header-1-1 .cont-header-section-1-1 button {
+                    width: 100% !important;
+                }
+
+            .acum-ger-ceco .cont-header-1-1 .cont-header-section-1-2 {
+                display: flex;
+                flex-direction: column;
+                margin-top: 20px;
+                border-top: 1px solid #E5E8E8;
+                padding-top: 15px;
+            }
+
+                .acum-ger-ceco .cont-header-1-1 .cont-header-section-1-2 button {
+                    width: 100% !important;
+                    margin-left: 0px !important;
+                }
+        /* Tab2 - Responsive */
+        .acum-ger-ceco .cont-header-2-1 {
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+            .acum-ger-ceco .cont-header-2-1 .cont-header-section-2-1 {
+                display: flex;
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+                .acum-ger-ceco .cont-header-2-1 .cont-header-section-2-1 .cont-header-item-2-1 {
+                    display: flex;
+                    flex-direction: column;
+                    width: 100%;
+                }
+
+                    .acum-ger-ceco .cont-header-2-1 .cont-header-section-2-1 .cont-header-item-2-1 .cont-header-item-2-1-1 {
+                    }
+
+                    .acum-ger-ceco .cont-header-2-1 .cont-header-section-2-1 .cont-header-item-2-1 .cont-header-item-2-1-2 {
+                    }
+
+                    .acum-ger-ceco .cont-header-2-1 .cont-header-section-2-1 .cont-header-item-2-1 .cont-header-item-2-1-3 {
+                    }
+
+                .acum-ger-ceco .cont-header-2-1 .cont-header-section-2-1 .cont-header-item-2-2 button {
+                    width: 120px !important;
+                    margin-left: 3px;
+                }
+
+
+            .acum-ger-ceco .cont-header-2-1 .cont-header-section-2-2 {
+                display: flex;
+                flex-direction: column;
+                align-items: stretch;
+                border-top: 1px solid #CCD1D1;
+                margin-top: 10px;
+                padding-top: 15px;
+            }
+
+                .acum-ger-ceco .cont-header-2-1 .cont-header-section-2-2 button {
+                    width: 100%;
+                    margin-left: 0px !important;
+                }
+
+                .acum-ger-ceco .cont-header-2-1 .cont-header-section-2-2 .cont-header-item-2-2-1 {
+                    width: 100%;
+                }
+
+                .acum-ger-ceco .cont-header-2-1 .cont-header-section-2-2 .cont-header-item-2-2-2 {
+                    width: 100%;
+                }
+
+                .acum-ger-ceco .cont-header-2-1 .cont-header-section-2-2 .cont-header-item-2-2-3 {
+                    width: 100%;
+                }
+    }
+
+    @@media (min-width: 480px) and (max-width: 767.98px) {
+        /* Tab1 - Responsive */
+        .acum-ger-ceco .cont-header-1-1 {
+            width: 100%;
+        }
+
+            .acum-ger-ceco .cont-header-1-1 .cont-header-section-1-1 {
+                display: flex;
+                justify-content: space-between;
+            }
+
+            .acum-ger-ceco .cont-header-1-1 .cont-header-section-1-2 {
+                display: flex;
+                flex-direction: column;
+                align-items: stretch;
+                margin-top: 20px;
+            }
+
+                .acum-ger-ceco .cont-header-1-1 .cont-header-section-1-2 button {
+                    width: 100% !important;
+                    margin-left: 0px !important;
+                }
+        /* Tab2 - Responsive */
+        .acum-ger-ceco .cont-header-2-1 {
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+            .acum-ger-ceco .cont-header-2-1 .cont-header-section-2-1 {
+                display: flex;
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+                .acum-ger-ceco .cont-header-2-1 .cont-header-section-2-1 .cont-header-item-2-1 {
+                    display: flex;
+                    justify-content: space-between;
+                }
+
+                    .acum-ger-ceco .cont-header-2-1 .cont-header-section-2-1 .cont-header-item-2-1 .cont-header-item-2-1-1 {
+                    }
+
+                    .acum-ger-ceco .cont-header-2-1 .cont-header-section-2-1 .cont-header-item-2-1 .cont-header-item-2-1-2 {
+                        margin-left: 3px;
+                    }
+
+
+                .acum-ger-ceco .cont-header-2-1 .cont-header-section-2-1 .cont-header-item-2-2 button {
+                    width: 120px !important;
+                    margin-left: 3px;
+                }
+
+
+            .acum-ger-ceco .cont-header-2-1 .cont-header-section-2-2 {
+                display: flex;
+                flex-direction: column;
+                align-items: stretch;
+                border-top: 1px solid #CCD1D1;
+                margin-top: 10px;
+                padding-top: 15px;
+            }
+
+                .acum-ger-ceco .cont-header-2-1 .cont-header-section-2-2 button {
+                    width: 100%;
+                }
+
+                .acum-ger-ceco .cont-header-2-1 .cont-header-section-2-2 .cont-header-item-2-2-1 {
+                    width: 100%;
+                    margin-left: 0px !important;
+                }
+
+                .acum-ger-ceco .cont-header-2-1 .cont-header-section-2-2 .cont-header-item-2-2-2 {
+                    width: 100%;
+                    margin-left: 0px !important;
+                }
+
+                .acum-ger-ceco .cont-header-2-1 .cont-header-section-2-2 .cont-header-item-2-2-3 {
+                    width: 100%;
+                    margin-left: 0px !important;
+                }
+    }
+
+    @@media (min-width: 768px) and (max-width: 991.98px) {
+        /* Tab1 - Responsive */
+        .acum-ger-ceco .cont-header-1-1 {
+            width: 100%;
+        }
+
+            .acum-ger-ceco .cont-header-1-1 .cont-header-section-1-1 {
+                display: flex;
+                justify-content: space-between;
+            }
+
+            .acum-ger-ceco .cont-header-1-1 .cont-header-section-1-2 {
+                display: flex;
+                justify-content: space-between;
+                border-top: 1px solid #CCD1D1;
+                margin-top: 10px;
+                padding-top: 15px;
+            }
+        /* Tab2 - Responsive */
+        .acum-ger-ceco .cont-header-2-1 {
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+            .acum-ger-ceco .cont-header-2-1 .cont-header-section-2-1 {
+                display: flex;
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+                .acum-ger-ceco .cont-header-2-1 .cont-header-section-2-1 .cont-header-item-2-1 {
+                    display: flex;
+                    justify-content: space-between;
+                }
+
+                    .acum-ger-ceco .cont-header-2-1 .cont-header-section-2-1 .cont-header-item-2-1 .cont-header-item-2-1-1 {
+                    }
+
+                    .acum-ger-ceco .cont-header-2-1 .cont-header-section-2-1 .cont-header-item-2-1 .cont-header-item-2-1-2 {
+                        margin-left: 3px;
+                    }
+
+
+                .acum-ger-ceco .cont-header-2-1 .cont-header-section-2-1 .cont-header-item-2-2 button {
+                    width: 120px !important;
+                    margin-left: 3px;
+                }
+
+
+            .acum-ger-ceco .cont-header-2-1 .cont-header-section-2-2 {
+                display: flex;
+                flex-direction: column;
+                align-items: stretch;
+                border-top: 1px solid #CCD1D1;
+                margin-top: 10px;
+                padding-top: 15px;
+            }
+
+                .acum-ger-ceco .cont-header-2-1 .cont-header-section-2-2 button {
+                    width: 100%;
+                }
+
+                .acum-ger-ceco .cont-header-2-1 .cont-header-section-2-2 .cont-header-item-2-2-1 {
+                    width: 100%;
+                    margin-left: 0px !important;
+                }
+
+                .acum-ger-ceco .cont-header-2-1 .cont-header-section-2-2 .cont-header-item-2-2-2 {
+                    width: 100%;
+                    margin-left: 0px !important;
+                }
+
+                .acum-ger-ceco .cont-header-2-1 .cont-header-section-2-2 .cont-header-item-2-2-3 {
+                    width: 100%;
+                    margin-left: 0px !important;
+                }
+        /* Tab 3. Responsive */
+        .acum-ger-ceco .cont-header-3-1 {
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+            .acum-ger-ceco .cont-header-3-1 .cont-header-section-3-1 {
+                width: 100%;
+            }
+
+                .acum-ger-ceco .cont-header-3-1 .cont-header-section-3-1 .cont-header-item-3-1 {
+                    display: flex;
+                    flex-wrap: wrap;
+                }
+
+                    .acum-ger-ceco .cont-header-3-1 .cont-header-section-3-1 .cont-header-item-3-1 .cont-h-i-3-1 {
+                        width: 100%;
+                    }
+
+                    .acum-ger-ceco .cont-header-3-1 .cont-header-section-3-1 .cont-header-item-3-1 .cont-h-i-3-2 {
+                        width: 100%;
+                    }
+
+                    .acum-ger-ceco .cont-header-3-1 .cont-header-section-3-1 .cont-header-item-3-1 .cont-h-i-3-3 {
+                        width: 100%;
+                    }
+
+                    .acum-ger-ceco .cont-header-3-1 .cont-header-section-3-1 .cont-header-item-3-1 .cont-h-i-3-4 {
+                        width: 100%;
+                    }
+
+
+                .acum-ger-ceco .cont-header-3-1 .cont-header-section-3-1 .cont-header-item-3-2 {
+                    width: 100%;
+                }
+
+                    .acum-ger-ceco .cont-header-3-1 .cont-header-section-3-1 .cont-header-item-3-2 button {
+                        width: 140px;
+                    }
+    }
+
+    @@media (min-width: 992px) and (max-width: 1199.98px) {
+        /* Tab1 - Responsive */
+        .acum-ger-ceco .cont-header-1-1 {
+            width: 100%;
+        }
+
+            .acum-ger-ceco .cont-header-1-1 .cont-header-section-1-1 {
+                display: flex;
+                justify-content: space-between;
+            }
+
+            .acum-ger-ceco .cont-header-1-1 .cont-header-section-1-2 {
+                display: flex;
+                justify-content: space-between;
+                border-top: 1px solid #CCD1D1;
+                margin-top: 10px;
+                padding-top: 15px;
+            }
+        /* Tab2 - Responsive */
+        .acum-ger-ceco .cont-header-2-1 {
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+            .acum-ger-ceco .cont-header-2-1 .cont-header-section-2-1 {
+                display: flex;
+                flex-direction: row;
+                justify-content: space-between;
+            }
+
+                .acum-ger-ceco .cont-header-2-1 .cont-header-section-2-1 .cont-header-item-2-1 {
+                    display: flex;
+                    justify-content: space-between;
+                }
+
+                    .acum-ger-ceco .cont-header-2-1 .cont-header-section-2-1 .cont-header-item-2-1 .cont-header-item-2-1-1 {
+                    }
+
+                    .acum-ger-ceco .cont-header-2-1 .cont-header-section-2-1 .cont-header-item-2-1 .cont-header-item-2-1-2 {
+                        margin-left: 3px;
+                    }
+
+
+                .acum-ger-ceco .cont-header-2-1 .cont-header-section-2-1 .cont-header-item-2-2 button {
+                    width: 120px !important;
+                    margin-left: 3px;
+                }
+
+
+            .acum-ger-ceco .cont-header-2-1 .cont-header-section-2-2 {
+                display: flex;
+                justify-content: space-between;
+                margin-top: 20px;
+                border-top: 1px solid #CCD1D1;
+                padding-top: 15px;
+            }
+
+                .acum-ger-ceco .cont-header-2-1 .cont-header-section-2-2 button {
+                    width: 100%;
+                }
+
+                .acum-ger-ceco .cont-header-2-1 .cont-header-section-2-2 .cont-header-item-2-2-1 {
+                    width: 30%;
+                }
+
+                .acum-ger-ceco .cont-header-2-1 .cont-header-section-2-2 .cont-header-item-2-2-2 {
+                    width: 30%;
+                }
+
+                .acum-ger-ceco .cont-header-2-1 .cont-header-section-2-2 .cont-header-item-2-2-3 {
+                    width: 30%;
+                }
+        /* Tab 3. Responsive */
+        .acum-ger-ceco .cont-header-3-1 {
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+            .acum-ger-ceco .cont-header-3-1 .cont-header-section-3-1 {
+                width: 100%;
+            }
+
+                .acum-ger-ceco .cont-header-3-1 .cont-header-section-3-1 .cont-header-item-3-1 {
+                    display: flex;
+                    flex-wrap: wrap;
+                    justify-content: space-between;
+                }
+
+                    .acum-ger-ceco .cont-header-3-1 .cont-header-section-3-1 .cont-header-item-3-1 .cont-h-i-3-1 {
+                    }
+
+                    .acum-ger-ceco .cont-header-3-1 .cont-header-section-3-1 .cont-header-item-3-1 .cont-h-i-3-2 {
+                        margin-left: 4px;
+                    }
+
+                    .acum-ger-ceco .cont-header-3-1 .cont-header-section-3-1 .cont-header-item-3-1 .cont-h-i-3-3 {
+                        margin-left: 4px;
+                    }
+
+
+                .acum-ger-ceco .cont-header-3-1 .cont-header-section-3-1 .cont-header-item-3-2 {
+                    display: flex;
+                    justify-content: space-between;
+                }
+
+                    .acum-ger-ceco .cont-header-3-1 .cont-header-section-3-1 .cont-header-item-3-2 button {
+                        width: 130px;
+                    }
+    }
+
+    @@media (min-width: 1200px) {
+        /* Tab1 - Responsive */
+        .acum-ger-ceco .cont-header-1-1 {
+            display: flex;
+            justify-content: space-between;
+        }
+
+            .acum-ger-ceco .cont-header-1-1 .cont-header-section-1-1 {
+                display: flex;
+                justify-content: flex-start;
+            }
+
+                .acum-ger-ceco .cont-header-1-1 .cont-header-section-1-1 .cont-header-item-1-2 {
+                    margin-left: 3px;
+                }
+
+            .acum-ger-ceco .cont-header-1-1 .cont-header-section-1-2 {
+                display: flex;
+                justify-content: flex-end;
+            }
+        /* Tab2 - Responsive */
+        .acum-ger-ceco .cont-header-2-1 {
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+            .acum-ger-ceco .cont-header-2-1 .cont-header-section-2-1 {
+                display: flex;
+                flex-direction: row;
+                justify-content: space-between;
+            }
+
+                .acum-ger-ceco .cont-header-2-1 .cont-header-section-2-1 .cont-header-item-2-1 {
+                    margin-left: 3px;
+                    display: flex;
+                    justify-content: space-between;
+                }
+
+                    .acum-ger-ceco .cont-header-2-1 .cont-header-section-2-1 .cont-header-item-2-1 .cont-header-item-2-1-1 {
+                        margin-left: 3px;
+                    }
+
+                    .acum-ger-ceco .cont-header-2-1 .cont-header-section-2-1 .cont-header-item-2-1 .cont-header-item-2-1-2 {
+                        margin-left: 3px;
+                    }
+
+                .acum-ger-ceco .cont-header-2-1 .cont-header-section-2-1 .cont-header-item-2-2 button {
+                    width: 180px !important;
+                }
+
+
+            .acum-ger-ceco .cont-header-2-1 .cont-header-section-2-2 {
+                display: flex;
+                justify-content: space-between;
+                margin-top: 20px;
+                border-top: 1px solid #CCD1D1;
+                padding-top: 15px;
+            }
+
+                .acum-ger-ceco .cont-header-2-1 .cont-header-section-2-2 button {
+                    width: 100%;
+                }
+
+                .acum-ger-ceco .cont-header-2-1 .cont-header-section-2-2 .cont-header-item-2-2-1 {
+                    width: 25%;
+                }
+
+                .acum-ger-ceco .cont-header-2-1 .cont-header-section-2-2 .cont-header-item-2-2-2 {
+                    width: 25%;
+                }
+
+                .acum-ger-ceco .cont-header-2-1 .cont-header-section-2-2 .cont-header-item-2-2-3 {
+                    width: 25%;
+                }
+        /* Tab 3. Responsive */
+        .acum-ger-ceco .cont-header-3-1 {
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+            .acum-ger-ceco .cont-header-3-1 .cont-header-section-3-1 {
+                display: flex;
+                justify-content: space-between;
+            }
+
+                .acum-ger-ceco .cont-header-3-1 .cont-header-section-3-1 .cont-header-item-3-1 {
+                    display: flex;
+                    flex-wrap: wrap;
+                    justify-content: start;
+                }
+
+                    .acum-ger-ceco .cont-header-3-1 .cont-header-section-3-1 .cont-header-item-3-1 .cont-h-i-3-1 {
+                    }
+
+                    .acum-ger-ceco .cont-header-3-1 .cont-header-section-3-1 .cont-header-item-3-1 .cont-h-i-3-2 {
+                        margin-left: 4px;
+                    }
+
+                    .acum-ger-ceco .cont-header-3-1 .cont-header-section-3-1 .cont-header-item-3-1 .cont-h-i-3-3 {
+                        margin-left: 4px;
+                    }
+
+                    .acum-ger-ceco .cont-header-3-1 .cont-header-section-3-1 .cont-header-item-3-1 .cont-h-i-3-4 {
+                        margin-left: 4px;
+                    }
+
+
+                .acum-ger-ceco .cont-header-3-1 .cont-header-section-3-1 .cont-header-item-3-2 {
+                    display: flex;
+                    justify-content: space-between;
+                }
+
+                    .acum-ger-ceco .cont-header-3-1 .cont-header-section-3-1 .cont-header-item-3-2 button {
+                        width: 130px;
+                        margin-left: 4px;
+                    }
+    }
+</style>
+
+
+
+@section scripts {
+    <script>
+
+        var codPeriodo = "Seleccione";
+
+        var codPeriodo2 = "Seleccione";
+        var codGerencia2 = "Seleccione";
+
+        var codPeriodo3 = null;
+        var codPeriodo3_f = null;
+        var codGerencia3 = null;
+        var codCC3 = null;
+        var codFamilia3 = null;
+
+        var cod_familias = [];
+
+        var lista_todos = [];
+        var lista_excedentes = [];
+        var lista_disponibles = [];
+
+        $(document).ready(function () {
+
+            LlenarCBO_Periodos();
+
+            LlenarCBO_Periodos2();
+            LlenarCBO_Gerencias2();
+
+            InicializarCbo3();
+            LlenarCBO_Periodos3();
+            LlenarCBO_Gerencias3();
+
+            //  TAB - 1
+
+            function LlenarCBO_Periodos() {
+                LimpiarCBO_Periodos();
+                $.ajax({
+                    type: "GET",
+                    url: '/logistica/ListarPeriodos',
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (data) {
+                        $.each(data, function () {
+                            $("#periodosLista1").append($("<option/>").val(this.COD_PERIODO).text(this.DESC_PERIODO));
+                        });
+                    },
+                    failure: function () {
+                        console.error('error al cargar los periodos');
+                    }
+                });
+            }
+
+            function LimpiarCBO_Periodos() {
+                $('#periodosLista1').empty().append('<option selected="selected">Seleccione</option>');
+            }
+
+            $("#btnBuscar1").click(function () {
+                if (codPeriodo == "Seleccione") {
+
+                    Swal.fire('Seleccione el Periodo por favor')
+                }
+                else {
+
+                    var datos = {
+                        'codperiodo': codPeriodo,
+                    }
+
+                    $.ajax({
+                        type: "GET",
+                        url: '/logistica/ListarCbxGerencias',
+                        contentType: "application/json; charset=utf-8",
+                        data: datos,
+                        dataType: "json",
+                        success: function (data) {
+                            let tabla = $("#tablaPrincipal1").DataTable();
+                            tabla.destroy();
+                            var tr = "";
+
+                            data.forEach((obj) => {
+                                tr += "<tr> "
+                                    + " <td> " + obj.PERIODO + "</span></td> "
+                                    + " <td> " + obj.GERENCIA + "</td> "
+                                    + " <td> " + obj.SIMBOLO + " " + obj.PRESUPUESTO + "</td>"
+                                    + " <td> " + obj.SIMBOLO + " " + obj.CONSUMIDO + "</td> "
+                                    + " <td> " + obj.SIMBOLO + " " + obj.DISPONIBLE + "</td> "
+                                    + "</tr>";
+
+                            $('#btnPresupuesto1').text(obj.SIMBOLO + " " + obj.PRESUPUESTO_TOTAL);
+                            $('#btnConsumido1').text(obj.SIMBOLO + " " + obj.CONSUMIDO_TOTAL);
+                            $('#btnDisponible1').text(obj.SIMBOLO + " " + obj.DISPONIBLE_TOTAL);
+                        });
+
+                    $("#tablaCabeceraContenido1").html(tr);
+
+                    $("#tablaPrincipal1").DataTable(
+                        {
+                            'language': { 'url': '/libs/datatables/spanish.json' },
+                            lengthMenu: [[5, 10, 20, -1], [5, 10, 20, 'Todos']]
+                        }
+                    );
+
+                },
+                failure: function () {
+                    console.error('error al cargar los periodos');
+                }
+            });
+        }
+            });
+
+            $("select.selectPeriodo1").change(function () {
+                codPeriodo = $(this).children("option:selected").val();
+
+                if (codPeriodo != "Seleccione") {
+                }
+                else {
+                    $('#btnPresupuesto1').text("0.00");
+                    $('#btnConsumido1').text("0.00");
+                    $('#btnDisponible').text("0.00");
+                }
+            });
+
+
+            // TAB - 2
+
+            function LlenarCBO_Periodos2() {
+                LimpiarCBO_Periodos2();
+
+                $.ajax({
+                    type: "GET",
+                    url: '/logistica/ListarPeriodos',
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (data) {
+                        $.each(data, function () {
+                            $("#periodosLista2").append($("<option/>").val(this.COD_PERIODO).text(this.DESC_PERIODO));
+                        });
+                    },
+                    failure: function () {
+                        console.error('error al cargar los periodos');
+                    }
+                });
+            }
+
+            function LimpiarCBO_Periodos2() {
+                $('#periodosLista2').empty().append('<option selected="selected">Seleccione</option>');
+            }
+
+            function LlenarCBO_Gerencias2() {
+                LimpiarCBO_Gerencias2();
+                $.ajax({
+                    type: "GET",
+                    url: '/logistica/ListarGerencias',
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (data) {
+
+                        $.each(data, function () {
+                            $("#gerenciasLista2").append($("<option/>").val(this.CodGerencia).text(this.DescGerencia));
+                        });
+                    },
+                    failure: function () {
+                        console.error('error al cargar las gerencias');
+                    }
+                });
+            }
+
+            function LimpiarCBO_Gerencias2() {
+                $('#gerenciasLista2').empty().append('<option selected="selected">Seleccione</option>');
+            }
+
+            $("#btnBuscar2").click(function () {
+                if (codPeriodo2 == "Seleccione") {
+                    Swal.fire('Seleccione el Periodo por favor')
+                }
+                else if (codGerencia2 == "Seleccione") {
+                    Swal.fire('Seleccione la Gerencia por favor')
+                }
+                else {
+
+                    var datos = {
+                        'codperiodo': codPeriodo2,
+                        'codgerencia': codGerencia2
+                    }
+
+                    $.ajax({
+                        type: "GET",
+                        url: '/logistica/ListarAcumuladoXCC',
+                        contentType: "application/json; charset=utf-8",
+                        data: datos,
+                        dataType: "json",
+                        success: function (data) {
+                            let tabla = $("#tablaPrincipal2").DataTable();
+                            tabla.destroy();
+                            var tr = "";
+
+                            data.forEach((obj) => {
+                                tr += "<tr> "
+                                    + " <td> " + obj.PERIODO + "</span></td> "
+                                    + " <td> " + obj.GERENCIA + "</td> "
+                                    + " <td> " + obj.CODCC + "</td> "
+                                    + " <td> " + obj.CC + "</td> "
+                                    + " <td> " + obj.SIMBOLO + " " + obj.PRESUPUESTO + "</td>"
+                                    + " <td> " + obj.SIMBOLO + " " + obj.CONSUMIDO + "</td> "
+                                    + " <td> " + obj.SIMBOLO + " " + obj.DISPONIBLE + "</td> "
+                                    + "</tr>";
+
+                            $('#btnPresupuesto2').text(obj.SIMBOLO + " " + obj.PRESUPUESTO_TOTAL);
+                            $('#btnConsumido2').text(obj.SIMBOLO + " " + obj.CONSUMIDO_TOTAL);
+                            $('#btnDisponible2').text(obj.SIMBOLO + " " + obj.DISPONIBLE_TOTAL);
+                        });
+
+                    $("#tablaCabeceraContenido2").html(tr);
+                    $("#tablaPrincipal2").DataTable(
+                        {
+                            'language': { 'url': '/libs/datatables/spanish.json' },
+                            lengthMenu: [[5, 10, 20, -1], [5, 10, 20, 'Todos']]
+                        }
+
+                    );
+
+                },
+                failure: function () {
+                    console.error('error al cargar los periodos');
+                }
+            });
+                }
+            });
+
+            $("select.selectPeriodo2").change(function () {
+                codPeriodo2 = $(this).children("option:selected").val();
+
+                if (codPeriodo2 != "Seleccione") {
+                }
+                else {
+                    $('#btnPresupuesto2').text("0.00");
+                    $('#btnConsumido2').text("0.00");
+                    $('#btnDisponible2').text("0.00");
+                }
+            });
+
+            $("select.selectGerencia2").change(function () {
+                codGerencia2 = $(this).children("option:selected").val();
+
+                if (codPeriodo2 == "Seleccione" && codGerencia2 == "Seleccione") {
+                    $('#btnPresupuesto2').text("0.00");
+                    $('#btnConsumido2').text("0.00");
+                    $('#btnDisponible2').text("0.00");
+                }
+            });
+
+
+            // TAB - 3
+            function InicializarCbo3() {
+                $("#IdFamiliaLista3").multipleSelect();
+            }
+
+            function LlenarCBO_Periodos3() {
+               $.ajax({
+                    type: "GET",
+                    url: '/logistica/PeriodosGerCeCoCuenta',
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (data) {
+                        $.each(data, function () {
+                            $("#periodosLista3").append($("<option/>").val(this.COD_PERIODO).text(this.DESC_PERIODO));
+                            $("#per_prueba").append($("<option/>").val(this.COD_PERIODO).text(this.DESC_PERIODO));
+                        });
+
+                        $("#per_prueba").multipleSelect();
+
+                        //$('#periodosLista3').selectpicker('refresh');
+                    },
+                    failure: function () {
+                        console.error('error al cargar los periodos');
+                    }
+                });
+            }
+
+            function LlenarCBO_Gerencias3() {
+
+                $.ajax({
+                    type: "GET",
+                    url: '/logistica/GerenciasGerCeCoCuenta',
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (data) {
+
+                        $.each(data, function () {
+                            $("#gerenciasLista3").append($("<option/>").val(this.CodGerencia).text(this.DescGerencia));
+                        });
+                    },
+                    failure: function () {
+                        console.error('error al cargar las gerencias');
+                    }
+                });
+            }
+
+            $("#btnBuscar3").click(function () {
+
+                let vExcedentes = 0;
+                let vDisponibles = 0;
+
+                if ((typeof codPeriodo3 == 'undefined') ||
+                    (codPeriodo3 == null) ||
+                    (codPeriodo3 == "0")) {
+                    Swal.fire('Seleccione el Periodo por favor')
+                }
+                else if ((typeof codGerencia3 == 'undefined') ||
+                    (codGerencia3 == null) ||
+                    (codGerencia3 == "0")) {
+
+                    Swal.fire('Seleccione la Gerencia por favor');
+                }
+                else if ((typeof codCC3 == 'undefined') ||
+                    (codCC3 == null) ||
+                    (codCC3 == "0")) {
+
+                    Swal.fire('Seleccione el Centro de Costo por favor');
+                }
+                else if ( cod_familias.length == 0)
+                {
+                    Swal.fire('Seleccione la Familia');
+                } else {
+
+                    codPeriodo3_f = codPeriodo3;
+
+                    var datos = {
+                        'codperiodo': codPeriodo3,
+                        'codcc': codCC3,
+                        'codfamilias': cod_familias
+                    }
+
+                    $.ajax({
+                        type: "POST",
+                        url: '/logistica/ListarReporteCeCo',
+                        data: datos,
+                        success: function (data) {
+
+                            lista_todos = data;
+                            console.log(lista_todos);
+
+                            let tabla = $("#tablaPrincipal3").DataTable();
+                            tabla.destroy();
+                            let tr = "";
+                            document.getElementById("idchktodos").checked = true;
+
+                            lista_todos.forEach((obj) => {
+                                tr += "<tr> "
+                                        + " <td> " + obj.COD_PLANCONT + "</td> "
+                                        + " <td> " + obj.DESC_PLANCONT + "</td> "
+
+                                        + " <td> " + obj.CODCC + "</td> "
+                                        + " <td> " + obj.CC + "</td> "
+
+                                        + " <td> " + obj.SIMBOLO + " " + obj.PRESUPUESTO + "</td>"
+                                        + " <td> " + obj.SIMBOLO + " " + obj.CONSUMIDO + "</td> "
+                                        + " <td> " + obj.SIMBOLO + " " + obj.DISPONIBLE + "</td> "
+                                    + "</tr>";
+
+                            if (obj.DISPONIBLE_V > 0) {
+                                vDisponibles = vDisponibles + obj.DISPONIBLE_V;
+                            }
+
+                            if (obj.DISPONIBLE_V < 0) {
+                                vExcedentes = vExcedentes + obj.DISPONIBLE_V;
+                            }
+
+                            $('#btnPresupuesto3').text(obj.SIMBOLO + " " + obj.PRESUPUESTO_TOTAL);
+                            $('#btnConsumido3').text(obj.SIMBOLO + " " + obj.CONSUMIDO_TOTAL);
+                            $('#btnDisponible3').text(obj.SIMBOLO + " " + obj.DISPONIBLE_TOTAL);
+                        });
+
+                        $("#tablaCabeceraContenido3").html(tr);
+
+                        $('.lblExceso').text("U$ " + formatoNumero(Math.abs(vExcedentes)));
+                        $('.lbldisponible').text("U$ " + formatoNumero(vDisponibles));
+
+                        $("#tablaPrincipal3").DataTable(
+                        {
+                            'language': { 'url': '/libs/datatables/spanish.json' },
+                            lengthMenu: [[5, 10, 20, -1], [5, 10, 20, 'Todos']]
+                        });
+
+                    },
+                    failure: function () {
+                        console.error('error al cargar los periodos');
+                    }
+                });
+                }
+            });
+
+            $("select.selectPeriodo3").change(function () {
+
+                codPeriodo3 = $(this).children("option:selected").val();
+                if (codPeriodo3 == "Seleccione") {
+                    $('#btnPresupuesto3').text("0.00");
+                    $('#btnConsumido3').text("0.00");
+                    $('#btnDisponible3').text("0.00");
+                }
+            });
+
+            $("select.selectGerencia3").change(function () {
+                codGerencia3 = $(this).children("option:selected").val();
+
+                if (typeof codGerencia3 != 'undefined' &&
+                    codGerencia3 != null &&
+                    codGerencia3 != 0 &&
+                    typeof codPeriodo3 != 'undefined' &&
+                    codPeriodo3 != 'null'
+                ) {
+
+                    LlenarCBO_CC3();
+                }
+                else {
+                    $('#btnPresupuesto3').text("0.00");
+                    $('#btnConsumido3').text("0.00");
+                    $('#btnDisponible3').text("0.00");
+                }
+            });
+
+            $("select.selectCC3").change(function () {
+
+                codCC3 = $(this).children("option:selected").val();
+
+                if (typeof codCC3 != 'undefined' &&
+                    codCC3 != null &&
+                    codCC3 != 0 &&
+                    codCC3 != "0" &&
+                    typeof codPeriodo3 != 'undefined' &&
+                    codPeriodo3 != null
+                ) {
+                    LlenarCBO_Familia3();
+                }
+                else {
+                    $('#btnPresupuesto3').text("0.00");
+                    $('#btnConsumido3').text("0.00");
+                    $('#btnDisponible3').text("0.00");
+                }
+            });
+
+            function LlenarCBO_CC3() {
+                LimpiarCBO_CC3();
+
+                var datos = {
+                    'codperiodo': codPeriodo3,
+                    'codgerencia': codGerencia3
+                }
+
+                $.ajax({
+                    type: "GET",
+                    url: '/logistica/CeCoGerCeCoCuenta',
+                    contentType: "application/json; charset=utf-8",
+                    data: datos,
+                    dataType: "json",
+                    success: function (data) {
+                        $.each(data, function () {
+                            $("#ccLista3").append($("<option/>").val(this.COD_CC).text(this.DESC_CC));
+                        });
+                    },
+                    failure: function () {
+                        console.error('error al cargar las gerencias');
+                    }
+                });
+            }
+
+            function LlenarCBO_Familia3() {
+                var datos = {
+                    'codperiodo': codPeriodo3,
+                    'codcc': codCC3
+                }
+
+                $.ajax({
+                    type: "GET",
+                    url: '/logistica/FamiliaGerCeCoCuenta',
+                    contentType: "application/json; charset=utf-8",
+                    data: datos,
+                    dataType: "json",
+                    success: function (data) {
+
+                        console.log(data);
+
+                        $.each(data, function () {
+                            $("#IdFamiliaLista3").append($("<option/>").val(this.CODFAMILIA).text(this.FAMILIA));
+                        });
+
+                        $('#IdFamiliaLista3').multipleSelect("refresh");
+
+                    },
+                    failure: function () {
+                        console.error('error al cargar las gerencias');
+                    }
+                });
+            }
+
+            function LimpiarCBO_CC3() {
+                var selectCC = $('#ccLista3');
+                selectCC.find('option').remove();
+                selectCC.find('li').remove();
+            }
+
+            $("select.selectFamilia3").change(function () {
+                cod_familias = $("#IdFamiliaLista3").val();
+            });
+
+            $("#tablaPrincipal3").on('click', '.detalle', function () {
+                var codcc = $(this).attr("data-cc");
+                var codplancont = $(this).attr("data-codplan");
+
+                var datos = {
+                    'codperiodo': codPeriodo3_f,
+                    'codcc': codcc,
+                    'codplancont': codplancont
+                }
+                ListarDetalleOC(datos);
+            });
+
+            function ListarDetalleOC(datos) {
+
+                $.ajax({
+                    url: '/logistica/ListarReporteOC3Detalle/',
+                    type: 'get',
+                    data: datos,
+                    success: function (e) {
+                        //ARMAMOS TABLA
+                        var tr = "";
+                        e.forEach((obj) => {
+                            tr += `<tr>
+                                        <td>${obj.CODAUTORIZA}</td>
+                                        <td>${obj.FECHA}</td>
+                                        <td>${obj.PEDIDO}</td>
+
+                                        <td>${obj.CC}</td>
+                                        <td>${obj.PROVEEDOR}</td>
+                                        <td>${obj.COMPRADOR}</td>
+                                        <td>${obj.SIMBOLO} ${obj.TOTAL_PEDIDO}</td>
+                                    </tr>`;
+            });
+
+            $("#tablaDetalleContenido3").html(tr);
+            $("#modalInformacion").modal("show");
+
+            }
+            });
+            }
+
+            $("#btnExportarExcelOC").click(function () {
+              if ((typeof codPeriodo3 == 'undefined') ||
+                    (codPeriodo3 == null) ||
+                  (codPeriodo3 == "0")) {
+
+                  Swal.fire('Seleccione el Periodo por favor')
+
+              } else{
+
+                    MostrarCarga("Cargando...");
+                    var datos = {
+                        'codperiodo': codPeriodo3
+                    }
+                    $.ajax({
+                        url: '@Url.Action("ExportarExcelOC", "Logistica")',
+                        contentType: 'application/json; charset=utf-8',
+                        datatype: 'json',
+                        type: "GET",
+                        data: datos,
+                        success: function () {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Reporte Generado',
+                                text: "Textile Sourcing Company",
+                                allowEscapeKey: false,
+                                allowOutsideClick: false,
+                                onClose: () => {
+                                    window.location = "/Logistica/ExportarExcelOC?codPeriodo=" + codPeriodo3;
+                        }
+                    });
+                }
+            });
+              }
+            });
+
+            $('.checks-montos input[type=radio][name=inlineRadioOptions]').change(function () {
+
+                let tabla = $("#tablaPrincipal3").DataTable();
+                tabla.destroy();
+                let tr = "";
+                let v_disponible = 0;
+
+                let v_presupuesto_t = 0;
+                let v_consumido_t = 0;
+                let v_disponible_t = 0;
+
+                let vExcedentes = 0;
+                let vDisponibles = 0;
+
+                $('#btnPresupuesto3').text("");
+                $('#btnConsumido3').text("");
+                $('#btnDisponible3').text("");
+
+                if (this.value == 'chktodos') {
+
+                    lista_todos.forEach((obj) => {
+
+                        tr += "<tr> "
+                                + " <td> " + obj.COD_PLANCONT + "</td> "
+                                + " <td> " + obj.DESC_PLANCONT + "</td> "
+                                + " <td> " + obj.CODCC + "</td> "
+                                + " <td> " + obj.CC + "</td> "
+                                + " <td> " + obj.SIMBOLO + " " + obj.PRESUPUESTO + "</td>"
+                                + " <td> " + obj.SIMBOLO + " " + obj.CONSUMIDO + "</td> "
+                                + " <td> " + obj.SIMBOLO + " " + obj.DISPONIBLE + "</td> "
+                            + "</tr>";
+
+                        $('#btnPresupuesto3').text("U$ " + obj.PRESUPUESTO_TOTAL);
+                        $('#btnConsumido3').text("U$ " + obj.CONSUMIDO_TOTAL);
+                        $('#btnDisponible3').text("U$ " + obj.DISPONIBLE_TOTAL);
+
+                        if (obj.DISPONIBLE_V > 0) {
+                            vDisponibles = vDisponibles + obj.DISPONIBLE_V;
+                        }
+
+                        if (obj.DISPONIBLE_V < 0) {
+                            vExcedentes = vExcedentes + obj.DISPONIBLE_V;
+                        }
+                    });
+
+                    $('.lblExceso').text("U$ " + formatoNumero(Math.abs(vExcedentes)));
+                    $('.lbldisponible').text("U$ " + formatoNumero(vDisponibles));
+
+                    $("#tablaCabeceraContenido3").html(tr);
+
+                    $("#tablaPrincipal3").DataTable(
+                    {
+                        'language': { 'url': '/libs/datatables/spanish.json' },
+                        lengthMenu: [[5, 10, 20, -1], [5, 10, 20, 'Todos']]
+                    });
+
+                }
+                else if (this.value == 'chkexcedentes') {
+
+                    lista_todos.forEach((obj) => {
+                        v_disponible = obj.DISPONIBLE_V;
+
+                        if (v_disponible < 0) {
+                            tr += "<tr> "
+                                + " <td> " + obj.COD_PLANCONT + "</td> "
+                                + " <td> " + obj.DESC_PLANCONT + "</td> "
+                                + " <td> " + obj.CODCC + "</td> "
+                                + " <td> " + obj.CC + "</td> "
+                                + " <td> " + obj.SIMBOLO + " " + obj.PRESUPUESTO + "</td>"
+                                + " <td> " + obj.SIMBOLO + " " + obj.CONSUMIDO + "</td> "
+                                + " <td> " + obj.SIMBOLO + " " + obj.DISPONIBLE + "</td> "
+                                + "</tr>";
+
+                            v_presupuesto_t = v_presupuesto_t + obj.PRESUPUESTO_V;
+                            v_consumido_t = v_consumido_t + obj.CONSUMIDO_V;
+                            v_disponible_t = v_disponible_t + obj.DISPONIBLE_V;
+
+
+                            if (obj.DISPONIBLE_V > 0) {
+                                vDisponibles = vDisponibles + obj.DISPONIBLE_V;
+                            }
+
+                            if (obj.DISPONIBLE_V < 0) {
+                                vExcedentes = vExcedentes + obj.DISPONIBLE_V;
+                            }
+                        }
+                    });
+
+                    $('#btnPresupuesto3').text("U$ " + formatoNumero(v_presupuesto_t));
+                    $('#btnConsumido3').text("U$ " + formatoNumero(v_consumido_t));
+                    $('#btnDisponible3').text("U$ " + formatoNumero(v_disponible_t));
+
+                    $('.lblExceso').text("U$ " + formatoNumero(Math.abs(vExcedentes)));
+                    $('.lbldisponible').text("U$ " + formatoNumero(vDisponibles));
+
+                    $("#tablaCabeceraContenido3").html(tr);
+
+                    $("#tablaPrincipal3").DataTable(
+                    {
+                        'language': { 'url': '/libs/datatables/spanish.json' },
+                        lengthMenu: [[5, 10, 20, -1], [5, 10, 20, 'Todos']]
+                    });
+                }
+                else if (this.value == 'chkdisponible') {
+
+                    lista_todos.forEach((obj) => {
+
+                        v_disponible = obj.DISPONIBLE_V;
+
+                        if (v_disponible >= 0) {
+                            tr += "<tr> "
+                                + " <td> " + obj.COD_PLANCONT + "</td> "
+                                + " <td> " + obj.DESC_PLANCONT + "</td> "
+                                + " <td> " + obj.CODCC + "</td> "
+                                + " <td> " + obj.CC + "</td> "
+                                + " <td> " + obj.SIMBOLO + " " + obj.PRESUPUESTO + "</td>"
+                                + " <td> " + obj.SIMBOLO + " " + obj.CONSUMIDO + "</td> "
+                                + " <td> " + obj.SIMBOLO + " " + obj.DISPONIBLE + "</td> "
+                                + "</tr>";
+
+                            v_presupuesto_t = v_presupuesto_t + obj.PRESUPUESTO_V;
+                            v_consumido_t = v_consumido_t + obj.CONSUMIDO_V;
+                            v_disponible_t = v_disponible_t + obj.DISPONIBLE_V;
+
+
+                            if (obj.DISPONIBLE_V > 0) {
+                                vDisponibles = vDisponibles + obj.DISPONIBLE_V;
+                            }
+
+                            if (obj.DISPONIBLE_V < 0) {
+                                vExcedentes = vExcedentes + obj.DISPONIBLE_V;
+                            }
+                        }
+                    });
+
+                    $('#btnPresupuesto3').text("U$ " + formatoNumero(v_presupuesto_t));
+                    $('#btnConsumido3').text("U$ " + formatoNumero(v_consumido_t));
+                    $('#btnDisponible3').text("U$ " + formatoNumero(v_disponible_t));
+
+                    $('.lblExceso').text("U$ " + formatoNumero(Math.abs(vExcedentes)));
+                    $('.lbldisponible').text("U$ " + formatoNumero(vDisponibles));
+
+                    $("#tablaCabeceraContenido3").html(tr);
+
+                    $("#tablaPrincipal3").DataTable(
+                    {
+                        'language': { 'url': '/libs/datatables/spanish.json' },
+                        lengthMenu: [[5, 10, 20, -1], [5, 10, 20, 'Todos']]
+                    });
+                }
+            });
+
+            function formatoNumero(x) {
+                x = x.toFixed(2);
+                return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            }
+
+
+
+        });
+    </script>
+}

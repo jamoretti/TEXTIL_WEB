@@ -1,0 +1,130 @@
+﻿@{
+    ViewBag.Title   = "Pedidos urgentes (Ambulancia)";
+    ViewBag.Modulo  = "Planeamiento";
+    Layout = "~/Views/Plantillas/_Layout.cshtml";
+}
+
+
+<div class="card">
+    <div class="card-header">
+        <div class="custom-control custom-switch">
+            <input type="checkbox" class="custom-control-input" id="chkEstado" checked >
+            <label class="custom-control-label" for="chkEstado" id="chkEstadolabel" style="cursor:pointer"> Urgentes</label>
+        </div>
+        <div class="card-tools">
+            <button type="button" class="btn btn-tool" data-widget="collapse"><i class="fas fa-minus"></i></button>
+        </div>
+    </div>
+    <div class="card-body" style="display: block;">
+
+        <div class="table-responsive">
+            <!--<table class="table table-bordered table-hover dt-responsive nowrap no-footer dtr-inline text-center " style="width: 100%;" id="tablaRegistros" role="grid" aria-describedby="tablaRegistros_info">-->
+            <table class="table table-bordered table-hover text-center " style="width: 100%;" id="tablaRegistros" role="grid" aria-describedby="tablaRegistros_info">
+                <thead>
+                    <tr id="tablaCabeceraRegistros">
+                        <th>PEDIDO
+                        </th>
+                    </tr>
+                </thead>
+                <tbody id="tablaCuerpoRegistros"></tbody>
+            </table>
+        </div>
+
+
+
+    </div>
+</div>
+
+
+@section scripts{
+
+    
+
+    <script>
+        let chkEstado       = document.getElementById("chkEstado");
+        let chkEstadolabel  = document.getElementById("chkEstadolabel");
+
+        $(document).ready(function(){
+            Buscar();
+        });
+
+        chkEstado.addEventListener('change',function(){
+                Buscar();
+        });
+
+
+        function Buscar(){
+
+            let flag = "";
+            if(chkEstado.checked){
+                flag = "SI";
+                chkEstadolabel.innerText = "Urgentes";
+            }else{
+                flag = "NO";
+                chkEstadolabel.innerText = "Normales";
+            }
+
+            datos = {
+                'flag'   : flag
+            }
+            
+
+            $.ajax({
+                url: '/planeamiento/BuscarPedidosAmbulancia/',
+                type: 'GET',
+                data: datos,
+                dataType: 'json',
+                success: function (e) {
+
+                    //ARMANDO TABLA
+                    let tabla = $("#tablaRegistros").DataTable();
+                    tabla.destroy();
+
+                    let total = e.length;
+                    console.log(total);
+                    let th = "";
+                    let separado = Math.ceil(total / 2);
+                    let mitad = 2;
+
+
+
+                    //mitad = mitad > 2 ? 2 : mitad;
+                    //ARMAMOS CABECERA
+                    for (let x = 1; x <= mitad; x++) {
+                        th += "<th>PEDIDO</th>";
+                    }
+                    $("#tablaCabeceraRegistros").html(th);
+
+
+
+                    let tr = "";
+                    let contador = 0;
+
+
+                    for (let i = 0; i < separado; i++) {
+                        tr += "<tr>";
+
+                        for (let j = 0; j < mitad ; j++) {
+                            let indice = i + (separado * j);
+                            try {
+                                tr += "<td> " + e[indice].pedido + "</td>";
+                            } catch (error) {
+                                tr += "<td></td>";
+                            }
+                        }
+                        tr += "</tr>";
+                    }
+
+                    $("#tablaCuerpoRegistros").html(tr);
+
+
+                   
+                    ArmarDataTable("tablaRegistros",false,false);
+                }
+
+            });
+        }
+
+
+    </script>
+}

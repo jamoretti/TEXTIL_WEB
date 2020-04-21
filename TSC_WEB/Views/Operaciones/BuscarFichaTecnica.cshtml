@@ -1,0 +1,129 @@
+﻿@{
+    ViewBag.Title = "Archivos ficha tecnica";
+    ViewBag.Modulo = "Operaciones proceso";
+    Layout = "~/Views/Plantillas/_Layout.cshtml";
+}
+
+<!-- FILTROS -->
+<div class="card">
+
+    <div class="card-header">
+        <h3 class="card-title">Filtros</h3>
+
+        <div class="card-tools">
+            <button type="button" class="btn btn-tool" data-widget="collapse"><i class="fas fa-minus"></i></button>
+        </div>
+    </div>
+
+    <div class="card-body">
+        <div class="row">
+            <div class="col-xl-3 col-lg-3 col-md-3 col-sm-6 col-12 form-group">
+                <h6>Areas:</h6>
+                <select class="custom-select select2 " id="cboAreasFiltro" style="width:100%"></select>
+            </div>
+
+            <div class="col-xl-3 col-lg-3 col-md-3 col-sm-6 col-12 form-group">
+                <h6>Estilo cliente:</h6>
+                <input type="text" class="form-control mayus" id="txtEstilo" />
+            </div>
+
+            <div class="col-xl-3 col-lg-3 col-md-3 col-sm-6 col-12 form-group">
+                <h6>N° Pedido:</h6>
+                <input type="text" class="form-control" id="txtPedido" />
+            </div>
+
+            <div class="col-xl-3 col-lg-3 col-md-3 col-sm-6 col-12 form-group">
+                <h6>&nbsp;</h6>
+                <button class="btn btn-danger btn-block" id="btnBuscar" type="button">Buscar</button>
+            </div>
+        </div>
+
+        
+    </div>
+
+</div>
+
+<!-- REGISTROS -->
+<div class="card">
+    <div class="card-body"> 
+        
+        <table class="table table-bordered dt-responsive nowrap" style="width:100%" id="tablaRegistros">
+            <thead>
+                <tr>
+                    <th>Area</th>
+                    <th>Pedido</th>
+                    <th>Estilo</th>
+                    <th>Archivo</th>
+                    <th>Actualizacion</th>
+                    <th>Observacion</th>
+                    <th>Operacion</th>
+                </tr>
+            </thead>
+            <tbody id="tablaCuerpoRegistros"></tbody>
+        </table>
+        
+
+    </div>
+
+</div>
+
+
+@section scripts{
+    <script src="~/Admin/js/OperacionesProceso/FichaTecnica/Filtros.js"></script>
+    <script>
+        $(document).ready(function(){
+            ListarAreas("cboAreasFiltro");
+            $("#btnBuscar").click(function(){
+                BuscarRegistros();
+            });
+        });
+
+        //BUSCAR ARCHIVOS FICHAS TECNICA
+        function BuscarRegistros() {
+            let op = '1';
+            let idarea = $("#cboAreasFiltro").val();
+            let estilo = $("#txtEstilo").val() != "" ?  "'"+ $("#txtEstilo").val().toUpperCase()+"'" : '';
+            let pedido  = $("#txtPedido").val();
+
+            if(idarea == 0){
+                idarea = null;
+            }
+
+            let datos = {
+                'op' : op,
+                'idarea' : idarea,
+                'estilo' : estilo,
+                'pedido' : pedido
+            }
+            //DATATABLE
+
+            $.ajax({
+                url: '/operaciones/BuscarRegistrosFichaTenica/',
+                type: 'GET',
+                contenType: 'json',
+                data :datos,
+                success: function (e) {
+                    let tabla = $("#tablaRegistros").DataTable();
+                    tabla.destroy();
+                    let tr = "";
+                    e.forEach(function(obj){
+                        tr +=  `<tr>;
+                        <td>${obj.nombreareas}</td>
+                        <td>${obj.estilo}</td>
+                        <td>${obj.proyecto}</td>
+                        <td>${obj.archivo}</td>
+                        <td>${obj.version}</td>
+                        <td>${obj.observacion}</td>
+                        <td class='text-center'><a href='${obj.rutaarchivo}' target='_blank'><i style='color:red' class='fas fa-file-pdf'></i></a></td>
+                        </tr>`;
+                    });
+
+                    $("#tablaCuerpoRegistros").html(tr);
+                    ArmarDataTable("tablaRegistros");
+
+                }
+            });
+        }
+
+    </script>
+}

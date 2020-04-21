@@ -1,0 +1,62 @@
+﻿
+@{
+    ViewBag.Title = "Ver Cambio de Fecha";
+    ViewBag.Modulo = "Seguridad";
+    Layout = "~/Views/Plantillas/_Layout.cshtml";
+}
+
+<div class="card">
+
+    <div class="card-body">
+        <table class="table table-bordered table-hover dt-responsive nowrap" id="tablageneral" style="width:100%">
+            <thead>
+                <tr>
+                    <th>Usuario</th>
+                    <th>Nombre Usuario</th>
+                    <th>Centro Costo</th>
+                    <th>Fecha Servidor</th>
+                    <th>Fecha Base Datos</th>
+                    <th>Sistema</th>
+
+                </tr>
+            </thead>
+            <tbody id="Cuerpo"></tbody>
+        </table>
+    </div>
+
+</div>
+
+@section scripts {
+
+    <script>
+
+        $(document).ready(function () {
+
+            $.ajax({
+                url: '/seguridad/VerCambioFechaLista/',
+                type: 'get',
+                success: function (e) {
+                    let tr = "";
+                    e.forEach((obj)=>{
+                        tr += `
+                            <tr>
+                                <td>${obj.usuario}</td>
+                                <td>${obj.nombreusuario}</td>
+                                <td>${obj.centrocosto}</td>
+                                <td>${obj.fechactual}</td>
+                                <td>${obj.fechasistema}</td>
+                                <td>${obj.sistema}</td>
+                            </tr>
+                        `;
+        });
+
+        $("#Cuerpo").html(tr);
+        ArmarDataTable("tablageneral",true,true);
+        }
+        })
+
+        })
+
+    </script>
+
+}

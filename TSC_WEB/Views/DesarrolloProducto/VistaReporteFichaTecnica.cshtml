@@ -1,0 +1,1168 @@
+﻿@model TSC_WEB.Models.Entidades.DesarrolloProducto.FichaTecnica.ReporteEntidad
+@{
+    Layout = null;
+
+    //REPORTE
+
+
+
+    //VARIABLES
+    decimal totalreposo = 0;
+    decimal totallavado = 0;
+    decimal totalcorte1 = 0;
+    decimal totalcostura = 0;
+    decimal totaltranferprenda = 0;
+    decimal totalacabados = 0;
+    decimal total = 0;
+
+    //VARIABLES GENERALES PARA PARTIR COLORES
+    decimal CANTIDADGENERAL = 0;
+    int CONTADORGENERAL1 = 0, CONTADORGENERAL2 = 0, CONTADORGENERAL3 = 0, CONTADORGENERAL4 = 0;
+
+    //CONTADORES
+
+
+
+    //COMBINACIONES LISTA DISTINCT
+    var COMBINACIONESLISTADISTINCT = (from obj in Model.objCombinacionesLista
+                                      orderby obj.SEQUENCIA ascending
+                                      select new
+                                      {
+                                          obj.DESCR_COMBINACAO,
+                                          obj.COMBINACAO_ITEM
+                                      }
+                        ).Distinct().ToList();
+
+    Decimal cantidad = COMBINACIONESLISTADISTINCT.Count;
+    Decimal mod = (cantidad / 8);
+    //mod = Math.Ceiling(mod);
+    int contador = 1, contador2 = 0, contador3 = 0;
+
+
+    //@obj.DESCR_COMBINACAO @obj.COMBINACAO_ITEM
+
+    //CORTE 1
+    var CORTE1 = (from obj in Model.objAviosLista
+                  where obj.ESTAGIO == "1"
+                  orderby obj.SEQUENCIA, obj.ESTAGIO//, obj.COMBINACAO_ITEM
+                  select new
+                  {
+                      obj.NARRATIVA,
+                      obj.TALLA_A,
+                      obj.CODIGO2,
+                      obj.DESCRICAO_01,
+                      obj.OBSERVACION,
+                      obj.UNIDADE_MEDIDA,
+                      obj.CONSUMO,
+                      //obj.COMBINACAO_ITEM,
+                      obj.SEQUENCIA,
+                      obj.ESTAGIO
+                  }).Distinct().ToList();
+
+
+
+
+    var CORTE1DISTINCT = (from obj in Model.objAviosLista
+                          where obj.ESTAGIO == "1"
+                          orderby obj.SEQUENCIA, obj.ESTAGIO//, obj.COMBINACAO_ITEM
+                          select new
+                          {
+                              obj.NARRATIVA,
+                              obj.TALLA_A,
+                              obj.CODIGO2,
+                              obj.DESCRICAO_01,
+                              obj.OBSERVACION,
+                              obj.UNIDADE_MEDIDA,
+                              obj.CONSUMO,
+                              obj.DESCR_COMBINACAO,
+                              obj.DESCRICAO_15
+                          }
+
+                  ).Distinct().ToList();
+
+    var CORTE1COLOR = (from obj in Model.objAviosLista
+                       where obj.ESTAGIO == "1"
+                       select new
+                       {
+                           obj.DESCR_COMBINACAO,
+                       }).Distinct().ToList();
+
+    Decimal cantidadCorte = CORTE1.Count;
+    Decimal modCorte = cantidadCorte / 8;
+    int contadorCorte = 1, contadorCorte2 = 0, contadorCorte3 = 0;
+
+
+
+
+    //COSTURA
+    var COSTURA = (from obj in Model.objAviosLista
+                   where obj.ESTAGIO == "2"
+                   select new
+                   {
+                       obj.NARRATIVA,
+                       obj.TALLA_A,
+                       obj.CODIGO2,
+                       obj.DESCRICAO_01,
+                       obj.OBSERVACION,
+                       obj.UNIDADE_MEDIDA,
+                       obj.CONSUMO,
+                   }).Distinct().ToList();
+
+    var COSTURADISTINCT = (from obj in Model.objAviosLista
+                           where obj.ESTAGIO == "2"
+                           select new
+                           {
+                               obj.NARRATIVA,
+                               obj.TALLA_A,
+                               obj.CODIGO2,
+                               obj.DESCRICAO_01,
+                               obj.OBSERVACION,
+                               obj.UNIDADE_MEDIDA,
+                               obj.CONSUMO,
+                               obj.DESCR_COMBINACAO,
+                               obj.DESCRICAO_15
+                           }
+
+                  ).Distinct().ToList();
+    var COSTURACOLOR = (from obj in Model.objAviosLista
+                        where obj.ESTAGIO == "2"
+                        select new
+                        {
+                            obj.DESCR_COMBINACAO,
+                        }).Distinct().ToList();
+
+    //ACABADOS
+    var ACABADOS = (from obj in Model.objAviosLista
+                    where obj.ESTAGIO == "6"
+                    select new
+                    {
+                        obj.NARRATIVA,
+                        obj.TALLA_A,
+                        obj.CODIGO2,
+                        obj.DESCRICAO_01,
+                        obj.OBSERVACION,
+                        obj.UNIDADE_MEDIDA,
+                        obj.CONSUMO,
+                    }).Distinct().ToList();
+
+    var ACABADOSDISTINCT = (from obj in Model.objAviosLista
+                            where obj.ESTAGIO == "6"
+                            select new
+                            {
+                                obj.NARRATIVA,
+                                obj.TALLA_A,
+                                obj.CODIGO2,
+                                obj.DESCRICAO_01,
+                                obj.OBSERVACION,
+                                obj.UNIDADE_MEDIDA,
+                                obj.CONSUMO,
+                                obj.DESCR_COMBINACAO,
+                                obj.DESCRICAO_15
+                            }
+
+                  ).Distinct().ToList();
+    var ACABADOSCOLOR = (from obj in Model.objAviosLista
+                         where obj.ESTAGIO == "6"
+                         select new
+                         {
+                             obj.DESCR_COMBINACAO,
+                         }).Distinct().ToList();
+
+    //TRANFER PRENDA
+    var TRANFER = (from obj in Model.objAviosLista
+                   where obj.ESTAGIO == "39"
+                   select new
+                   {
+                       obj.NARRATIVA,
+                       obj.TALLA_A,
+                       obj.CODIGO2,
+                       obj.DESCRICAO_01,
+                       obj.OBSERVACION,
+                       obj.UNIDADE_MEDIDA,
+                       obj.CONSUMO,
+                   }).Distinct().ToList();
+
+    var TRANFERDISTINCT = (from obj in Model.objAviosLista
+                           where obj.ESTAGIO == "39"
+                           select new
+                           {
+                               obj.NARRATIVA,
+                               obj.TALLA_A,
+                               obj.CODIGO2,
+                               obj.DESCRICAO_01,
+                               obj.OBSERVACION,
+                               obj.UNIDADE_MEDIDA,
+                               obj.CONSUMO,
+                               obj.DESCR_COMBINACAO,
+                               obj.DESCRICAO_15
+                           }
+
+                  ).Distinct().ToList();
+
+    var TRANFERCOLOR = (from obj in Model.objAviosLista
+                        where obj.ESTAGIO == "39"
+                        select new
+                        {
+                            obj.DESCR_COMBINACAO,
+                        }).Distinct().ToList();
+
+
+
+
+    //TRANSFER PZA
+    var TRANFERPZA = (from obj in Model.objAviosLista
+                      where obj.ESTAGIO == "38"
+                      select new
+                      {
+                          obj.NARRATIVA,
+                          obj.TALLA_A,
+                          obj.CODIGO2,
+                          obj.DESCRICAO_01,
+                          obj.OBSERVACION,
+                          obj.UNIDADE_MEDIDA,
+                          obj.CONSUMO,
+                          obj.DESCRICAO_15
+                      }).Distinct().ToList();
+
+    var TRANFERPZADISTINCT = (from obj in Model.objAviosLista
+                              where obj.ESTAGIO == "38"
+                              select new
+                              {
+                                  obj.NARRATIVA,
+                                  obj.TALLA_A,
+                                  obj.CODIGO2,
+                                  obj.DESCRICAO_01,
+                                  obj.OBSERVACION,
+                                  obj.UNIDADE_MEDIDA,
+                                  obj.CONSUMO,
+                                  obj.DESCR_COMBINACAO,
+                                  obj.DESCRICAO_15
+                              }
+
+                  ).Distinct().ToList();
+
+    var TRANFERPZACOLOR = (from obj in Model.objAviosLista
+                           where obj.ESTAGIO == "38"
+                           select new
+                           {
+                               obj.DESCR_COMBINACAO,
+                           }).Distinct().ToList();
+                           
+    //ULTIMA TABLA
+    var SecuenciaGroup = Model.objSecuenciaOperacionesLista.GroupBy(obj => obj.descricao).Select
+        (tabla => new TSC_WEB.Models.Entidades.DesarrolloProducto.FichaTecnica.SecuenciaOperacionesEntidad
+        {
+            descricao = tabla.First().descricao,
+            total = tabla.Sum(c => c.minutos),
+        }).ToList();
+
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Reporte ficha tecnica</title>
+    <style>
+        .d-none {
+            display: none;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .titulo {
+            text-align: center;
+            font-weight: bold;
+        }
+
+        body {
+            font-family: Arial;
+            font-size: 12px;
+        }
+
+        .float-left {
+            float: left;
+        }
+
+        .float-right {
+            float: right;
+        }
+
+        .mt-10 {
+            margin-top: 10px;
+        }
+
+        .mr-10 {
+            margin-right: 10px;
+        }
+
+        .mt-20 {
+            margin-top: 20px;
+        }
+
+        hr {
+            border-top: 2px solid black;
+        }
+
+        .ml-10 {
+            margin-left: 10px;
+        }
+
+        .mb-20 {
+            margin-bottom: 20px;
+        }
+
+        .mb-10 {
+            margin-bottom: 10px;
+        }
+
+        .mb-2 {
+            margin-bottom: 2px;
+        }
+
+        .font-weight-bold {
+            font-weight: bold;
+        }
+
+        .form-group {
+            width: 100%;
+            padding: 1px;
+        }
+
+        .table {
+            border-collapse: collapse;
+        }
+
+        td {
+            border: 1px solid black;
+        }
+
+        .w-100 {
+            width: 100%;
+        }
+
+        .w-200px {
+            width: 200px;
+        }
+
+        .w-50 {
+            width: 50%;
+        }
+
+        .w-49 {
+            width: 49%;
+        }
+
+        .w-39 {
+            width: 39%;
+        }
+
+        .w-60 {
+            width: 60%;
+        }
+
+        .border-bottom {
+            border-bottom: 1px solid black;
+        }
+
+        .h-300px {
+            height: 300px;
+        }
+
+        .h-140 {
+            height: 140px;
+        }
+
+        .h-120 {
+            height: 120px;
+        }
+
+        .h-150 {
+            height: 150px;
+        }
+
+        .border-right {
+            border-right: 1px solid black;
+        }
+
+        .w-100 {
+            width: 100%;
+        }
+
+        .pl-1 {
+            padding-left: 10px;
+        }
+
+        th {
+            border: 1px solid black;
+            padding: 4px;
+            background-color: #40e0d0;
+        }
+
+        table, tr, td, th, tbody, thead, tfoot {
+            page-break-inside: avoid !important;
+        }
+
+        .td-encabezado {
+            border: 1px solid black;
+            padding: 4px;
+            background-color: #191970;
+            text-align: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .h-auto {
+            height: auto;
+        }
+
+ 
+
+
+
+    </style>
+
+    <!--<link href="~/Admin/css/DesarrolloProductoImprimir.css" rel="stylesheet" type="text/css" media="print" />-->
+
+
+</head>
+<body>
+    
+
+        
+    
+
+
+    <label class="font-weight-bold float-left">1.- DESCRIPCIÓN PRENDA: </label> @Model.objFichaEntidad.descripcion_prenda
+
+    <div class="float-left w-100">
+        <div class="float-left w-49 border-bottom h-300px border-right ">
+            <img src="@Model.objFichaEntidad.grafico_prenda" class="w-100 h-300px "  />
+        </div>
+        <div class="float-left w-50 border-bottom h-300px">
+
+            <div class="w-100">
+                <div class="w-39 border-right h-150 float-left">
+                    <label class="font-weight-bold float-left ml-10 mb-10">2.- RUTAS PROCESOS:</label>
+                    @foreach (var obj in Model.objRutasEntidadLista)
+                    {
+                        <label class="float-left w-100 ml-10 mb-2">@obj.SEQUENCIA_ESTAGIO.-@obj.DESCRICAO</label>
+                    }
+                </div>
+                <div class="w-60 h-150 float-left">
+                    <label class="font-weight-bold float-left ml-10 mb-10">RUTAS TELA PRINCIPAL:</label>
+                    @foreach (var obj in Model.objRutasTelaPrincipalLista)
+                    {
+                        <label class="float-left w-100 ml-10 mb-2">@obj.SEQ_OPERACAO-@obj.NOME_OPERACAO</label>
+                    }
+                </div>
+            </div>
+
+            <div class="w-100 float-left">
+                <table class="w-100 table text-center">
+                    <thead>
+                        <tr>
+                            <td>DISEÑO</td>
+                            <td>SEC.COLOR</td>
+                            <td>CONSUMO</td>
+                            <td>MEDIDA</td>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- TABLAS -->
+    <div class="w-100 h-auto float-left">
+        <label class="font-weight-bold w-100 float-left mt-10 mb-20">3.- OBSERVACIONES:</label>
+
+        <!-- PRIMERA TABLA-->
+        <div class="w-100 float-left">
+            <table class="table w-100">
+                <thead>
+                    <tr>
+                        <th>TIPO DE TELA</th>
+                        <th>TITULO</th>
+                        <th>DENSIDAD</th>
+                        <th>ANCHO DE TELA</th>
+                        <th>GALGA</th>
+                        <th>INCLINACIÓN</th>
+                        <th>ENC. L.</th>
+                        <th>ENC. A.</th>
+                        <th>T. P.</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var obj in Model.objObservacionesLista.OrderByDescending(x => x.TECIDO_PRINCIPAL).ToList())
+                    {
+                        <tr>
+                            <td>@obj.NARRATIVA</td>
+                            <td>@obj.CONTEUDO_ATRIBUTO</td>
+                            <td>@obj.DENSIDAD</td>
+                            <td>@obj.ANCHO_TELA</td>
+                            <td>@obj.FINURA</td>
+                            <td>@obj.INCLINACAO_TRAMA</td>
+                            <td>@obj.LARGO_LAVADA</td>
+                            <td>@obj.ANCHO_LAVADA</td>
+                            <td>@obj.TECIDO_PRINCIPAL</td>
+
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <!-- SEGUNDA TABLA - TELAS -->
+        @for (int x = 1; x <= Math.Ceiling(mod); x++)
+        {
+
+            <div class="w-100 float-left mt-20">
+                <table class="table w-100 text-center">
+                    <thead>
+                        <tr>
+                            <th>CÓDIGO</th>
+                            <th>DESCRIPCIÓN TELAS</th>
+                            <th>UBICACIÓN</th>
+                            <th>% DEF</th>
+                            <th>TALLA</th>
+                            <th>CONSUMO</th>
+                            @{
+            contador = x * 8;
+            contador2 = 0;
+                            }
+                            @foreach (var obj in COMBINACIONESLISTADISTINCT)
+                            {
+                                contador2++;
+                                if ((contador2 <= contador) && (contador2 > (contador - 8)))
+                                {
+                                    <th>@obj.DESCR_COMBINACAO @obj.COMBINACAO_ITEM</th>
+                                }
+                            }
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{ contador2 = 0;}
+                        @foreach (var obj in COMBINACIONESLISTADISTINCT)
+                        {
+                            contador2++;
+                            if ((contador2 <= contador) && (contador2 > (contador - 8)))
+                            {
+                                foreach (var obj2 in Model.objCombinacionesLista.OrderBy(d => d.SEQUENCIA).ToList())
+                                {
+                                    if (obj2.DESCR_COMBINACAO == obj.DESCR_COMBINACAO)
+                                    {
+                                        <tr>
+                                            <td>@obj2.CODIGO_TELA</td>
+                                            <td>@obj2.NARRATIVA</td>
+                                            <td>@obj2.UBICACION</td>
+                                            <td>@obj2.POR_EFICIENCIA</td>
+                                            <td>@obj2.DESCR_TAM_REFER</td>
+                                            <td>@obj2.CONSUMO</td>
+
+                                            @{
+                                        contador3 = 0;
+                                            }
+                                            @foreach (var obj3 in COMBINACIONESLISTADISTINCT)
+                                            {
+                                                contador3++;
+                                                if ((contador3 <= contador) && (contador3 > (contador - 8)))
+                                                {
+                                                    if (obj3.DESCR_COMBINACAO == obj2.DESCR_COMBINACAO)
+                                                    {
+                                                        <td>@obj2.descricao_15</td>
+                                                    }
+                                                    else
+                                                    {
+                                                        <td></td>
+                                                    }
+                                                }
+                                            }
+                                        </tr>
+                                    }
+                                }
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+
+        <!-- TERCERA TABLA CORTE 1 -->
+        @{
+            CANTIDADGENERAL = CORTE1COLOR.Count;
+            CONTADORGENERAL1 = 0;
+            CONTADORGENERAL2 = 0;
+            CONTADORGENERAL3 = 0;
+        }
+        @for (int x = 1; x <= Math.Ceiling(CANTIDADGENERAL / 8); x++)
+        {
+
+            <div class="w-100 float-left mt-20">
+                <table class="table w-100 text-center">
+
+                    <thead>
+                        <tr>
+                            <td class="td-encabezado">CORTE 1</td>
+                        </tr>
+                        <tr>
+                            <th>TIPO DE AVIO</th>
+                            <th>TALLA</th>
+                            <th>CÓDIGO</th>
+                            <th>DESCRIPCIÓN_DE_AVIO</th>
+                            <th>OBSERVACIÓN</th>
+                            <th>U.M</th>
+                            <th>CONSUMO</th>
+                            @{
+            CONTADORGENERAL1 = x * 8;
+            CONTADORGENERAL2 = 0;
+                            }
+
+                            @foreach (var obj in CORTE1COLOR)
+                            {
+                                CONTADORGENERAL2++;
+                                if ((CONTADORGENERAL2 <= CONTADORGENERAL1) && (CONTADORGENERAL2 > (CONTADORGENERAL1 - 8)))
+                                {
+                                    <th>@obj.DESCR_COMBINACAO</th>
+                                }
+                            }
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        @foreach (var obj in CORTE1)
+                        {
+                            CONTADORGENERAL3++;
+                            <tr id="ContenidoTablaCorte1_@CONTADORGENERAL3">
+                                <td>@obj.NARRATIVA</td>
+                                <td>@obj.TALLA_A</td>
+                                <td>@obj.CODIGO2</td>
+                                <td>@obj.DESCRICAO_01</td>
+                                <td>@obj.OBSERVACION</td>
+                                <td>@obj.UNIDADE_MEDIDA</td>
+                                <td>@obj.CONSUMO</td>
+
+                                @{
+                            CONTADORGENERAL2 = 0;
+                            CONTADORGENERAL4 = 0;
+
+                                }
+                                @foreach (var obj2 in CORTE1COLOR)
+                                {
+                                    CONTADORGENERAL2++;
+                                    if ((CONTADORGENERAL2 <= CONTADORGENERAL1) && (CONTADORGENERAL2 > (CONTADORGENERAL1 - 8)))
+                                    {
+                                        <td>
+                                            @foreach (var obj3 in CORTE1DISTINCT)
+                                            {
+                                                if (obj.CODIGO2 == obj3.CODIGO2 && obj.TALLA_A == obj3.TALLA_A && obj2.DESCR_COMBINACAO == obj3.DESCR_COMBINACAO /*AGREGADO*/ && obj.NARRATIVA == obj3.NARRATIVA)
+                                                {
+                                                    CONTADORGENERAL4++;
+                                                    <label>@obj3.DESCRICAO_15</label>
+                                                }
+
+                                            }
+                                        </td>
+                                    }
+
+
+                                }
+                            </tr>
+
+                            if (CONTADORGENERAL4 == 0)
+                            {
+                                <style>
+                                    #ContenidoTablaCorte1_@CONTADORGENERAL3{
+                                        display : none;
+                                    }
+                                </style>
+                            }
+
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+        }
+
+
+
+        <!-- TERCERA TABLA COSTURA -->
+        @{
+            CANTIDADGENERAL = COSTURACOLOR.Count;
+            CONTADORGENERAL1 = 0;
+            CONTADORGENERAL2 = 0;
+            CONTADORGENERAL3 = 0;
+        }
+        @for (int x = 1; x <= Math.Ceiling(CANTIDADGENERAL / 5); x++)
+        {
+
+            <div class="w-100 float-left mt-20">
+                <table class="table w-100 text-center">
+
+                    <thead>
+                        <tr>
+                            <td class="td-encabezado">COSTURA</td>
+                        </tr>
+                        <tr>
+                            <th>TIPO DE AVIO</th>
+                            <th>TALLA</th>
+                            <th>CÓDIGO</th>
+                            <th>DESCRIPCIÓN_DE_AVIO</th>
+                            <th>OBSERVACIÓN</th>
+                            <th>U.M</th>
+                            <th>CONSUMO</th>
+                            @{
+            CONTADORGENERAL1 = x * 5;
+            CONTADORGENERAL2 = 0;
+                            }
+
+                            @foreach (var obj in COSTURACOLOR)
+                            {
+                                CONTADORGENERAL2++;
+                                if ((CONTADORGENERAL2 <= CONTADORGENERAL1) && (CONTADORGENERAL2 > (CONTADORGENERAL1 - 5)))
+                                {
+                                    <th>@obj.DESCR_COMBINACAO</th>
+                                }
+                            }
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        @foreach (var obj in COSTURA)
+                        {
+                            CONTADORGENERAL3++;
+                            <tr id="ContenidoTablaCostura_@CONTADORGENERAL3">
+                                <td>@obj.NARRATIVA</td>
+                                <td>@obj.TALLA_A</td>
+                                <td>@obj.CODIGO2</td>
+                                <td>@obj.DESCRICAO_01</td>
+                                <td>@obj.OBSERVACION</td>
+                                <td>@obj.UNIDADE_MEDIDA</td>
+                                <td>@obj.CONSUMO</td>
+
+                                @{
+                            CONTADORGENERAL2 = 0;
+                            CONTADORGENERAL4 = 0;
+
+                                }
+                                @foreach (var obj2 in COSTURACOLOR)
+                                {
+                                    CONTADORGENERAL2++;
+                                    if ((CONTADORGENERAL2 <= CONTADORGENERAL1) && (CONTADORGENERAL2 > (CONTADORGENERAL1 - 5)))
+                                    {
+                                        <td>
+                                            @foreach (var obj3 in COSTURADISTINCT)
+                                            {
+                                                if (obj.CODIGO2 == obj3.CODIGO2 && obj.TALLA_A == obj3.TALLA_A && obj2.DESCR_COMBINACAO == obj3.DESCR_COMBINACAO /*AGREGADO*/ && obj.NARRATIVA == obj3.NARRATIVA )
+                                                {
+                                                    CONTADORGENERAL4++;
+                                                    <label>@obj3.DESCRICAO_15</label>
+                                                }
+
+                                            }
+                                        </td>
+                                    }
+
+
+                                }
+                            </tr>
+
+
+                            if (CONTADORGENERAL4 == 0)
+                            {
+                                <style>
+                                    #ContenidoTablaCostura_@CONTADORGENERAL3{
+                                        display : none;
+                                    }
+                                </style>
+                            }
+
+
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+        }
+
+
+        @{
+            CANTIDADGENERAL = ACABADOSCOLOR.Count;
+            CONTADORGENERAL1 = 0;
+            CONTADORGENERAL2 = 0;
+            CONTADORGENERAL3 = 0;
+
+        }
+        @for (int x = 1; x <= Math.Ceiling(CANTIDADGENERAL / 5); x++)
+        {
+
+            <div class="w-100 float-left mt-20">
+                <table class="table w-100 text-center">
+
+                    <thead>
+                        <tr>
+                            <td class="td-encabezado">ACABADOS</td>
+                        </tr>
+                        <tr>
+                            <th>TIPO DE AVIO</th>
+                            <th>TALLA</th>
+                            <th>CÓDIGO</th>
+                            <th>DESCRIPCIÓN_DE_AVIO</th>
+                            <th>OBSERVACIÓN</th>
+                            <th>U.M</th>
+                            <th>CONSUMO</th>
+                            @{
+            CONTADORGENERAL1 = x * 5;
+            CONTADORGENERAL2 = 0;
+                            }
+
+                            @foreach (var obj in ACABADOSCOLOR)
+                            {
+                                CONTADORGENERAL2++;
+                                if ((CONTADORGENERAL2 <= CONTADORGENERAL1) && (CONTADORGENERAL2 > (CONTADORGENERAL1 - 5)))
+                                {
+                                    <th>@obj.DESCR_COMBINACAO</th>
+                                }
+                            }
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        @foreach (var obj in ACABADOS)
+                        {
+                            CONTADORGENERAL3++;
+                            <tr id="ContenidoTablaAcabados_@CONTADORGENERAL3">
+                                <td>@obj.NARRATIVA</td>
+                                <td>@obj.TALLA_A</td>
+                                <td>@obj.CODIGO2</td>
+                                <td>@obj.DESCRICAO_01</td>
+                                <td>@obj.OBSERVACION</td>
+                                <td>@obj.UNIDADE_MEDIDA</td>
+                                <td>@obj.CONSUMO</td>
+
+                                @{
+                            CONTADORGENERAL2 = 0;
+                            CONTADORGENERAL4 = 0;
+                                }
+                                @foreach (var obj2 in ACABADOSCOLOR)
+                                {
+                                    CONTADORGENERAL2++;
+                                    if ((CONTADORGENERAL2 <= CONTADORGENERAL1) && (CONTADORGENERAL2 > (CONTADORGENERAL1 - 5)))
+                                    {
+                                        <td>
+                                            @foreach (var obj3 in ACABADOSDISTINCT)
+                                            {
+                                                if (obj.CODIGO2 == obj3.CODIGO2 && obj.TALLA_A == obj3.TALLA_A && obj2.DESCR_COMBINACAO == obj3.DESCR_COMBINACAO /*AGREGADO*/ && obj.NARRATIVA == obj3.NARRATIVA)
+                                                {
+                                                    CONTADORGENERAL4++;
+                                                    <label>@obj3.DESCRICAO_15</label>
+                                                }
+
+                                            }
+                                        </td>
+                                    }
+
+
+                                }
+                            </tr>
+                            if (CONTADORGENERAL4 == 0)
+                            {
+                                <style>
+                                    #ContenidoTablaAcabados_@CONTADORGENERAL3{
+                                        display : none;
+                                    }
+                                </style>
+                            }
+
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+        }
+
+
+
+        <!-- TERCERA TABLA TRANFER -->
+        @{
+            CANTIDADGENERAL = TRANFERCOLOR.Count;
+            CONTADORGENERAL1 = 0;
+            CONTADORGENERAL2 = 0;
+            CONTADORGENERAL3 = 0;
+        }
+
+
+
+        @for (int x = 1; x <= Math.Ceiling(CANTIDADGENERAL / 5); x++)
+        {
+
+            <div class="w-100 float-left mt-20">
+                <table class="table w-100 text-center">
+
+                    <thead>
+                        <tr>
+                            <td class="td-encabezado">TRANSFER EN PRENDA</td>
+                        </tr>
+                        <tr>
+                            <th>TIPO DE AVIO</th>
+                            <th>TALLA</th>
+                            <th>CÓDIGO</th>
+                            <th>DESCRIPCIÓN_DE_AVIO</th>
+                            <th>OBSERVACIÓN</th>
+                            <th>U.M</th>
+                            <th>CONSUMO</th>
+                            @{
+            CONTADORGENERAL1 = x * 5;
+            CONTADORGENERAL2 = 0;
+                            }
+
+                            @foreach (var obj in TRANFERCOLOR)
+                            {
+                                CONTADORGENERAL2++;
+                                if ((CONTADORGENERAL2 <= CONTADORGENERAL1) && (CONTADORGENERAL2 > (CONTADORGENERAL1 - 5)))
+                                {
+                                    <th>@obj.DESCR_COMBINACAO</th>
+                                }
+                            }
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        @foreach (var obj in TRANFER)
+                        {
+                            CONTADORGENERAL3++;
+                            <tr id="ContenidoTablaTranfer_@CONTADORGENERAL3">
+                                <td>@obj.NARRATIVA</td>
+                                <td>@obj.TALLA_A</td>
+                                <td>@obj.CODIGO2</td>
+                                <td>@obj.DESCRICAO_01</td>
+                                <td>@obj.OBSERVACION</td>
+                                <td>@obj.UNIDADE_MEDIDA</td>
+                                <td>@obj.CONSUMO</td>
+
+                                @{CONTADORGENERAL2 = 0;
+                                CONTADORGENERAL4 = 0; }
+                                @foreach (var obj2 in TRANFERCOLOR)
+                                {
+                                    CONTADORGENERAL2++;
+                                    if ((CONTADORGENERAL2 <= CONTADORGENERAL1) && (CONTADORGENERAL2 > (CONTADORGENERAL1 - 5)))
+                                    {
+                                        <td>
+                                            @foreach (var obj3 in TRANFERDISTINCT)
+                                            {
+                                                if (obj.CODIGO2 == obj3.CODIGO2 && obj.TALLA_A == obj3.TALLA_A && obj2.DESCR_COMBINACAO == obj3.DESCR_COMBINACAO /*AGREGADO*/ && obj.NARRATIVA == obj3.NARRATIVA)
+                                                {
+                                                    CONTADORGENERAL4++;
+                                                    <label>@obj3.DESCRICAO_15</label>
+                                                }
+
+                                            }
+                                        </td>
+                                    }
+
+
+                                }
+                            </tr>
+                            if (CONTADORGENERAL4 == 0)
+                            {
+                                <style>
+                                    #ContenidoTablaTranfer_@CONTADORGENERAL3{
+                                        display : none;
+                                    }
+                                </style>
+                            }
+
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+        }
+
+        <!--TRANSFER EN PIEZAS-->
+        @{
+            CANTIDADGENERAL = TRANFERPZACOLOR.Count;
+            CONTADORGENERAL1 = 0;
+            CONTADORGENERAL2 = 0;
+            CONTADORGENERAL3 = 0;
+
+        }
+
+
+
+        @for (int x = 1; x <= Math.Ceiling(CANTIDADGENERAL / 5); x++)
+        {
+
+            <div class="w-100 float-left mt-20">
+                <table class="table w-100 text-center">
+
+                    <thead>
+                        <tr>
+                            <td class="td-encabezado">TRANSFER EN PZA</td>
+                        </tr>
+                        <tr>
+                            <th>TIPO DE AVIO</th>
+                            <th>TALLA</th>
+                            <th>CÓDIGO</th>
+                            <th>DESCRIPCIÓN_DE_AVIO</th>
+                            <th>OBSERVACIÓN</th>
+                            <th>U.M</th>
+                            <th>CONSUMO</th>
+                            @{
+            CONTADORGENERAL1 = x * 5;
+            CONTADORGENERAL2 = 0;
+                            }
+
+                            @foreach (var obj in TRANFERPZACOLOR)
+                            {
+                                CONTADORGENERAL2++;
+                                if ((CONTADORGENERAL2 <= CONTADORGENERAL1) && (CONTADORGENERAL2 > (CONTADORGENERAL1 - 5)))
+                                {
+                                    <th>@obj.DESCR_COMBINACAO</th>
+
+                                }
+                            }
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        @foreach (var obj in TRANFERPZA)
+                        {
+                            CONTADORGENERAL3++;
+
+                            <tr id="ContenidoTablaTranferprenda_@CONTADORGENERAL3">
+                                <td>@obj.NARRATIVA</td>
+                                <td>@obj.TALLA_A</td>
+                                <td>@obj.CODIGO2</td>
+                                <td>@obj.DESCRICAO_01</td>
+                                <td>@obj.OBSERVACION</td>
+                                <td>@obj.UNIDADE_MEDIDA</td>
+                                <td>@obj.CONSUMO</td>
+
+                                @{CONTADORGENERAL2 = 0;
+                                CONTADORGENERAL4 = 0;}
+                                @foreach (var obj2 in TRANFERPZACOLOR)
+                                {
+                                    CONTADORGENERAL2++;
+                                    if ((CONTADORGENERAL2 <= CONTADORGENERAL1) && (CONTADORGENERAL2 > (CONTADORGENERAL1 - 5)))
+                                    {
+                                        <td>
+                                            @foreach (var obj3 in TRANFERPZADISTINCT)
+                                            {
+                                                if (obj.CODIGO2 == obj3.CODIGO2 && obj.TALLA_A == obj3.TALLA_A && obj2.DESCR_COMBINACAO == obj3.DESCR_COMBINACAO /*AGREGADO*/ && obj.NARRATIVA == obj3.NARRATIVA)
+                                                {
+                                                    CONTADORGENERAL4++;
+                                                    <label>@obj3.DESCRICAO_15</label>
+
+                                                }
+
+                                            }
+                                        </td>
+                                    }
+
+
+                                }
+                            </tr>
+                            if (CONTADORGENERAL4 == 0)
+                            {
+                                <style>
+                                    #ContenidoTablaTranferprenda_@CONTADORGENERAL3{
+                                        display : none;
+                                    }
+                                </style>
+                            }
+
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+        }
+
+        <!-- IMPRIMIMOS SI NO HAY FILTRO-->
+
+
+        @if (Model.op)
+        {
+             <!-- ULTIMA TABLA -->
+            <div class="w-100 float-left mt-20">
+                <table class="table w-100 text-center">
+                    <thead>
+                        <tr>
+                            <th>SEQ. OPERACIÓN</th>
+                            <th>COD. OPERACIÓN</th>
+                            <th>DESCRIPCIÓN OPERACIÓN</th>
+                            <th>COD. MAQUINA</th>
+                            <th>TIEMPO. HOMBRES</th>
+                            <th>ETAPA. OPERACIÓN</th>
+                            <th>COD_PARTE PRENDA</th>
+                            <th>PARTE PRENDA</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var obj in Model.objSecuenciaOperacionesLista)
+                        {
+                            <tr>
+                                <td>@obj.seq_operacao</td>
+                                <td>@obj.codigo_operacao</td>
+                                <td>@obj.nome_operacao</td>
+                                <td>@obj.observacao1</td>
+                                <td>@obj.minutos</td>
+                                <td>@obj.descricao</td>
+                                <td>@obj.codigo_parte_peca</td>
+                                <td>@obj.desc_parte_peca</td>
+                            </tr>
+
+                            //SUMA TODO
+                            total += obj.minutos;
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="w-100 float-left mt-20">
+                <div class="w-50 float-left">
+                    <label class="font-weight-bold">% DEFI. POR RUTA</label>
+                </div>
+                <div class="w-50 float-left">
+                    <table class="table float-right">
+                        <thead>
+                            <tr>
+                                <th style="width:100px">ETAPAS</th>
+                                <th style="width:100px">TOTAL</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            @foreach (var obj in SecuenciaGroup)
+                            {
+                                <tr>
+                                    <td>@obj.descricao</td>
+                                    <td>@obj.total</td>
+                                </tr>
+                            }
+                            <tr>
+                                <td class="font-weight-bold">TOTAL</td>
+                                <td class="font-weight-bold">@total</td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        }
+
+
+       
+    </div>
+
+
+
+</body>
+</html>
+
